@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>QC Pet Apartment - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c3c6d2",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#fff8f1",
+                        "on-secondary-container": "#006f61",
+                        "on-primary-fixed-variant": "#184589",
+                        "surface-container-high": "#eee7df",
+                        "on-tertiary-fixed-variant": "#633f00",
+                        "tertiary-fixed-dim": "#ffb955",
+                        "on-surface-variant": "#434751",
+                        "on-tertiary-fixed": "#291800",
+                        "primary-container": "#1a468a",
+                        "inverse-on-surface": "#f7f0e8",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-surface": "#1e1b17",
+                        "surface": "#fff8f1",
+                        "surface-container": "#f4ede5",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f9f3eb",
+                        "outline": "#737782",
+                        "on-background": "#1e1b17",
+                        "on-tertiary": "#ffffff",
+                        "secondary": "#006b5d",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#5ffae0",
+                        "inverse-surface": "#33302b",
+                        "on-tertiary-container": "#f6a624",
+                        "tertiary": "#472c00",
+                        "inverse-primary": "#adc6ff",
+                        "on-primary-container": "#93b6ff",
+                        "surface-variant": "#e8e1da",
+                        "tertiary-container": "#654000",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#001a41",
+                        "primary-fixed": "#d8e2ff",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#365da2",
+                        "primary": "#002f6b",
+                        "surface-dim": "#dfd9d1",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#00201b",
+                        "background": "#fff8f1",
+                        "secondary-container": "#5bf7dd",
+                        "on-secondary-fixed-variant": "#005046",
+                        "surface-container-highest": "#e8e1da",
+                        "tertiary-fixed": "#ffddb4",
+                        "secondary-fixed-dim": "#38ddc4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "ui-bar-height": "64px",
+                        "chip-padding-y": "8px",
+                        "chip-padding-x": "12px",
+                        "container-margin": "16px",
+                        "gutter": "12px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "currency-num": ["Plus Jakarta Sans"],
+                        "label-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "18px", "fontWeight": "800"}],
+                        "body-lg": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                        "currency-num": ["16px", {"lineHeight": "16px", "fontWeight": "800"}],
+                        "label-lg": ["16px", {"lineHeight": "20px", "fontWeight": "800"}],
+                        "headline-lg": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "800"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #FFF8F0;
+            background-image: linear-gradient(30deg, #f0e6da 12%, transparent 12.5%, transparent 87%, #f0e6da 87.5%, #f0e6da),
+                              linear-gradient(150deg, #f0e6da 12%, transparent 12.5%, transparent 87%, #f0e6da 87.5%, #f0e6da),
+                              linear-gradient(30deg, #f0e6da 12%, transparent 12.5%, transparent 87%, #f0e6da 87.5%, #f0e6da),
+                              linear-gradient(150deg, #f0e6da 12%, transparent 12.5%, transparent 87%, #f0e6da 87.5%, #f0e6da),
+                              linear-gradient(60deg, #f5ecd8 25%, transparent 25.5%, transparent 75%, #f5ecd8 75%, #f5ecd8),
+                              linear-gradient(60deg, #f5ecd8 25%, transparent 25.5%, transparent 75%, #f5ecd8 75%, #f5ecd8);
+            background-size: 80px 140px;
+            background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
+        }
+
+        .neo-brutalist-card {
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+            transition: all 0.2s ease;
+        }
+
+        .neo-brutalist-card:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px rgba(0,0,0,1);
+        }
+
+        .room-glow {
+            box-shadow: 0 0 15px #F5A623, 4px 4px 0px 0px rgba(0,0,0,1);
+        }
+
+        .cel-shade {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cel-shade::after {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 20%;
+            height: 15%;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            filter: blur(2px);
+        }
+
+        .locked-state {
+            filter: grayscale(100%) opacity(40%);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-body-lg text-on-background min-h-screen pb-24">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 px-container-margin pt-4">
+<div class="bg-primary text-on-primary h-ui-bar-height rounded-b-xl border-x-3 border-b-3 border-on-surface shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-between px-4">
+<!-- Left Chip: QP -->
+<div class="bg-secondary-container text-on-secondary-container px-chip-padding-x py-1.5 rounded-full border-3 border-on-surface flex items-center gap-2 neo-brutalist-card">
+<span class="bg-white rounded-full p-1 border-2 border-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px]">savings</span>
+</span>
+<span class="font-currency-num text-currency-num">QP 1,240</span>
+</div>
+<!-- Center Chip: Streak -->
+<div class="bg-[#FFF8F1] text-primary px-chip-padding-x py-1.5 rounded-full border-3 border-on-surface flex items-center gap-2 neo-brutalist-card">
+<span class="text-[18px]">🔥</span>
+<span class="font-label-md text-label-md">7 ngày</span>
+</div>
+<!-- Right Chip: BC -->
+<div class="bg-tertiary-container text-on-tertiary-container px-chip-padding-x py-1.5 rounded-full border-3 border-on-surface flex items-center gap-2 neo-brutalist-card">
+<span class="bg-white rounded-full p-1 border-2 border-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px]">pest_control</span>
+</span>
+<span class="font-currency-num text-currency-num">BC 340</span>
+</div>
+</div>
+</header>
+<!-- Main Apartment Hub Grid -->
+<main class="pt-28 px-container-margin max-w-lg mx-auto">
+<div class="grid grid-cols-2 gap-gutter">
+<!-- Room 1: Work Room -->
+<div class="relative group cursor-pointer">
+<div class="bg-white rounded-2xl border-3 border-on-surface p-1 neo-brutalist-card overflow-hidden">
+<img alt="Phòng làm việc" class="w-full aspect-square object-cover rounded-xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVwd7xOacopDt4uOYI9aKfLwpTkPyN6UqIplOrj2GKZt9mi4gpM9m3I_onPQzp-IZM0s59cA9WFkqeYJgD8F5KgpcF2lr53PP9sQl0U2bjWPn8oPp-3IxBldU2KJ7DAcaKk6VTkhk1UWDwTIvL7LGMsbNDFo6g_fnxfLnWA08eMKs-ZYCZzIVBf4RAcMNzLM3maJU5CUmXMo6cPxh4UTzd7S4DV2PQXevyQkJhLxQsIUnG3Rm8a5UQ7YlXY5EWe1roTutuIPCCQUM"/>
+<!-- Bugsy Overlay -->
+<div class="absolute bottom-12 right-6 w-12 h-12 animate-bounce">
+<img alt="Bugsy" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnyxESGN3j3v8z5vMtnoS1hPWhy-St4WWZHXhWCxCr7_W0Xeg_vhjIkwCReptp05VtU6HRvM0tvaW93uFH4mtqfhji6sRcH3WqNLmDmuny49zY6Y-6KGlQsV5KpXPTGaKyjNDNORoZ9_9exkInUOGjWuRal7dSqDYH4pyeZ1KST0dkiVKpCYYa6ze5Xjh5ZBYp3hV38KhKZDG-ZkEW1o2IiNi_xhkqOwgU_hDPkhpHGj9LbpUUXeA-_egk0BO2KFKx1h_qfXVKIdk"/>
+</div>
+</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-3 py-1 rounded-full border-3 border-on-surface z-10 whitespace-nowrap">
+<span class="font-label-lg text-label-lg text-primary">🏢 Phòng Làm Việc</span>
+</div>
+</div>
+<!-- Room 2: Kitchen (Needs Attention) -->
+<div class="relative group cursor-pointer">
+<div class="bg-white rounded-2xl border-3 border-on-surface p-1 room-glow overflow-hidden">
+<img alt="Phòng bếp" class="w-full aspect-square object-cover rounded-xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2kmd0vL4G40Oh67ET1OSXtAuf_IzcESEVT2UGPJLfr-MC0SOMD9j1ddZbnuIoJyGRxL5oLo_9PJYhvTTVNitlhkOC-WaMBV9_p9ZASRPIF8ikXv-8URb-Jcjkd9QvGNoIEyjvJ14XgVFH4YA4S6Wzzk-arYMmOr7aJkYrwd6gCNVCwCxbA2xZan9RQoL_dOYD1bCFE8vQgDQVAyLVqYAbVsWzs9e_peoRbE9StFZXeJiyG6riw3vIfyqFSAKhS22ERJJSMDJY3zE"/>
+<!-- Attention Icon -->
+<div class="absolute top-4 left-1/2 -translate-x-1/2 bg-white w-10 h-10 rounded-full border-3 border-on-surface flex items-center justify-center animate-pulse">
+<span class="text-xl">🍔</span>
+</div>
+</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-3 py-1 rounded-full border-3 border-on-surface z-10 whitespace-nowrap">
+<span class="font-label-lg text-label-lg text-primary">🍳 Bếp</span>
+</div>
+</div>
+<!-- Room 3: Bedroom -->
+<div class="relative group cursor-pointer">
+<div class="bg-white rounded-2xl border-3 border-on-surface p-1 neo-brutalist-card overflow-hidden">
+<img alt="Phòng ngủ" class="w-full aspect-square object-cover rounded-xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiz14bbzVSrzXvUC19iu_bprXdE5sr10KfojUGByztQWeoVxTCGzE-cFlFKccbi7EbhU_Plnx5V24u5D1sHrRiykVHJ0YN4fuArw_R0PkLL26KrH_BnZ-EEp4d1t19AwtOodS2aAa1wAcg8U2nBLaiRM0D3Y50VV0fhTrETsaamEj-m7GD1L7Y5L6unG6ac8kZ0wHXvBtZ3KXb68ZkPIQntXaVGVlmQXhxuR96gnK4i3OjnmNpzNFQFmQJ_3RLM7gvrBT_qolITGc"/>
+</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-3 py-1 rounded-full border-3 border-on-surface z-10 whitespace-nowrap">
+<span class="font-label-lg text-label-lg text-primary">🛏️ Phòng Ngủ</span>
+</div>
+</div>
+<!-- Room 4: Living Room -->
+<div class="relative group cursor-pointer">
+<div class="bg-white rounded-2xl border-3 border-on-surface p-1 neo-brutalist-card overflow-hidden">
+<img alt="Phòng khách" class="w-full aspect-square object-cover rounded-xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9Xj7vQa9cvyGjXxz1A2M9Q7GB2fEXGfarJB8tS1AaJvYb8Vrq2H4F-iLWJ2ntnkfN0Y76X995w0HL5kMd0CohJrIu5utbrMhR9bsl3jF4C7vMyYZfDZY9cXjMB7q3F5MiRd-F8gP9qmqI8kX6pVHCu8MxWgDdhc0r5Hn0iBOy3lH66uj-wLhC9lVq6m8MxSWNFI56Nkff8iOHpbCnW8bnL_VnvZRvXE-iwkz4V73cODqKTGHy8Q4jpEN118Wnsf_OLj5Wr4oT8Xk"/>
+</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-3 py-1 rounded-full border-3 border-on-surface z-10 whitespace-nowrap">
+<span class="font-label-lg text-label-lg text-primary">🛋️ Phòng Khách</span>
+</div>
+</div>
+<!-- Room 5: Bathroom (Locked) -->
+<div class="relative group">
+<div class="bg-white rounded-2xl border-3 border-on-surface p-1 neo-brutalist-card overflow-hidden locked-state">
+<img alt="Phòng tắm" class="w-full aspect-square object-cover rounded-xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOSnyvEG65--hrXD_4UUBSTkehrK6_qJegiFi2HfsQUEesLeSJaFFum-0r-sDKRSAFqFV-r17ujpxRJ_FsOWr60w_9NOcPKxtfTtF0TezaCuo65MaVVqiCMN2bsBj_F3iIYV5ZFIbZIM7AwwtF2VRmmdXOk9dweycOlhXKGrI6nyEI_ZacYsSJL8ge34GHYkeAbZ2bDYSX1CYatkqp3KGlkFiChWeH6r5tBaHVivelTT_1ZLBBWPj_0zdvbw86WOgZl8KgIaE_f_Q"/>
+</div>
+<!-- Bubble Sticker -->
+<div class="absolute top-4 right-4 bg-white w-8 h-8 rounded-full border-3 border-on-surface flex items-center justify-center">
+<span class="font-bold text-lg">?</span>
+</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-3 py-1 rounded-full border-3 border-on-surface z-10 whitespace-nowrap opacity-60">
+<span class="font-label-lg text-label-lg text-primary">🚿 Phòng Tắm</span>
+</div>
+</div>
+<!-- Room 6: Yard (Locked) -->
+<div class="relative group">
+<div class="bg-white rounded-2xl border-3 border-on-surface p-1 neo-brutalist-card overflow-hidden locked-state">
+<img alt="Sân vườn" class="w-full aspect-square object-cover rounded-xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASugGj848NOFFJ5jKghqycxTLLZlMPYpz5Po-4i1QCNbFmJXeaV1braL_bkULEaK4cS8Pn8GfO9FSz20MkbB4PFiUcrgL0KCylLgVFNirKEzfZU-2ygRN-GK7bxRo_rew6zgfjenZkkwKhpZpTMaYAm1ufdKknWxAYMtg3UDsyaavGDsiepmmIS6XMHm2juNRhDe9tezsDGdS3RERB4-sX-UuA7NSbIIFSARyts-OSRr3UTfFI-kKiDqTdl9A5FntGp2GpUPebbyg"/>
+</div>
+<!-- Bubble Sticker -->
+<div class="absolute top-4 right-4 bg-white w-8 h-8 rounded-full border-3 border-on-surface flex items-center justify-center">
+<span class="font-bold text-lg">?</span>
+</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-3 py-1 rounded-full border-3 border-on-surface z-10 whitespace-nowrap opacity-60">
+<span class="font-label-lg text-label-lg text-primary">🌿 Sân</span>
+</div>
+</div>
+</div>
+<!-- Hint Footer -->
+<div class="mt-12 text-center">
+<p class="font-body-lg text-outline italic">Chạm vào phòng để vào →</p>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-secondary-container rounded-t-2xl border-t-3 border-on-surface">
+<!-- Tab: Rooms (Active) -->
+<button class="flex flex-col items-center justify-center bg-primary text-on-primary rounded-xl p-2 border-3 border-on-surface shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md">Rooms</span>
+</button>
+<!-- Tab: Shop -->
+<button class="flex flex-col items-center justify-center text-on-secondary-container p-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[24px]">shopping_bag</span>
+<span class="font-label-md text-label-md">Shop</span>
+</button>
+<!-- Tab: Social -->
+<button class="flex flex-col items-center justify-center text-on-secondary-container p-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[24px]">group</span>
+<span class="font-label-md text-label-md">Social</span>
+</button>
+<!-- Tab: Menu -->
+<button class="flex flex-col items-center justify-center text-on-secondary-container p-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[24px]">menu</span>
+<span class="font-label-md text-label-md">Menu</span>
+</button>
+</nav>
+<script>
+        // Micro-interaction: Scale rooms slightly when tapped
+        document.querySelectorAll('.cursor-pointer').forEach(room => {
+            room.addEventListener('mousedown', () => {
+                room.querySelector('.neo-brutalist-card, .room-glow').style.transform = 'scale(0.98)';
+            });
+            room.addEventListener('mouseup', () => {
+                room.querySelector('.neo-brutalist-card, .room-glow').style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body></html>

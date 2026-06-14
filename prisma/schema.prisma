@@ -1,0 +1,56 @@
+// QC Pet — Prisma 7.8.0
+// Prisma là SOURCE OF TRUTH cho data model + migrations + type generation.
+// ⚠️ KHÔNG dùng Prisma client trong app React Native hay Edge Functions (Deno).
+//    Prisma chỉ dùng dev-time. Data access runtime: @supabase/supabase-js (PostgREST).
+// RLS: Phase A — users.id = auth.users.id để policy đơn giản (auth.uid() = user_id),
+//    nhất quán với supabase/migrations/002_quiz_sessions.sql.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// App user. id = Supabase auth.users.id (set khi tạo, không auto-gen).
+model User {
+  id        String   @id @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  pets      Pet[]
+  gameState GameState?
+
+  @@map("users")
+}
+
+/// Thú cưng Bugsy. Cột tối thiểu — feature stories thêm sau.
+model Pet {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  name      String
+  version   String   @default("v0.1")
+  qpTotal   Int      @default(0) @map("qp_total")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("pets")
+}
+
+/// Trạng thái game per-user (1-1). Cột tối thiểu — feature stories thêm sau.
+model GameState {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String    @unique @map("user_id") @db.Uuid
+  bcBalance    Int       @default(0) @map("bc_balance")
+  lastSyncedAt DateTime? @map("last_synced_at") @db.Timestamptz(6)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("game_state")
+}
