@@ -1,9 +1,14 @@
 // QC Pet — Prisma 7.8.0
-// Prisma là SOURCE OF TRUTH cho data model + migrations + type generation.
+// Prisma là SOURCE OF TRUTH cho data model + migrations + type generation của
+// TẤT CẢ bảng app trong schema `public` (users, pets, game_state, quiz_sessions).
 // ⚠️ KHÔNG dùng Prisma client trong app React Native hay Edge Functions (Deno).
 //    Prisma chỉ dùng dev-time. Data access runtime: @supabase/supabase-js (PostgREST).
-// RLS: Phase A — users.id = auth.users.id để policy đơn giản (auth.uid() = user_id),
-//    nhất quán với supabase/migrations/002_quiz_sessions.sql.
+//
+// RLS Phase A: public.users.id = auth.users.id (theo quy ước, KHÔNG đặt FK cross-schema
+//   tới auth.users để Prisma không phải kéo/migrate schema `auth` của Supabase → tránh
+//   drift). Mọi bảng tham chiếu public.users(id); policy = (auth.uid() = user_id).
+//   Liên kết auth.users → public.users (tạo row, cascade xoá) thuộc app logic / trigger
+//   ở story sau, KHÔNG phải FK Prisma.
 
 generator client {
   provider = "prisma-client"
@@ -18,10 +23,11 @@ datasource db {
 model User {
   id        String   @id @db.Uuid
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  pets      Pet[]
-  gameState GameState?
+  pets         Pet[]
+  gameState    GameState?
+  quizSessions QuizSession[]
 
   @@map("users")
 }
@@ -34,7 +40,7 @@ model Pet {
   version   String   @default("v0.1")
   qpTotal   Int      @default(0) @map("qp_total")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -48,9 +54,36 @@ model GameState {
   bcBalance    Int       @default(0) @map("bc_balance")
   lastSyncedAt DateTime? @map("last_synced_at") @db.Timestamptz(6)
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("game_state")
+}
+
+enum QuizSessionStatus {
+  in_progress
+  completed
+  abandoned
+
+  @@map("quiz_session_status")
+}
+
+/// Phiên làm quiz. Tiếp quản từ supabase/migrations/002_quiz_sessions.sql
+/// (user_id đổi tham chiếu auth.users → public.users để hết cross-schema FK).
+model QuizSession {
+  id                   String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId               String            @map("user_id") @db.Uuid
+  lessonId             String            @map("lesson_id")
+  currentQuestionIndex Int               @default(0) @map("current_question_index")
+  answers              Json              @default("{}")
+  status               QuizSessionStatus @default(in_progress)
+  bcEarned             Int               @default(0) @map("bc_earned")
+  qpEarned             Int               @default(0) @map("qp_earned")
+  startedAt            DateTime          @default(now()) @map("started_at") @db.Timestamptz(6)
+  completedAt          DateTime?         @map("completed_at") @db.Timestamptz(6)
+
+  user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("quiz_sessions")
 }

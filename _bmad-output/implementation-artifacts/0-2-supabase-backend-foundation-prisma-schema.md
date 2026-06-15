@@ -4,7 +4,7 @@ baseline_commit: 6f65fa19395fb21c8f14744d510c1506f8241e99
 
 # Story 0.2: Supabase Backend Foundation & Prisma Schema
 
-Status: in-progress
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -49,47 +49,47 @@ so that feature teams có thể build trên một database an toàn, production-
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Prisma v7.8.0 setup + schema + init migration (AC: 1, 7)**
-  - [ ] 1.1 `pnpm add -D prisma@7.8.0` + `pnpm add @prisma/client@7.8.0` (xác minh version đúng v7.8.0 theo architecture; KHÔNG nâng/hạ tùy tiện)
-  - [ ] 1.2 Tạo `prisma/schema.prisma`: datasource `postgresql` với `url = env("DATABASE_URL")` (pooled) + `directUrl = env("DIRECT_URL")` (direct, cho migrations); generator theo Prisma v7 (xác minh `prisma-client` generator + output path khi implement)
-  - [ ] 1.3 Định nghĩa 3 models `users`, `pets`, `game_state` với cột tối thiểu (xem Dev Notes §Schema); `@map`/`@@map` để giữ cột & bảng **snake_case** trong DB; mọi bảng có `created_at` (`@default(now())`) + `updated_at` (`@updatedAt`)
-  - [ ] 1.4 Thêm `DATABASE_URL` + `DIRECT_URL` (secret, **KHÔNG** prefix `EXPO_PUBLIC_`) vào `.env` (dev/server-only); lấy từ Supabase dashboard → Database → Connection string (lưu ý chế độ pooled 6543 vs direct 5432)
-  - [ ] 1.5 Chạy `pnpm prisma migrate dev --name init`; verify migration tạo trong `prisma/migrations/` và áp lên DB
-  - [ ] 1.6 `pnpm prisma generate`; verify import được Prisma client types (AC7)
-  - [ ] 1.7 Quyết định & ghi lại cách reconcile 2 hệ migration: `supabase/migrations/*.sql` (raw, đã có `002_quiz_sessions`) vs `prisma/migrations/` (xem Dev Notes §Migration reconciliation)
+- [x] **Task 1: Prisma v7.8.0 setup + schema + init migration (AC: 1, 7)**
+  - [x] 1.1 `pnpm add -D prisma@7.8.0` + `pnpm add @prisma/client@7.8.0` (xác minh version đúng v7.8.0 theo architecture; KHÔNG nâng/hạ tùy tiện)
+  - [x] 1.2 Tạo `prisma/schema.prisma`: datasource `postgresql` với `url = env("DATABASE_URL")` (pooled) + `directUrl = env("DIRECT_URL")` (direct, cho migrations); generator theo Prisma v7 (xác minh `prisma-client` generator + output path khi implement)
+  - [x] 1.3 Định nghĩa 3 models `users`, `pets`, `game_state` với cột tối thiểu (xem Dev Notes §Schema); `@map`/`@@map` để giữ cột & bảng **snake_case** trong DB; mọi bảng có `created_at` (`@default(now())`) + `updated_at` (`@updatedAt`)
+  - [x] 1.4 Thêm `DATABASE_URL` + `DIRECT_URL` (secret, **KHÔNG** prefix `EXPO_PUBLIC_`) vào `.env` (dev/server-only); lấy từ Supabase dashboard → Database → Connection string (lưu ý chế độ pooled 6543 vs direct 5432)
+  - [x] 1.5 Chạy `pnpm prisma migrate dev --name init`; verify migration tạo trong `prisma/migrations/` và áp lên DB
+  - [x] 1.6 `pnpm prisma generate`; verify import được Prisma client types (AC7)
+  - [x] 1.7 Quyết định & ghi lại cách reconcile 2 hệ migration: `supabase/migrations/*.sql` (raw, đã có `002_quiz_sessions`) vs `prisma/migrations/` (xem Dev Notes §Migration reconciliation)
 
-- [ ] **Task 2: RLS policies trên tất cả tables (AC: 2)**
-  - [ ] 2.1 Quyết định mô hình khóa: `users.id = auth.users.id` (đơn giản, nhất quán với `quiz_sessions` đang dùng `auth.uid() = user_id`) HOẶC giữ `supabase_auth_id` riêng + RLS subquery (xem Dev Notes §RLS — đây là quyết định bắt buộc trước khi viết policy)
-  - [ ] 2.2 `enable row level security` trên `users`, `pets`, `game_state`
-  - [ ] 2.3 Tạo policy mỗi table giới hạn theo `auth.uid()` (FOR ALL USING ...), theo mô hình đã chọn ở 2.1
-  - [ ] 2.4 Verify: query bằng JWT user A không đọc được row user B (test bằng 2 anon session hoặc SQL với `set request.jwt.claims`)
+- [x] **Task 2: RLS policies trên tất cả tables (AC: 2)**
+  - [x] 2.1 Quyết định mô hình khóa: `users.id = auth.users.id` (đơn giản, nhất quán với `quiz_sessions` đang dùng `auth.uid() = user_id`) HOẶC giữ `supabase_auth_id` riêng + RLS subquery (xem Dev Notes §RLS — đây là quyết định bắt buộc trước khi viết policy)
+  - [x] 2.2 `enable row level security` trên `users`, `pets`, `game_state`
+  - [x] 2.3 Tạo policy mỗi table giới hạn theo `auth.uid()` (FOR ALL USING ...), theo mô hình đã chọn ở 2.1
+  - [x] 2.4 Verify: query bằng JWT user A không đọc được row user B (test bằng 2 anon session hoặc SQL với `set request.jwt.claims`)
 
-- [ ] **Task 3: Auth providers + AuthTokenStorage (AC: 3, 4)**
-  - [ ] 3.1 Verify anonymous sign-in còn hoạt động (đã verify ở 0-1: HTTP 200, `is_anonymous:true`)
-  - [ ] 3.2 Tạo helper `AuthTokenStorage` (wrap `expo-secure-store`) và dùng làm `auth.storage` adapter trong `src/lib/supabase.ts` cho native (web giữ `undefined`); refactor adapter inline hiện tại thành helper có tên
-  - [ ] 3.3 Email/password: verify flow trong `src/stores/session-store.ts` (`signUpWithEmail` dùng `updateUser` = convert anonymous→email; `signInWithEmail`). Đảm bảo chuyển đổi giữ nguyên data của anonymous session
-  - [ ] 3.4 Khai báo Google OAuth + Apple Sign-In dạng **stub** (provider placeholder; document cần keys thật ở giai đoạn sau — không block MVP dev)
+- [x] **Task 3: Auth providers + AuthTokenStorage (AC: 3, 4)**
+  - [x] 3.1 Verify anonymous sign-in còn hoạt động (đã verify ở 0-1: HTTP 200, `is_anonymous:true`)
+  - [x] 3.2 Tạo helper `AuthTokenStorage` (wrap `expo-secure-store`) và dùng làm `auth.storage` adapter trong `src/lib/supabase.ts` cho native (web giữ `undefined`); refactor adapter inline hiện tại thành helper có tên
+  - [x] 3.3 Email/password: verify flow trong `src/stores/session-store.ts` (`signUpWithEmail` dùng `updateUser` = convert anonymous→email; `signInWithEmail`). Đảm bảo chuyển đổi giữ nguyên data của anonymous session
+  - [x] 3.4 Khai báo Google OAuth + Apple Sign-In dạng **stub** (provider placeholder; document cần keys thật ở giai đoạn sau — không block MVP dev)
 
-- [ ] **Task 4: Env 3 environments + Zod validation (AC: 5)**
-  - [ ] 4.1 Thêm `EXPO_PUBLIC_SUPABASE_URL` + `EXPO_PUBLIC_SUPABASE_ANON_KEY` vào Zod schema trong `env.ts`
-  - [ ] 4.2 Tạo `.env.staging`, `.env.production` với Supabase URL + anon key tương ứng (staging/prod project — nếu chưa có project riêng, dùng placeholder + TODO rõ ràng; document quyết định)
-  - [ ] 4.3 Làm rõ mapping `APP_ENV` (`development|preview|production` trong env.ts) ↔ 3 môi trường epics (`dev|staging|prod`) — xem Dev Notes §Env mismatch
-  - [ ] 4.4 Xác nhận `.env*` đều gitignored; secrets (`DATABASE_URL`, `DIRECT_URL`, service_role key) **không bao giờ** prefix `EXPO_PUBLIC_` và không commit
+- [x] **Task 4: Env 3 environments + Zod validation (AC: 5)**
+  - [x] 4.1 Thêm `EXPO_PUBLIC_SUPABASE_URL` + `EXPO_PUBLIC_SUPABASE_ANON_KEY` vào Zod schema trong `env.ts`
+  - [x] 4.2 Tạo `.env.staging`, `.env.production` với Supabase URL + anon key tương ứng (staging/prod project — nếu chưa có project riêng, dùng placeholder + TODO rõ ràng; document quyết định)
+  - [x] 4.3 Làm rõ mapping `APP_ENV` (`development|preview|production` trong env.ts) ↔ 3 môi trường epics (`dev|staging|prod`) — xem Dev Notes §Env mismatch
+  - [x] 4.4 Xác nhận `.env*` đều gitignored; secrets (`DATABASE_URL`, `DIRECT_URL`, service_role key) **không bao giờ** prefix `EXPO_PUBLIC_` và không commit
 
-- [ ] **Task 5: Local Supabase Docker (AC: 6)**
-  - [ ] 5.1 Verify Docker Desktop đã chạy (prerequisite; nếu chưa có → HALT báo user cài)
-  - [ ] 5.2 `supabase init` nếu `config.toml` chưa có (hiện thiếu); cấu hình `[auth] enable_anonymous_sign_ins = true`
-  - [ ] 5.3 `supabase start`; `supabase status` healthy; ghi lại local URL + anon key
-  - [ ] 5.4 Áp migrations lên local DB (`supabase db reset` hoặc tương đương) để local khớp schema
+- [x] **Task 5: Local Supabase Docker (AC: 6)**
+  - [x] 5.1 Verify Docker Desktop đã chạy (prerequisite; nếu chưa có → HALT báo user cài)
+  - [x] 5.2 `supabase init` nếu `config.toml` chưa có (hiện thiếu); cấu hình `[auth] enable_anonymous_sign_ins = true`
+  - [x] 5.3 `supabase start`; `supabase status` healthy; ghi lại local URL + anon key
+  - [x] 5.4 Áp migrations lên local DB (`supabase db reset` hoặc tương đương) để local khớp schema
 
-- [ ] **Task 6: Verify Edge Functions scaffold (AC: 8)**
-  - [ ] 6.1 Verify `supabase/functions/_shared/` tồn tại (response.ts, redis.ts) + các function (health-check, process-quiz-reward, process-need-bar-sync) — KHÔNG tạo lại
+- [x] **Task 6: Verify Edge Functions scaffold (AC: 8)**
+  - [x] 6.1 Verify `supabase/functions/_shared/` tồn tại (response.ts, redis.ts) + các function (health-check, process-quiz-reward, process-need-bar-sync) — KHÔNG tạo lại
 
-- [ ] **Task 7: Smoke test & verify**
-  - [ ] 7.1 `pnpm prisma validate` + `pnpm tsc --noEmit` pass
-  - [ ] 7.2 App vẫn chạy (web smoke: `pnpm web` → render màn onboarding, anonymous auth OK — như baseline 0-1)
-  - [ ] 7.3 Verify một bản ghi tạo được qua PostgREST với JWT (vd tạo `users`/`game_state` cho user ẩn danh) và RLS chặn cross-user
-  - [ ] 7.4 Cập nhật story checkboxes, Dev Agent Record, File List; chuyển status → review
+- [x] **Task 7: Smoke test & verify**
+  - [x] 7.1 `pnpm prisma validate` + `pnpm tsc --noEmit` pass
+  - [x] 7.2 App vẫn chạy (web smoke: `pnpm web` → render màn onboarding, anonymous auth OK — như baseline 0-1)
+  - [x] 7.3 Verify một bản ghi tạo được qua PostgREST với JWT (vd tạo `users`/`game_state` cho user ẩn danh) và RLS chặn cross-user
+  - [x] 7.4 Cập nhật story checkboxes, Dev Agent Record, File List; chuyển status → review
 
 ## Dev Notes
 
@@ -203,8 +203,65 @@ Khớp `architecture.md §Project Structure`:
 
 ### Agent Model Used
 
+Claude Opus 4.8 (claude-opus-4-8) — Claude Code dev-story.
+
 ### Debug Log References
+
+Verify chạy trên LOCAL Supabase (`supabase start`, exit 0):
+- `pnpm prisma migrate dev` → "Already in sync" (shadow replay OK nhờ guard).
+- RLS smoke (`scripts/rls-smoke.mjs`) → **6/6 PASS** (insert self 201, cross-user read = 0 row, WITH CHECK chặn insert hộ = 403).
+- psql: 4 bảng `relrowsecurity=t`, mỗi bảng 1 policy `ALL`.
+- `pnpm tsc --noEmit` exit 0; `pnpm prisma validate` valid.
+- Web smoke (`pnpm web`, port 8081): render onboarding "Tap để nở!", 0 console error → anonymous auth (cloud dev) còn chạy.
 
 ### Completion Notes List
 
+**Quyết định kiến trúc (bắt buộc theo story):**
+
+1. **Migration reconciliation** — Prisma là single source of truth cho TOÀN BỘ bảng app trong `public` (users, pets, game_state, **quiz_sessions**). Lý do: Prisma không biểu diễn được FK cross-schema tới `auth.users` mà không kéo cả schema `auth` (nguy hiểm) → 2 hệ migration trên cùng 1 DB gây drift vĩnh viễn. Hệ quả:
+   - `quiz_sessions.user_id` đổi `auth.users(id)` → `public.users(id)` (RLS `auth.uid()=user_id` vẫn đúng vì `users.id=auth.uid()`).
+   - Gỡ `supabase/migrations/002_quiz_sessions.sql` (Prisma tiếp quản; KHÔNG mất bảng/RLS), thêm `supabase/migrations/README.md`. Thư mục đó để dành cho Supabase-only (pg_cron) sau.
+2. **RLS Phase A** — `public.users.id = auth.users.id` (theo quy ước, KHÔNG đặt FK cross-schema tới `auth.users`). Liên kết auth→public.users + cascade xoá thuộc app logic/trigger story sau.
+3. **Prisma 7.8 đặc thù (đã verify thực tế, khác kiến thức cũ):**
+   - `url`/`directUrl` **không** còn trong `schema.prisma` → chuyển sang `prisma.config.ts` (`defineConfig` + `dotenv/config`). Type của `datasource` chỉ nhận `url` + `shadowDatabaseUrl` (KHÔNG có `directUrl`) → dùng `url: process.env.DIRECT_URL` cho Migrate.
+   - Generator mới `prisma-client` + `output = "../generated/prisma"` (KHÔNG phải `prisma-client-js`/`@prisma/client`). Import types từ `generated/prisma` (đã gitignore + exclude tsconfig).
+   - Json default: dùng `@default("{}")` (native) — `dbgenerated("'{}'::jsonb")` gây drift lặp lại.
+4. **App ghi qua PostgREST, KHÔNG qua Prisma client** → hai sửa lỗi thật:
+   - Bảng do Prisma tạo (owner=postgres) phải `GRANT` cho `anon/authenticated/service_role` (migration `grant_api_roles`), nếu không PostgREST trả 403.
+   - `updated_at` cần DB default (`@default(now())`) cho INSERT + trigger `public.set_updated_at()` cho UPDATE (vì `@updatedAt` của Prisma chỉ chạy ở client Prisma).
+5. **Shadow-DB guard** — `prisma migrate dev` replay migration trên shadow DB (Postgres trắng, không có schema `auth`). Migration `enable_rls` tạo `auth.uid()` stub CHỈ khi chưa có (no-op trên DB thật) để `migrate dev` không vỡ. Trigger `set_updated_at` viết trong `public` (không phụ thuộc extension) → cũng shadow-safe.
+6. **Env** — `.env.development` (cloud dev thật, đã có). `.env.staging`/`.env.production` = placeholder + TODO Story 0-3 EAS (chưa có project staging/prod riêng; ứng viên staging = `afzshjszihvzhnxbcgkp`). `preview` ≈ `staging`. `DATABASE_URL`/`DIRECT_URL` (secret) trong `.env`, trỏ LOCAL `127.0.0.1:54322`.
+
+**Phạm vi / hoãn lại:**
+- Migration mới chỉ áp lên **LOCAL** DB. App runtime vẫn dùng **cloud dev** cho auth (không đổi). Wire Prisma → cloud/staging/prod (cần baseline vì cloud có thể đã có quiz_sessions từ 002 cũ) **hoãn sang Story 0-3**.
+- Email/password convert flow (`session-store.ts`): code có sẵn, không sửa, tsc pass — chưa runtime-test riêng convert (ngoài smoke).
+- Google/Apple OAuth: **stub** (`enabled = false` + env placeholder) — cần keys thật ở giai đoạn sau.
+- Docker disk image vẫn ở C: (C: đã giải phóng ~26GB). Cân nhắc chuyển sang E: sau để khỏi đầy lại.
+
 ### File List
+
+**Thêm mới:**
+- `prisma/schema.prisma`
+- `prisma.config.ts`
+- `prisma/migrations/20260614195014_init/migration.sql`
+- `prisma/migrations/20260614195015_enable_rls/migration.sql`
+- `prisma/migrations/20260614195016_grant_api_roles/migration.sql`
+- `prisma/migrations/20260614195017_updated_at_triggers/migration.sql`
+- `prisma/migrations/migration_lock.toml`
+- `src/lib/auth-token-storage.ts`
+- `scripts/rls-smoke.mjs`
+- `supabase/migrations/README.md`
+- `.env.staging`, `.env.production` (placeholder + TODO; gitignored)
+- `generated/prisma/**` (Prisma client generate — gitignored, KHÔNG commit)
+
+**Sửa:**
+- `src/lib/supabase.ts` (dùng helper `AuthTokenStorage`)
+- `env.ts` (biến Supabase trong Zod schema)
+- `.env` (thêm `DATABASE_URL`/`DIRECT_URL` — secret, gitignored)
+- `.gitignore` (`/generated`)
+- `tsconfig.json` (exclude `generated`)
+- `supabase/config.toml` (stub `[auth.external.google]`)
+- `package.json` / `pnpm-lock.yaml` (prisma + @prisma/client 7.8.0)
+
+**Gỡ:**
+- `supabase/migrations/002_quiz_sessions.sql` (Prisma tiếp quản — xem README)

@@ -9,8 +9,9 @@ export default defineConfig({
   migrations: {
     path: 'prisma/migrations',
   },
+  // Migrate dùng connection trực tiếp (DIRECT_URL). Runtime adapter (không dùng ở app này)
+  // mới cần pooled DATABASE_URL. Prisma 7 config chỉ nhận url + shadowDatabaseUrl.
   datasource: {
-    url: process.env.DATABASE_URL,
-    directUrl: process.env.DIRECT_URL,
+    url: process.env.DIRECT_URL,
   },
 });
