@@ -40,6 +40,12 @@ export default antfu(
       'cli/',
       'expo-env.d.ts',
       'migration/*',
+      // Vendored framework + generated + planning docs — không thuộc source ta sở hữu,
+      // không đưa vào quality gate (giống .claude/skills). Story 0-x/2-x tooling.
+      '_bmad/',
+      '_bmad-output/',
+      'bmad/',
+      'uniwind-types.d.ts',
     ],
   },
 
