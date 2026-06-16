@@ -1,3 +1,5 @@
+/* eslint-disable max-lines-per-function */
+import type { AnswerResult, Question } from '@/features/quiz/question-types';
 import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -8,15 +10,18 @@ import {
   Text,
   View,
 } from 'react-native';
+import { Confetti } from '@/components/confetti';
+import { QuestionRenderer } from '@/features/quiz/components/question-renderer';
+import { SAMPLE_QUESTIONS } from '@/features/quiz/sample-questions';
+import {
+  completeQuizSession,
+  createQuizSession,
+  getIncompleteSession,
+  saveAnswer,
+} from '@/features/work-room/quiz-api';
+import { updateGameState } from '@/lib/supabase-api';
 import { usePetStore } from '@/stores/pet-store';
 import { useSessionStore } from '@/stores/session-store';
-import { updateGameState } from '@/lib/supabase-api';
-import {
-  createQuizSession,
-  saveAnswer,
-  completeQuizSession,
-  getIncompleteSession,
-} from '@/features/work-room/quiz-api';
 
 const LESSON_ID = 'lesson-1';
 
@@ -27,45 +32,11 @@ const LESSON = {
   sourceTag: 'ISTQB-1.3',
 };
 
-const QUESTIONS = [
-  {
-    id: 1,
-    text: '🌅 Warm-up: Bài học nào bạn đã học 3 ngày trước?',
-    options: ['"Fixed" của dev = bug đã closed', '"Fixed" của dev ≠ bug đã closed'],
-    correct: 1,
-    isWarmup: true,
-  },
-  {
-    id: 2,
-    text: 'Bug làm crash app khi checkout. Mức Severity phù hợp là gì?',
-    options: ['Low', 'Medium', 'High', 'Critical'],
-    correct: 3,
-  },
-  {
-    id: 3,
-    text: 'Sai font chữ trên trang "About Us" — trong sprint release ngày mai. Priority là?',
-    options: ['Low', 'Medium', 'High'],
-    correct: 0,
-  },
-  {
-    id: 4,
-    text: 'Bug đổi màu nút Save → xanh lá (đúng ra là xanh dương), chỉ ảnh hưởng trang admin. Severity?',
-    options: ['Critical', 'High', 'Low'],
-    correct: 2,
-  },
-  {
-    id: 5,
-    text: '⭐ Thử thách: Bug payment gateway fail 100% trên iOS 17.4, chỉ 5% user dùng iOS 17.4. Severity vs Priority?',
-    options: [
-      'Severity HIGH, Priority HIGH',
-      'Severity CRITICAL, Priority HIGH',
-      'Severity LOW, Priority LOW',
-      'Severity CRITICAL, Priority MEDIUM',
-    ],
-    correct: 1,
-  },
-];
+// Story 5.4: quiz dùng Question Format Engine — 5 format (1 câu/format) từ sample data.
+// (Content pipeline Story 1.1/Epic 1 sẽ cấp `format`+câu hỏi thật sau; Q1 = warm-up.)
+const QUESTIONS: Question[] = SAMPLE_QUESTIONS;
 
+// answers[qIndex] = 1 nếu đúng, 0 nếu sai (Story 5.4 — chuẩn hoá cho non-MCQ, không migration).
 type AnswerMap = Record<number, number>;
 
 type ResumeInfo = {
@@ -76,18 +47,17 @@ type ResumeInfo = {
 
 export default function CoreMissionScreen() {
   const router = useRouter();
-  const petName = usePetStore((s) => s.name);
-  const addBC = usePetStore((s) => s.addBC);
-  const addQP = usePetStore((s) => s.addQP);
-  const setNeedBars = usePetStore((s) => s.setNeedBars);
-  const userId = useSessionStore((s) => s.userId);
+  const petName = usePetStore(s => s.name);
+  const addBC = usePetStore(s => s.addBC);
+  const addQP = usePetStore(s => s.addQP);
+  const setNeedBars = usePetStore(s => s.setNeedBars);
+  const userId = useSessionStore(s => s.userId);
 
   const [phase, setPhase] = useState<'lesson' | 'quiz' | 'summary'>('lesson');
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<AnswerMap>({});
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [lastCorrect, setLastCorrect] = useState(false);
   const [showStoryRule, setShowStoryRule] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const storyPanelAnim = useRef(new Animated.Value(400)).current;
 
   // Session state
@@ -100,30 +70,32 @@ export default function CoreMissionScreen() {
 
   const question = QUESTIONS[currentQ];
   const totalQ = QUESTIONS.length;
-  const correctCount = Object.entries(answers).filter(
-    ([i, a]) => QUESTIONS[Number(i)].correct === a
-  ).length;
+  const isWarmup = currentQ === 0;
 
   // On mount: check for incomplete session or create new one
   useEffect(() => {
-    if (!userId) return;
+    if (!userId)
+      return;
     (async () => {
       try {
         const existing = await getIncompleteSession(userId, LESSON_ID);
         if (existing) {
           setResumeInfo(existing);
-        } else {
+        }
+        else {
           const { sessionId: id } = await createQuizSession(userId, LESSON_ID);
           setSessionId(id);
         }
-      } catch {
+      }
+      catch {
         // Network error — continue offline without a session
       }
     })();
   }, [userId]);
 
   const handleResume = () => {
-    if (!resumeInfo) return;
+    if (!resumeInfo)
+      return;
     setSessionId(resumeInfo.sessionId);
     setCurrentQ(Math.min(resumeInfo.currentIndex, QUESTIONS.length - 1));
     const restored: AnswerMap = {};
@@ -145,27 +117,31 @@ export default function CoreMissionScreen() {
       try {
         const { sessionId: id } = await createQuizSession(userId, LESSON_ID);
         setSessionId(id);
-      } catch {
+      }
+      catch {
         setSessionId(null);
       }
     }
   };
 
-  const handleAnswer = (optionIndex: number) => {
-    if (!question || answers[currentQ] !== undefined) return;
-    const isCorrect = question.correct === optionIndex;
-    const newAnswers = { ...answersRef.current, [currentQ]: optionIndex };
+  const handleAnswered = (result: AnswerResult) => {
+    if (answers[currentQ] !== undefined)
+      return;
+    const correctVal = result.isCorrect ? 1 : 0;
+    const newAnswers = { ...answersRef.current, [currentQ]: correctVal };
     answersRef.current = newAnswers;
     setAnswers(newAnswers);
-    setLastCorrect(isCorrect);
-    setShowFeedback(true);
 
-    // Fire-and-forget: persist answer to Supabase
+    // Fire-and-forget: persist isCorrect (0/1) to Supabase
     if (sessionId) {
-      saveAnswer(sessionId, currentQ, optionIndex).catch(() => {});
+      saveAnswer(sessionId, currentQ, correctVal).catch(() => {});
     }
 
-    if (!isCorrect && !question.isWarmup) {
+    if (result.isCorrect) {
+      setShowConfetti(true); // Confetti CHỈ khi đúng (UX-DR19)
+      setTimeout(nextQuestion, 1200);
+    }
+    else if (!isWarmup) {
       setTimeout(() => {
         setShowStoryRule(true);
         Animated.spring(storyPanelAnim, {
@@ -175,18 +151,20 @@ export default function CoreMissionScreen() {
           useNativeDriver: true,
         }).start();
       }, 600);
-    } else {
-      setTimeout(nextQuestion, 1200);
+    }
+    else {
+      setTimeout(nextQuestion, 1200); // warm-up sai → không Story-Rule, đi tiếp
     }
   };
 
   const nextQuestion = async () => {
-    setShowFeedback(false);
+    setShowConfetti(false);
     setShowStoryRule(false);
     storyPanelAnim.setValue(400);
     if (currentQ < totalQ - 1) {
-      setCurrentQ((q) => q + 1);
-    } else {
+      setCurrentQ(q => q + 1);
+    }
+    else {
       await finishMission();
     }
   };
@@ -194,9 +172,7 @@ export default function CoreMissionScreen() {
   const finishMission = async () => {
     // Use ref to get up-to-date answers regardless of stale closures
     const finalAnswers = answersRef.current;
-    const finalCorrectCount = Object.entries(finalAnswers).filter(
-      ([i, a]) => QUESTIONS[Number(i)].correct === a
-    ).length;
+    const finalCorrectCount = Object.values(finalAnswers).filter(v => v === 1).length;
     const localBC = 10;
     const localQP = Math.max(6, Math.round((finalCorrectCount / totalQ) * 20));
 
@@ -205,11 +181,13 @@ export default function CoreMissionScreen() {
         const result = await completeQuizSession(sessionId, userId, finalCorrectCount, totalQ);
         addBC(result.bcEarned);
         addQP(result.qpEarned);
-      } else {
+      }
+      else {
         addBC(localBC);
         addQP(localQP);
       }
-    } catch {
+    }
+    catch {
       // completeQuizSession failed — show summary with local calc, retry handled server-side
       addBC(localBC);
       addQP(localQP);
@@ -236,7 +214,10 @@ export default function CoreMissionScreen() {
 
         <View style={styles.lessonHeader}>
           <View style={styles.categoryBadge}>
-            <Text style={styles.categoryText}>🔍 {LESSON.category}</Text>
+            <Text style={styles.categoryText}>
+              🔍
+              {LESSON.category}
+            </Text>
           </View>
           <View style={styles.sourceBadge}>
             <Text style={styles.sourceText}>{LESSON.sourceTag}</Text>
@@ -251,7 +232,11 @@ export default function CoreMissionScreen() {
           <View style={styles.resumeBanner}>
             <Text style={styles.resumeTitle}>👋 Chào mừng trở lại!</Text>
             <Text style={styles.resumeText}>
-              Bạn đang ở câu {resumeInfo.currentIndex + 1}/{totalQ}
+              Bạn đang ở câu
+              {' '}
+              {resumeInfo.currentIndex + 1}
+              /
+              {totalQ}
             </Text>
             <View style={styles.resumeActions}>
               <Pressable style={styles.resumeBtn} onPress={handleResume}>
@@ -267,7 +252,10 @@ export default function CoreMissionScreen() {
         <View style={styles.bugsyHint}>
           <Text style={styles.bugsyHintEmoji}>🐣</Text>
           <Text style={styles.bugsyHintText}>
-            Đọc kỹ rồi nhé {petName}! Quiz sắp bắt đầu...
+            Đọc kỹ rồi nhé
+            {' '}
+            {petName}
+            ! Quiz sắp bắt đầu...
           </Text>
         </View>
 
@@ -279,15 +267,23 @@ export default function CoreMissionScreen() {
   }
 
   if (phase === 'summary') {
-    const title =
-      summaryScore >= 4 ? '🏆 Bug Whisperer!' :
-      summaryScore >= 3 ? '🔍 Defect Detective!' :
-      summaryScore >= 2 ? '📋 QC Apprentice' : '🐛 Bug Magnet';
+    const title
+      = summaryScore >= 4
+        ? '🏆 Bug Whisperer!'
+        : summaryScore >= 3
+          ? '🔍 Defect Detective!'
+          : summaryScore >= 2 ? '📋 QC Apprentice' : '🐛 Bug Magnet';
 
     return (
       <ScrollView style={styles.container} contentContainerStyle={styles.lessonScroll}>
         <Text style={styles.summaryTitle}>{title}</Text>
-        <Text style={styles.summaryScore}>{summaryScore}/{totalQ} đúng</Text>
+        <Text style={styles.summaryScore}>
+          {summaryScore}
+          /
+          {totalQ}
+          {' '}
+          đúng
+        </Text>
 
         <View style={styles.cheatSheet}>
           <Text style={styles.cheatSheetTitle}>🐣 Bugsy's Cheat Sheet</Text>
@@ -315,7 +311,12 @@ export default function CoreMissionScreen() {
             <Text style={styles.rewardText}>+10 🪲 BC</Text>
           </View>
           <View style={[styles.rewardBadge, styles.qpReward]}>
-            <Text style={styles.rewardText}>+{Math.max(6, Math.round((summaryScore / totalQ) * 20))} ⭐ QP</Text>
+            <Text style={styles.rewardText}>
+              +
+              {Math.max(6, Math.round((summaryScore / totalQ) * 20))}
+              {' '}
+              ⭐ QP
+            </Text>
           </View>
         </View>
 
@@ -344,37 +345,23 @@ export default function CoreMissionScreen() {
 
       <ScrollView contentContainerStyle={styles.quizScroll}>
         {/* Warm-up indicator */}
-        {question.isWarmup && (
+        {isWarmup && (
           <View style={styles.warmupBanner}>
             <Text style={styles.warmupText}>⬇️ Câu khởi động (không tính streak)</Text>
           </View>
         )}
 
-        {/* Question card */}
-        <View style={[styles.questionCard, question.isWarmup && styles.questionCardWarmup]}>
-          <Text style={styles.questionCounter}>Câu {currentQ + 1}/{totalQ}</Text>
-          <Text style={styles.questionText}>{question.text}</Text>
-        </View>
+        <Text style={styles.questionCounter}>{`Câu ${currentQ + 1}/${totalQ}`}</Text>
 
-        {/* Options */}
-        <View style={styles.options}>
-          {question.options.map((opt, i) => {
-            const isAnswered = answers[currentQ] !== undefined;
-            const isSelected = answers[currentQ] === i;
-            const isCorrect = question.correct === i;
-            let btnStyle = styles.optionBtn;
-            if (isAnswered && isSelected && isCorrect) btnStyle = { ...btnStyle, ...styles.optionCorrect };
-            else if (isAnswered && isSelected && !isCorrect) btnStyle = { ...btnStyle, ...styles.optionWrong };
-            else if (isAnswered && isCorrect) btnStyle = { ...btnStyle, ...styles.optionCorrectHint };
-
-            return (
-              <Pressable key={i} style={btnStyle} onPress={() => handleAnswer(i)}>
-                <Text style={styles.optionText}>{opt}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
+        {/* Question Format Engine (Story 5.4) — render đúng UI theo format */}
+        <QuestionRenderer
+          question={question}
+          disabled={answers[currentQ] !== undefined}
+          onAnswered={handleAnswered}
+        />
       </ScrollView>
+
+      {showConfetti && <Confetti onDone={() => setShowConfetti(false)} />}
 
       {/* Story Rule Panel */}
       {showStoryRule && (
@@ -520,7 +507,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   questionCardWarmup: { borderColor: '#90caf9' },
-  questionCounter: { fontSize: 12, fontWeight: '700', color: '#888' },
+  questionCounter: { fontSize: 12, fontWeight: '700', color: '#8aa6d8', textAlign: 'center' },
   questionText: { fontSize: 17, fontWeight: '800', color: '#001a41', lineHeight: 24 },
   options: { gap: 12 },
   optionBtn: {
