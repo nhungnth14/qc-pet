@@ -5,7 +5,14 @@
       "name": "qc-pet-web",
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["web"],
-      "port": 8081
+      "port": 8081,
+      "autoPort": false
+    },
+    {
+      "name": "ux-demo",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "_bmad-output/planning-artifacts/ux-designs/ux-qc-pet-2026-06-12", "-p", "8082", "--no-clipboard"],
+      "port": 8082
     }
   ]
 }
