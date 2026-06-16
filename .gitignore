@@ -160,3 +160,9 @@ app-example
 
 # Prisma generated client (dev-time only)
 /generated/
+
+# Claude Code / BMAD — tooling cài bằng installer (giống node_modules), không version.
+# Giữ .claude/launch.json + settings.json (config dự án) nếu muốn chia sẻ; bỏ phần còn lại.
+.claude/skills/
+.claude/settings.local.json
+.claude/worktrees/
