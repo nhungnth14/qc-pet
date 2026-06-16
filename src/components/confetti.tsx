@@ -4,6 +4,7 @@ import Animated, {
   Easing,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withTiming,
 } from 'react-native-reanimated';
 
@@ -25,11 +26,11 @@ function ConfettiPiece({ spec, height }: { spec: PieceSpec; height: number }) {
   const progress = useSharedValue(0);
 
   useEffect(() => {
-    progress.value = withTiming(1, {
+    progress.value = withDelay(spec.delay, withTiming(1, {
       duration: spec.duration,
       easing: Easing.linear,
-    });
-  }, [progress, spec.duration]);
+    }));
+  }, [progress, spec.delay, spec.duration]);
 
   const style = useAnimatedStyle(() => {
     const p = progress.value;

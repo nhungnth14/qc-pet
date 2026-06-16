@@ -9,6 +9,7 @@ export const SAMPLE_QUESTIONS: Question[] = [
   {
     id: 'q-mcq-1',
     format: 'mcq',
+    isWarmup: true,
     prompt: 'Bug làm crash app khi checkout. Mức Severity phù hợp nhất là gì?',
     options: ['Low', 'Medium', 'High', 'Critical'],
     correctIndex: 3,

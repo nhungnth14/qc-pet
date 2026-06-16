@@ -4,7 +4,7 @@ import type {
   BugReportPlacement,
   BugReportSurgeryQuestion,
 } from '../../question-types';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { gradeBugReportSurgery } from '../../question-types';
 
@@ -22,7 +22,7 @@ export function BugReportSurgeryView({ question, disabled, onAnswered }: Props) 
   const [placement, setPlacement] = useState<BugReportPlacement>({});
   const [selected, setSelected] = useState<string | null>(null);
   const [committed, setCommitted] = useState(false);
-
+  const committedRef = useRef(false);
   const placedIds = Object.values(placement).filter(Boolean) as string[];
   const pool = question.blocks.filter(b => !placedIds.includes(b.id));
   const allFilled = question.fields.every(f => placement[f.key]);
@@ -48,15 +48,15 @@ export function BugReportSurgeryView({ question, disabled, onAnswered }: Props) 
   };
 
   const handleDone = () => {
-    if (disabled || committed || !allFilled)
+    if (committedRef.current || disabled || !allFilled)
       return;
+    committedRef.current = true;
     setCommitted(true);
     const answer = question.fields.map(f => `${f.key}:${placement[f.key]}`).join('|');
     onAnswered({ isCorrect: gradeBugReportSurgery(question, placement), answer });
   };
 
-  const blockText = (id: string | null | undefined) =>
-    question.blocks.find(b => b.id === id)?.text ?? '';
+  const blockText = (id: string | null | undefined) => question.blocks.find(b => b.id === id)?.text ?? '';
 
   const fieldCorrect = (field: BugReportField) => {
     const id = placement[field];
