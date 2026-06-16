@@ -10,6 +10,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
+    "preview:build": "expo export --platform web --output-dir dist",
     "xcode": "xed -b ios",
     "doctor": "npx expo-doctor@latest",
     "preinstall": "npx only-allow pnpm",
@@ -44,6 +45,8 @@
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",
+    "@expo-google-fonts/jetbrains-mono": "^0.4.1",
+    "@expo-google-fonts/nunito-sans": "^0.4.2",
     "@expo/metro-runtime": "^6.1.2",
     "@gorhom/bottom-sheet": "^5.2.8",
     "@prisma/client": "7.8.0",

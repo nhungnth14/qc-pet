@@ -8,44 +8,16 @@ import {
   Text,
   View,
 } from 'react-native';
+import { NeedBarComponent } from '@/components';
 import { usePetStore } from '@/stores/pet-store';
-
-function NeedBar({ label, value, color }: { label: string; value: number; color: string }) {
-  const widthAnim = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    Animated.timing(widthAnim, { toValue: value, duration: 800, useNativeDriver: false }).start();
-  }, [value]);
-  const isCritical = value <= 29;
-  return (
-    <View style={styles.barContainer}>
-      <View style={styles.barLabelRow}>
-        <Text style={styles.barLabel}>{label}</Text>
-        <Text style={[styles.barValue, isCritical && styles.barValueCritical]}>
-          {value}%{isCritical ? ' ⚠️' : ''}
-        </Text>
-      </View>
-      <View style={styles.barTrack}>
-        <Animated.View
-          style={[
-            styles.barFill,
-            {
-              backgroundColor: color,
-              width: widthAnim.interpolate({ inputRange: [0, 100], outputRange: ['0%', '100%'] }),
-            },
-          ]}
-        />
-      </View>
-    </View>
-  );
-}
 
 export function WorkRoomScreen() {
   const router = useRouter();
-  const petName = usePetStore((s) => s.name);
-  const bcBalance = usePetStore((s) => s.bcBalance);
-  const qpTotal = usePetStore((s) => s.qpTotal);
-  const needBars = usePetStore((s) => s.needBars);
-  const loadFromLocal = usePetStore((s) => s.loadFromLocal);
+  const petName = usePetStore(s => s.name);
+  const bcBalance = usePetStore(s => s.bcBalance);
+  const qpTotal = usePetStore(s => s.qpTotal);
+  const needBars = usePetStore(s => s.needBars);
+  const loadFromLocal = usePetStore(s => s.loadFromLocal);
   const bugsyAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -65,10 +37,10 @@ export function WorkRoomScreen() {
         <Text style={styles.roomLabel}>🖥️ Work Room</Text>
         <View style={styles.currencyRow}>
           <View style={styles.currencyChip}>
-            <Text style={styles.currencyText}>🪲 {bcBalance} BC</Text>
+            <Text style={styles.currencyText}>{`🪲 ${bcBalance} BC`}</Text>
           </View>
           <View style={[styles.currencyChip, styles.qpChip]}>
-            <Text style={styles.currencyText}>⭐ {qpTotal} QP</Text>
+            <Text style={styles.currencyText}>{`⭐ ${qpTotal} QP`}</Text>
           </View>
         </View>
       </View>
@@ -80,17 +52,17 @@ export function WorkRoomScreen() {
             🐣
           </Animated.Text>
           <View style={styles.speechBubble}>
-            <Text style={styles.speechText}>Chào {petName}! Học gì hôm nay? 📚</Text>
+            <Text style={styles.speechText}>{`Chào ${petName}! Học gì hôm nay? 📚`}</Text>
           </View>
         </View>
 
         {/* Need Bars */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Trạng thái Bugsy</Text>
-          <NeedBar label="🍗 Hunger" value={needBars.hunger} color="#84cc16" />
-          <NeedBar label="😊 Happiness" value={needBars.happiness} color="#22b5ff" />
-          <NeedBar label="💪 Health" value={needBars.health} color="#ba1a1a" />
-          <NeedBar label="📏 Discipline" value={needBars.discipline} color="#b59cff" />
+          <NeedBarComponent label="🍗 Hunger" value={needBars.hunger} fillClassName="bg-need-hunger" />
+          <NeedBarComponent label="😊 Happiness" value={needBars.happiness} fillClassName="bg-need-happiness" />
+          <NeedBarComponent label="💪 Health" value={needBars.health} fillClassName="bg-need-health" />
+          <NeedBarComponent label="📏 Discipline" value={needBars.discipline} fillClassName="bg-need-discipline" />
         </View>
 
         {/* Core Mission CTA */}
@@ -107,7 +79,7 @@ export function WorkRoomScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Mission Board</Text>
           <View style={styles.kanbanRow}>
-            {['TODO', 'IN PROGRESS', 'DONE'].map((col) => (
+            {['TODO', 'IN PROGRESS', 'DONE'].map(col => (
               <View key={col} style={styles.kanbanCol}>
                 <Text style={styles.kanbanHeader}>{col}</Text>
                 {col === 'TODO' && (
@@ -177,20 +149,6 @@ const styles = StyleSheet.create({
   speechText: { fontSize: 15, fontWeight: '700', color: '#001a41', textAlign: 'center' },
   section: { gap: 12 },
   sectionTitle: { fontSize: 16, fontWeight: '800', color: '#001a41' },
-  barContainer: { gap: 6 },
-  barLabelRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  barLabel: { fontSize: 13, fontWeight: '700', color: '#001a41' },
-  barValue: { fontSize: 13, fontWeight: '700', color: '#555' },
-  barValueCritical: { color: '#ba1a1a' },
-  barTrack: {
-    height: 14,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 999,
-    borderWidth: 2,
-    borderColor: '#001a41',
-    overflow: 'hidden',
-  },
-  barFill: { height: '100%', borderRadius: 999 },
   missionBtn: {
     backgroundColor: '#006491',
     borderRadius: 16,

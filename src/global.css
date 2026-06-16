@@ -4,8 +4,9 @@
 
 /* Define your theme in CSS (replaces tailwind.config.js) */
 @theme {
-  /* Font families */
-  --font-family-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  /* Font families — Nunito Sans (UI, min weight 600) + JetBrains Mono (code/terminal only) */
+  --font-family-sans: 'Nunito Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-family-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 
   /* Base colors */
   --color-white: #ffffff;
@@ -101,24 +102,32 @@
 
   --color-destructive: #ef4444;
   --color-destructive-foreground: #ffffff;
+
+  /* ─── QC Pet design tokens (Story 0-6) ─── */
+  /* Material Design 3 roles */
+  --color-primary: #006491;
+  --color-primary-container: #22b5ff;
+  --color-inverse-surface: #002e69; /* chỉ modal/overlay/story panel — KHÔNG app background */
+  --color-error: #ba1a1a;
+  --color-surface-container: #f0f4f8;
+  --color-on-surface: #1a1a2e;
+  /* QC Pet extended tokens */
+  --color-qp-teal: #00a8a8; /* Quality Points */
+  --color-bc-amber: #ffb000; /* Bug Coins */
+  --color-terminal-green: #8ce68c; /* chỉ code/terminal context */
+  --color-warm-peach-bg: #ffe5d9;
+  --color-rule-landing-bg: #bfffa1;
+  /* Tactile card border + blocky shadow base */
+  --color-card-border: #001a41;
+  /* Need Bar colors (Room-to-Need mapping) */
+  --color-need-hunger: #84cc16;
+  --color-need-happiness: #22b5ff;
+  --color-need-health: #ba1a1a;
+  --color-need-discipline: #b59cff;
 }
 
-/* Dark mode colors */
-@media (prefers-color-scheme: dark) {
-  @theme {
-    --color-background: #0a0a0a;
-    --color-foreground: #fafafa;
-
-    --color-card: #171717;
-    --color-card-foreground: #fafafa;
-
-    --color-muted: #262626;
-    --color-muted-foreground: #a3a3a3;
-
-    --color-border: #404040;
-    --color-input: #404040;
-  }
-}
+/* MVP: dark mode KHÔNG hỗ trợ (project-context). Cố tình KHÔNG có @media
+   prefers-color-scheme: dark — app luôn light mode. */
 
 /* Custom utilities (if needed) */
 @layer utilities {

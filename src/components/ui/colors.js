@@ -75,4 +75,17 @@ module.exports = {
     800: '#991B1B',
     900: '#7F1D1D',
   },
+  // ─── QC Pet design tokens (Story 0-6) — mirror src/global.css @theme ───
+  qcPrimary: '#006491',
+  qcPrimaryContainer: '#22b5ff',
+  inverseSurface: '#002e69',
+  qcError: '#ba1a1a',
+  surfaceContainer: '#f0f4f8',
+  onSurface: '#1a1a2e',
+  qpTeal: '#00A8A8',
+  bcAmber: '#FFB000',
+  terminalGreen: '#8ce68c',
+  warmPeachBg: '#FFE5D9',
+  ruleLandingBg: '#BFFFA1',
+  cardBorder: '#001a41',
 };

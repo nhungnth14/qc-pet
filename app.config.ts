@@ -76,34 +76,45 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-font',
       {
+        // QC Pet (Story 0-6): Nunito Sans (UI, weight ≥600) + JetBrains Mono (code/terminal)
         ios: {
           fonts: [
-            'node_modules/@expo-google-fonts/inter/400Regular/Inter_400Regular.ttf',
-            'node_modules/@expo-google-fonts/inter/500Medium/Inter_500Medium.ttf',
-            'node_modules/@expo-google-fonts/inter/600SemiBold/Inter_600SemiBold.ttf',
-            'node_modules/@expo-google-fonts/inter/700Bold/Inter_700Bold.ttf',
+            'node_modules/@expo-google-fonts/nunito-sans/600SemiBold/NunitoSans_600SemiBold.ttf',
+            'node_modules/@expo-google-fonts/nunito-sans/700Bold/NunitoSans_700Bold.ttf',
+            'node_modules/@expo-google-fonts/nunito-sans/800ExtraBold/NunitoSans_800ExtraBold.ttf',
+            'node_modules/@expo-google-fonts/nunito-sans/900Black/NunitoSans_900Black.ttf',
+            'node_modules/@expo-google-fonts/jetbrains-mono/500Medium/JetBrainsMono_500Medium.ttf',
           ],
         },
         android: {
           fonts: [
             {
-              fontFamily: 'Inter',
+              fontFamily: 'Nunito Sans',
               fontDefinitions: [
                 {
-                  path: 'node_modules/@expo-google-fonts/inter/400Regular/Inter_400Regular.ttf',
-                  weight: 400,
-                },
-                {
-                  path: 'node_modules/@expo-google-fonts/inter/500Medium/Inter_500Medium.ttf',
-                  weight: 500,
-                },
-                {
-                  path: 'node_modules/@expo-google-fonts/inter/600SemiBold/Inter_600SemiBold.ttf',
+                  path: 'node_modules/@expo-google-fonts/nunito-sans/600SemiBold/NunitoSans_600SemiBold.ttf',
                   weight: 600,
                 },
                 {
-                  path: 'node_modules/@expo-google-fonts/inter/700Bold/Inter_700Bold.ttf',
+                  path: 'node_modules/@expo-google-fonts/nunito-sans/700Bold/NunitoSans_700Bold.ttf',
                   weight: 700,
+                },
+                {
+                  path: 'node_modules/@expo-google-fonts/nunito-sans/800ExtraBold/NunitoSans_800ExtraBold.ttf',
+                  weight: 800,
+                },
+                {
+                  path: 'node_modules/@expo-google-fonts/nunito-sans/900Black/NunitoSans_900Black.ttf',
+                  weight: 900,
+                },
+              ],
+            },
+            {
+              fontFamily: 'JetBrains Mono',
+              fontDefinitions: [
+                {
+                  path: 'node_modules/@expo-google-fonts/jetbrains-mono/500Medium/JetBrainsMono_500Medium.ttf',
+                  weight: 500,
                 },
               ],
             },

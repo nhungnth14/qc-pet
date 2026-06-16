@@ -162,4 +162,28 @@ export default antfu(
       ...testingLibrary.configs.react.rules,
     },
   },
+
+  // QC Pet Design System guardrails (Story 0-6)
+  // no-external-ui-library: chỉ dùng custom components, cấm UI library ngoài.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: [{
+          group: ['@mui', '@mui/*', '@chakra-ui/*', 'react-native-paper', '@rneui/*', 'native-base'],
+          message: 'QC Pet dùng custom components — KHÔNG import UI library ngoài (Design System, Story 0-6).',
+        }],
+      }],
+    },
+  },
+  // Cảnh báo hardcode hex màu (dùng token colors.js / @theme thay vì hex).
+  {
+    files: ['src/components/**/*.{ts,tsx}', 'src/features/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-syntax': ['warn', {
+        selector: 'Literal[value=/#[0-9a-fA-F]{3,8}/]',
+        message: 'Tránh hardcode hex màu — dùng token (colors.js / global.css @theme). Story 0-6.',
+      }],
+    },
+  },
 );
