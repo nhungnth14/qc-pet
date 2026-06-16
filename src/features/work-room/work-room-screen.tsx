@@ -8,14 +8,12 @@ import {
   Text,
   View,
 } from 'react-native';
-import { NeedBarComponent } from '@/components';
+import { CurrencyHeader, NeedBarComponent } from '@/components';
 import { usePetStore } from '@/stores/pet-store';
 
 export function WorkRoomScreen() {
   const router = useRouter();
   const petName = usePetStore(s => s.name);
-  const bcBalance = usePetStore(s => s.bcBalance);
-  const qpTotal = usePetStore(s => s.qpTotal);
   const needBars = usePetStore(s => s.needBars);
   const loadFromLocal = usePetStore(s => s.loadFromLocal);
   const bugsyAnim = useRef(new Animated.Value(0)).current;
@@ -38,14 +36,7 @@ export function WorkRoomScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.roomLabel}>🖥️ Work Room</Text>
-        <View style={styles.currencyRow}>
-          <View style={styles.currencyChip}>
-            <Text style={styles.currencyText}>{`🪲 ${bcBalance} BC`}</Text>
-          </View>
-          <View style={[styles.currencyChip, styles.qpChip]}>
-            <Text style={styles.currencyText}>{`⭐ ${qpTotal} QP`}</Text>
-          </View>
-        </View>
+        <CurrencyHeader />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll}>
@@ -127,17 +118,6 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   roomLabel: { fontSize: 16, fontWeight: '800', color: '#001a41' },
-  currencyRow: { flexDirection: 'row', gap: 8 },
-  currencyChip: {
-    backgroundColor: '#FFB000',
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderWidth: 2,
-    borderColor: '#001a41',
-  },
-  qpChip: { backgroundColor: '#00A8A8' },
-  currencyText: { fontSize: 13, fontWeight: '800', color: '#001a41' },
   scroll: { padding: 20, gap: 20, paddingBottom: 40 },
   bugsySection: { alignItems: 'center', gap: 12 },
   bugsy: { fontSize: 80 },

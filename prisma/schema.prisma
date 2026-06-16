@@ -42,7 +42,7 @@ model Pet {
   name      String
   version   String   @default("v0.1")
   qpTotal   Int      @default(0) @map("qp_total")
-  bcBalance Int      @default(0) @map("bc_balance")
+  bcBalance Int      @default(0) @map("bc_balance") // raw-SQL CHECK bc_balance >= 0 (migration 20260616100000)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 

@@ -54,6 +54,8 @@ export const usePetStore = create<PetState>((set, get) => ({
   },
 
   syncFromSupabase: async (userId: string) => {
+    if (get().isLoading)
+      return;
     set({ isLoading: true });
     try {
       const [petRes, needBarsRes] = await Promise.all([getPet(userId), getNeedBars(userId)]);
@@ -66,6 +68,8 @@ export const usePetStore = create<PetState>((set, get) => ({
         update.qpTotal = pet.qpTotal;
       }
       set(update);
+      const s = get();
+      storage.setItem(PET_KEY, { name: s.name, bcBalance: s.bcBalance, qpTotal: s.qpTotal, needBars: s.needBars });
     }
     catch (err) {
       set({ isLoading: false });

@@ -64,9 +64,9 @@ development_status:
   epic-1-retrospective: optional
 
   # -----------------------------------------------------------------
-  # Epic 2: Onboarding & First Experience (5 done, 1 backlog)
+  # Epic 2: Onboarding & First Experience (6/6 done ✓)
   # -----------------------------------------------------------------
-  epic-2: in-progress
+  epic-2: done
   2-1-splash-screen-egg-hatching-animation: done        # onboarding/index.tsx — Bugsy hatching animation
   2-2-pet-naming-flow: done                             # onboarding/naming.tsx — 3 gợi ý + free text
   2-3-micro-bridge-warm-up-scenario-aha-moment-setup: done   # onboarding/aha-moment.tsx
@@ -97,7 +97,7 @@ development_status:
   epic-4-retrospective: optional
 
   # -----------------------------------------------------------------
-  # Epic 5: Daily Learning Loop (3 done, 4 backlog)
+  # Epic 5: Daily Learning Loop (4 done, 3 backlog)
   # -----------------------------------------------------------------
   epic-5: in-progress
   5-1-core-mission-entry-lesson-player-daily-mission-selection: done        # (app)/core-mission.tsx — lesson player
@@ -112,8 +112,8 @@ development_status:
   # -----------------------------------------------------------------
   # Epic 6: Dual Currency & Reward Animations (all backlog)
   # -----------------------------------------------------------------
-  epic-6: backlog
-  6-1-dual-currency-data-model-persistent-header-display: backlog
+  epic-6: in-progress
+  6-1-dual-currency-data-model-persistent-header-display: review   # dev-story done 2026-06-16: CurrencyHeader (web verified amber/teal chips) + syncFromSupabase on mount + CHECK bc>=0 migration (chưa apply, cần DB); type-check/lint/17-unit pass
   6-2-bc-earn-rules-miss-penalty-reward-animation-pipeline: backlog
   6-3-qp-earn-rules-server-authoritative-immutability: backlog
   epic-6-retrospective: optional
