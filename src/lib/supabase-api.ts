@@ -105,7 +105,8 @@ export async function getPet(userId: string): Promise<StandardResponse<Pet | nul
     .eq('user_id', userId)
     .maybeSingle();
 
-  if (error) throw new Error(`getPet failed: ${error.message}`);
+  if (error)
+    throw new Error(`getPet failed: ${error.message}`);
   return ok(data ? mapPet(data as PetRow) : null);
 }
 
@@ -116,7 +117,8 @@ export async function createPet(userId: string, name: string): Promise<StandardR
     .select()
     .single();
 
-  if (error) throw new Error(`createPet failed: ${error.message}`);
+  if (error)
+    throw new Error(`createPet failed: ${error.message}`);
   return ok(mapPet(data as PetRow));
 }
 
@@ -128,7 +130,8 @@ export async function updatePetName(petId: string, name: string): Promise<Standa
     .select()
     .single();
 
-  if (error) throw new Error(`updatePetName failed: ${error.message}`);
+  if (error)
+    throw new Error(`updatePetName failed: ${error.message}`);
   return ok(mapPet(data as PetRow));
 }
 
@@ -143,12 +146,14 @@ export async function addCurrency(
     .eq('id', petId)
     .single();
 
-  if (fetchError) throw new Error(`addCurrency fetch failed: ${fetchError.message}`);
+  if (fetchError)
+    throw new Error(`addCurrency fetch failed: ${fetchError.message}`);
 
   const row = current as { bc_balance: number; qp_total: number };
   const newBcBalance = row.bc_balance + bcDelta;
 
-  if (newBcBalance < 0) throw new Error('Insufficient BC balance');
+  if (newBcBalance < 0)
+    throw new Error('Insufficient BC balance');
 
   const { data, error } = await supabase
     .from('pets')
@@ -157,7 +162,8 @@ export async function addCurrency(
     .select('bc_balance, qp_total')
     .single();
 
-  if (error) throw new Error(`addCurrency update failed: ${error.message}`);
+  if (error)
+    throw new Error(`addCurrency update failed: ${error.message}`);
 
   const updated = data as { bc_balance: number; qp_total: number };
   return ok({ bcBalance: updated.bc_balance, qpTotal: updated.qp_total });
@@ -174,9 +180,11 @@ export async function getNeedBars(userId: string): Promise<StandardResponse<Need
     .eq('user_id', userId)
     .maybeSingle();
 
-  if (error) throw new Error(`getNeedBars failed: ${error.message}`);
+  if (error)
+    throw new Error(`getNeedBars failed: ${error.message}`);
 
-  if (data) return ok(mapNeedBars(data as NeedBarsRow));
+  if (data)
+    return ok(mapNeedBars(data as NeedBarsRow));
 
   // Shouldn't happen if signup trigger ran, but defensive fallback
   const { data: created, error: createError } = await supabase
@@ -185,7 +193,8 @@ export async function getNeedBars(userId: string): Promise<StandardResponse<Need
     .select('hunger, happiness, health, discipline')
     .single();
 
-  if (createError) throw new Error(`getNeedBars create failed: ${createError.message}`);
+  if (createError)
+    throw new Error(`getNeedBars create failed: ${createError.message}`);
   return ok(mapNeedBars(created as NeedBarsRow));
 }
 
@@ -198,10 +207,14 @@ export async function updateNeedBars(
     user_id: userId,
     last_synced_at: new Date().toISOString(),
   };
-  if (bars.hunger !== undefined) payload.hunger = bars.hunger;
-  if (bars.happiness !== undefined) payload.happiness = bars.happiness;
-  if (bars.health !== undefined) payload.health = bars.health;
-  if (bars.discipline !== undefined) payload.discipline = bars.discipline;
+  if (bars.hunger !== undefined)
+    payload.hunger = bars.hunger;
+  if (bars.happiness !== undefined)
+    payload.happiness = bars.happiness;
+  if (bars.health !== undefined)
+    payload.health = bars.health;
+  if (bars.discipline !== undefined)
+    payload.discipline = bars.discipline;
 
   const { data, error } = await supabase
     .from('need_bars')
@@ -209,7 +222,8 @@ export async function updateNeedBars(
     .select('hunger, happiness, health, discipline')
     .single();
 
-  if (error) throw new Error(`updateNeedBars failed: ${error.message}`);
+  if (error)
+    throw new Error(`updateNeedBars failed: ${error.message}`);
   return ok(mapNeedBars(data as NeedBarsRow));
 }
 
@@ -222,9 +236,11 @@ export async function getGameState(userId: string): Promise<StandardResponse<Gam
     .eq('user_id', userId)
     .maybeSingle();
 
-  if (error) throw new Error(`getGameState failed: ${error.message}`);
+  if (error)
+    throw new Error(`getGameState failed: ${error.message}`);
 
-  if (data) return ok(mapGameState(data as GameStateRow));
+  if (data)
+    return ok(mapGameState(data as GameStateRow));
 
   const { data: created, error: createError } = await supabase
     .from('game_state')
@@ -232,7 +248,8 @@ export async function getGameState(userId: string): Promise<StandardResponse<Gam
     .select()
     .single();
 
-  if (createError) throw new Error(`getGameState create failed: ${createError.message}`);
+  if (createError)
+    throw new Error(`getGameState create failed: ${createError.message}`);
   return ok(mapGameState(created as GameStateRow));
 }
 
@@ -256,7 +273,8 @@ export async function updateGameState(
     .select()
     .single();
 
-  if (error) throw new Error(`updateGameState failed: ${error.message}`);
+  if (error)
+    throw new Error(`updateGameState failed: ${error.message}`);
   return ok(mapGameState(data as GameStateRow));
 }
 
@@ -276,7 +294,8 @@ export async function completeOnboarding(
   if (existingPet) {
     const result = await updatePetName((existingPet as { id: string }).id, petName);
     pet = result.data;
-  } else {
+  }
+  else {
     const result = await createPet(userId, petName);
     pet = result.data;
   }

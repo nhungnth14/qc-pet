@@ -28,6 +28,9 @@ export function WorkRoomScreen() {
         Animated.timing(bugsyAnim, { toValue: 0, duration: 1000, useNativeDriver: true }),
       ]),
     ).start();
+    // NOTE: effect chạy MỘT lần lúc mount (load state local + start idle animation). KHÔNG
+    // disable react-hooks/exhaustive-deps — react-compiler (error) cấm component có rule bị
+    // disable. Warning missing-deps là advisory, cố ý giữ; xử lý khi polish component.
   }, []);
 
   return (

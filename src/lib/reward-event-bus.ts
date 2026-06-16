@@ -15,7 +15,8 @@ export const rewardEventBus = {
   emit(event: 'server_committed' | 'animation_triggered', payload: RewardPayload): void {
     if (event === 'server_committed') {
       storage.setItem(PENDING_KEY, payload);
-    } else {
+    }
+    else {
       const pending = storage.getItem<RewardPayload>(PENDING_KEY);
       if (!pending) {
         console.error(
@@ -24,7 +25,7 @@ export const rewardEventBus = {
         return;
       }
       storage.remove(PENDING_KEY);
-      animationCallbacks.forEach((cb) => cb(payload));
+      animationCallbacks.forEach(cb => cb(payload));
     }
   },
 

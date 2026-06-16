@@ -17,10 +17,12 @@ export const storage = {
   },
   getItem<T>(key: string): T | null {
     const value = mmkv.getString(key);
-    if (value === undefined || value === '') return null;
+    if (value === undefined || value === '')
+      return null;
     try {
       return JSON.parse(value) as T;
-    } catch {
+    }
+    catch {
       return null;
     }
   },

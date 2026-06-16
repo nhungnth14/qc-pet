@@ -1,5 +1,5 @@
+import type { User } from '@supabase/supabase-js';
 import { create } from 'zustand';
-import { User } from '@supabase/supabase-js';
 import { storage } from '@/lib/storage';
 import { supabase } from '@/lib/supabase';
 
@@ -35,9 +35,11 @@ export const useSessionStore = create<SessionState>(() => ({
           isAnonymous: session.user.is_anonymous ?? false,
           isLoading: false,
         });
-      } else {
+      }
+      else {
         const { data, error } = await supabase.auth.signInAnonymously();
-        if (error) throw error;
+        if (error)
+          throw error;
         useSessionStore.setState({
           supabaseUser: data.user,
           userId: data.user?.id ?? null,
@@ -45,7 +47,8 @@ export const useSessionStore = create<SessionState>(() => ({
           isLoading: false,
         });
       }
-    } catch (err) {
+    }
+    catch (err) {
       useSessionStore.setState({ isLoading: false });
       throw err;
     }
@@ -58,7 +61,8 @@ export const useSessionStore = create<SessionState>(() => ({
 
   signUpWithEmail: async (email, password) => {
     const { data, error } = await supabase.auth.updateUser({ email, password });
-    if (error) throw error;
+    if (error)
+      throw error;
     useSessionStore.setState({
       supabaseUser: data.user,
       userId: data.user?.id ?? null,
@@ -68,7 +72,8 @@ export const useSessionStore = create<SessionState>(() => ({
 
   signInWithEmail: async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+    if (error)
+      throw error;
     useSessionStore.setState({
       supabaseUser: data.user,
       userId: data.user.id,

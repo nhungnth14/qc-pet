@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { getPet, addCurrency } from '@/lib/supabase-api';
+import { addCurrency, getPet } from '@/lib/supabase-api';
 
 type QuizSessionRow = {
   id: string;
@@ -23,7 +23,8 @@ export async function createQuizSession(
     .select('id')
     .single();
 
-  if (error) throw new Error(`createQuizSession failed: ${error.message}`);
+  if (error)
+    throw new Error(`createQuizSession failed: ${error.message}`);
   return { sessionId: (data as { id: string }).id };
 }
 
@@ -38,7 +39,8 @@ export async function saveAnswer(
     .eq('id', sessionId)
     .single();
 
-  if (fetchError) throw new Error(`saveAnswer fetch failed: ${fetchError.message}`);
+  if (fetchError)
+    throw new Error(`saveAnswer fetch failed: ${fetchError.message}`);
 
   const existing = (data as { answers: Record<string, number> | null } | null)?.answers ?? {};
   const merged = { ...existing, [String(questionIndex)]: answerIndex };
@@ -48,9 +50,11 @@ export async function saveAnswer(
     .update({ answers: merged, current_question_index: questionIndex + 1 })
     .eq('id', sessionId);
 
-  if (error) throw new Error(`saveAnswer update failed: ${error.message}`);
+  if (error)
+    throw new Error(`saveAnswer update failed: ${error.message}`);
 }
 
+// eslint-disable-next-line max-params -- 4 tham số đều bắt buộc; contract bị pin bởi Story 5-4 (KHÔNG refactor sang options-object).
 export async function completeQuizSession(
   sessionId: string,
   userId: string,
@@ -68,7 +72,8 @@ export async function completeQuizSession(
     if (!error && data?.bcEarned !== undefined && data?.qpEarned !== undefined) {
       return { bcEarned: data.bcEarned, qpEarned: data.qpEarned };
     }
-  } catch {
+  }
+  catch {
     // Edge function not deployed — fall through to local fallback
   }
 
@@ -114,8 +119,10 @@ export async function getIncompleteSession(
     .limit(1)
     .maybeSingle();
 
-  if (error) throw new Error(`getIncompleteSession failed: ${error.message}`);
-  if (!data) return null;
+  if (error)
+    throw new Error(`getIncompleteSession failed: ${error.message}`);
+  if (!data)
+    return null;
 
   const row = data as QuizSessionRow;
   return {

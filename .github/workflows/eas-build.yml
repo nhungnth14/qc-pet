@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       profile:
-        description: 'EAS build profile'
+        description: EAS build profile
         type: choice
         options: [development, preview, production]
         default: production

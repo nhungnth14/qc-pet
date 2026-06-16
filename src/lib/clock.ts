@@ -2,9 +2,9 @@ import { storage } from './storage';
 
 const CLOCK_OFFSET_KEY = 'clock_offset';
 
-export interface ISystemClock {
-  now(): number;
-}
+export type ISystemClock = {
+  now: () => number;
+};
 
 class ServerOffsetClock implements ISystemClock {
   private clockOffset: number;

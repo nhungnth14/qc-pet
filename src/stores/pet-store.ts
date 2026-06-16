@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { storage } from '@/lib/storage';
-import { getPet, getNeedBars } from '@/lib/supabase-api';
+import { getNeedBars, getPet } from '@/lib/supabase-api';
 
 const PET_KEY = 'pet_data';
 
@@ -30,10 +30,10 @@ export const usePetStore = create<PetState>((set, get) => ({
   needBars: { hunger: 80, happiness: 80, health: 80, discipline: 80 },
   isLoading: false,
 
-  setName: (name) => set({ name }),
-  addBC: (amount) => set((s) => ({ bcBalance: Math.max(0, s.bcBalance + amount) })),
-  addQP: (amount) => set((s) => ({ qpTotal: s.qpTotal + amount })),
-  setNeedBars: (bars) => set((s) => ({ needBars: { ...s.needBars, ...bars } })),
+  setName: name => set({ name }),
+  addBC: amount => set(s => ({ bcBalance: Math.max(0, s.bcBalance + amount) })),
+  addQP: amount => set(s => ({ qpTotal: s.qpTotal + amount })),
+  setNeedBars: bars => set(s => ({ needBars: { ...s.needBars, ...bars } })),
 
   loadFromLocal: () => {
     const saved = storage.getItem<any>(PET_KEY);
@@ -66,7 +66,8 @@ export const usePetStore = create<PetState>((set, get) => ({
         update.qpTotal = pet.qpTotal;
       }
       set(update);
-    } catch (err) {
+    }
+    catch (err) {
       set({ isLoading: false });
       throw err;
     }

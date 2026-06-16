@@ -40,6 +40,9 @@ export default antfu(
       'cli/',
       'expo-env.d.ts',
       'migration/*',
+      // Prisma-generated migrations — KHÔNG lint/reformat (file `migration_lock.toml`
+      // có tên do Prisma CLI bắt buộc, không đổi sang kebab được).
+      'prisma/migrations/',
       // Vendored framework + generated + planning docs — không thuộc source ta sở hữu,
       // không đưa vào quality gate (giống .claude/skills). Story 0-x/2-x tooling.
       '_bmad/',
@@ -190,6 +193,39 @@ export default antfu(
         selector: 'Literal[value=/#[0-9a-fA-F]{3,8}/]',
         message: 'Tránh hardcode hex màu — dùng token (colors.js / global.css @theme). Story 0-6.',
       }],
+    },
+  },
+
+  // Metro top-level polyfill — compat shim chạy TRƯỚC module system, vá globals của
+  // Hermes/RN. Dùng `global` (chuẩn RN), function-constructor + positional args; không
+  // áp các rule ergonomics của app runtime cho file bootstrap này.
+  {
+    files: ['polyfill-top-level.js'],
+    rules: {
+      'no-restricted-globals': 'off',
+      'max-params': 'off',
+      'style/max-statements-per-line': 'off',
+      'unused-imports/no-unused-vars': 'off',
+    },
+  },
+
+  // Node build/dev tooling (scripts + Metro config) — chạy trong Node, không phải app
+  // runtime: helper nhận positional args + try/catch gọn là idiom ở đây.
+  {
+    files: ['scripts/**/*.{js,cjs,mjs}', 'metro.config.js'],
+    rules: {
+      'max-params': 'off',
+      'style/max-statements-per-line': 'off',
+    },
+  },
+
+  // Supabase Edge Functions chạy trên Deno — handler bao trọn vòng đời request, response
+  // builder nhận positional args. max-lines/max-params của app không hợp với edge code.
+  {
+    files: ['supabase/functions/**/*.ts'],
+    rules: {
+      'max-lines-per-function': 'off',
+      'max-params': 'off',
     },
   },
 );

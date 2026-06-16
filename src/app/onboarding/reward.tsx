@@ -143,6 +143,9 @@ export default function RewardScreen() {
     const unsub = rewardEventBus.on('animation_triggered', () => startAnimations());
     commitReward();
     return unsub;
+    // NOTE: effect chạy MỘT lần lúc mount (subscribe bus + commit reward). KHÔNG disable
+    // react-hooks/exhaustive-deps ở đây — react-compiler (error) cấm component có rule bị
+    // disable. Warning missing-deps là advisory, cố ý giữ; xử lý khi polish component.
   }, []);
 
   const handleContinue = () => {

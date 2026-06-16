@@ -1,15 +1,15 @@
 export const CORS_HEADERS: Record<string, string> = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-idempotency-key",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers':
+    'authorization, x-client-info, apikey, content-type, x-idempotency-key',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
 };
 
-export interface StandardResponse<T> {
+export type StandardResponse<T> = {
   data: T;
   serverTime: number;
   requestId: string;
-}
+};
 
 /** Returns a 200 JSON response wrapped in StandardResponse<T>. */
 export function okResponse<T>(
@@ -26,7 +26,7 @@ export function okResponse<T>(
     status: 200,
     headers: {
       ...CORS_HEADERS,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...extraHeaders,
     },
   });
@@ -45,7 +45,7 @@ export function problemResponse(
   detail: string,
   req?: Request,
 ): Response {
-  const instance = req ? new URL(req.url).pathname : "/unknown";
+  const instance = req ? new URL(req.url).pathname : '/unknown';
   const body = {
     type: `https://httpstatuses.com/${status}`,
     title,
@@ -57,7 +57,7 @@ export function problemResponse(
     status,
     headers: {
       ...CORS_HEADERS,
-      "Content-Type": "application/problem+json",
+      'Content-Type': 'application/problem+json',
     },
   });
 }

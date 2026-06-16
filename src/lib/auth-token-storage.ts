@@ -9,16 +9,20 @@ const CHUNK_FLAG = '__supabase_chunked__:';
 
 async function getChunked(key: string): Promise<string | null> {
   const head = await SecureStore.getItemAsync(key);
-  if (head === null) return null;
-  if (!head.startsWith(CHUNK_FLAG)) return head;
+  if (head === null)
+    return null;
+  if (!head.startsWith(CHUNK_FLAG))
+    return head;
 
   const count = Number.parseInt(head.slice(CHUNK_FLAG.length), 10);
-  if (!Number.isFinite(count) || count <= 0) return null;
+  if (!Number.isFinite(count) || count <= 0)
+    return null;
 
   let result = '';
   for (let i = 0; i < count; i++) {
     const part = await SecureStore.getItemAsync(`${key}.${i}`);
-    if (part === null) return null; // thiếu chunk → coi như không có dữ liệu
+    if (part === null)
+      return null; // thiếu chunk → coi như không có dữ liệu
     result += part;
   }
   return result;
@@ -51,7 +55,7 @@ async function setChunked(key: string, value: string): Promise<void> {
   for (let i = 0; i < count; i++) {
     await SecureStore.setItemAsync(
       `${key}.${i}`,
-      value.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE)
+      value.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE),
     );
   }
 }

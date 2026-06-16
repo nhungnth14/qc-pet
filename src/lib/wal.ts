@@ -18,8 +18,8 @@ export const wal = {
     const prefix = `wal_${namespace}_`;
     return storage
       .getAllKeys()
-      .filter((k) => k.startsWith(prefix))
-      .map((k) => ({
+      .filter(k => k.startsWith(prefix))
+      .map(k => ({
         key: k.slice(prefix.length),
         value: storage.getItem<unknown>(k),
       }));

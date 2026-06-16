@@ -1,18 +1,18 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { CORS_HEADERS, okResponse, problemResponse } from "../_shared/response.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import {
   checkRateLimit,
   getIdempotentCached,
   setIdempotentCache,
-} from "../_shared/redis.ts";
+} from '../_shared/redis.ts';
+import { CORS_HEADERS, problemResponse } from '../_shared/response.ts';
 
-interface NeedBars {
+type NeedBars = {
   hunger: number;
   happiness: number;
   health: number;
   discipline: number;
   last_synced_at: string;
-}
+};
 
 // Points lost per second: 100 points over N hours
 const DECAY_PER_SECOND = {
@@ -50,8 +50,8 @@ function getEffectiveElapsedSeconds(lastSyncedAt: Date, now: Date): number {
         cursor.getUTCDate() + 1,
       ),
     );
-    const segmentEnd =
-      nextDayStart.getTime() < endLocal.getTime() ? nextDayStart : endLocal;
+    const segmentEnd
+      = nextDayStart.getTime() < endLocal.getTime() ? nextDayStart : endLocal;
 
     if (!isWeekend) {
       effectiveMs += segmentEnd.getTime() - cursor.getTime();
@@ -64,12 +64,12 @@ function getEffectiveElapsedSeconds(lastSyncedAt: Date, now: Date): number {
 }
 
 Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") {
+  if (req.method === 'OPTIONS') {
     return new Response(null, { headers: CORS_HEADERS });
   }
 
-  if (req.method !== "POST") {
-    return problemResponse(405, "Method Not Allowed", "Only POST requests are accepted", req);
+  if (req.method !== 'POST') {
+    return problemResponse(405, 'Method Not Allowed', 'Only POST requests are accepted', req);
   }
 
   const requestId = crypto.randomUUID();
@@ -77,7 +77,7 @@ Deno.serve(async (req: Request) => {
   try {
     const body = await req.json().catch(() => null);
     if (!body?.userId) {
-      return problemResponse(400, "Bad Request", "userId is required", req);
+      return problemResponse(400, 'Bad Request', 'userId is required', req);
     }
     const { userId } = body;
 
@@ -86,14 +86,14 @@ Deno.serve(async (req: Request) => {
     if (!allowed) {
       return problemResponse(
         429,
-        "Too Many Requests",
-        "Rate limit exceeded: 100 requests per minute",
+        'Too Many Requests',
+        'Rate limit exceeded: 100 requests per minute',
         req,
       );
     }
 
     // --- Idempotency via X-Idempotency-Key header ---
-    const idempotencyKey = req.headers.get("X-Idempotency-Key");
+    const idempotencyKey = req.headers.get('X-Idempotency-Key');
     if (idempotencyKey) {
       const cached = await getIdempotentCached(`idem:need-bar-sync:${idempotencyKey}`);
       if (cached) {
@@ -101,28 +101,28 @@ Deno.serve(async (req: Request) => {
           status: 200,
           headers: {
             ...CORS_HEADERS,
-            "Content-Type": "application/json",
-            "X-Idempotent-Replayed": "true",
+            'Content-Type': 'application/json',
+            'X-Idempotent-Replayed': 'true',
           },
         });
       }
     }
 
     const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
 
     const { data: row, error: fetchErr } = await supabase
-      .from("need_bars")
-      .select("hunger, happiness, health, discipline, last_synced_at")
-      .eq("user_id", userId)
+      .from('need_bars')
+      .select('hunger, happiness, health, discipline, last_synced_at')
+      .eq('user_id', userId)
       .single();
 
     if (fetchErr || !row) {
       return problemResponse(
         404,
-        "Not Found",
+        'Not Found',
         `No need_bars record found for userId: ${userId}`,
         req,
       );
@@ -149,11 +149,12 @@ Deno.serve(async (req: Request) => {
     };
 
     const { error: updateErr } = await supabase
-      .from("need_bars")
+      .from('need_bars')
       .update(updated)
-      .eq("user_id", userId);
+      .eq('user_id', userId);
 
-    if (updateErr) throw updateErr;
+    if (updateErr)
+      throw updateErr;
 
     const responseBody = JSON.stringify({
       data: updated,
@@ -167,14 +168,15 @@ Deno.serve(async (req: Request) => {
 
     return new Response(responseBody, {
       status: 200,
-      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
     });
-  } catch (err) {
-    console.error("[process-need-bar-sync]", err);
+  }
+  catch (err) {
+    console.error('[process-need-bar-sync]', err);
     return problemResponse(
       500,
-      "Internal Server Error",
-      err instanceof Error ? err.message : "An unexpected error occurred",
+      'Internal Server Error',
+      err instanceof Error ? err.message : 'An unexpected error occurred',
       req,
     );
   }

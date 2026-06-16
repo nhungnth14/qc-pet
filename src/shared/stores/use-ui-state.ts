@@ -11,13 +11,13 @@ type UiState = {
   setLoading: (loading: boolean) => void;
 };
 
-export const useUiState = create<UiState>()((set) => ({
+export const useUiState = create<UiState>()(set => ({
   activePanelId: null,
   toastMessage: null,
   isLoading: false,
-  openPanel: (panelId) => set({ activePanelId: panelId }),
+  openPanel: panelId => set({ activePanelId: panelId }),
   closePanel: () => set({ activePanelId: null }),
-  showToast: (message) => set({ toastMessage: message }),
+  showToast: message => set({ toastMessage: message }),
   hideToast: () => set({ toastMessage: null }),
-  setLoading: (isLoading) => set({ isLoading }),
+  setLoading: isLoading => set({ isLoading }),
 }));

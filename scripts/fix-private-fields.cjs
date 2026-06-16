@@ -10,8 +10,8 @@
 // a custom Babel plugin (moveImportsToTop) that runs last and ensures import
 // declarations always appear before any other statements.
 
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 const { transformSync } = require('@babel/core');
 
 const projectRoot = path.resolve(__dirname, '..');
@@ -28,7 +28,8 @@ function moveImportsToTopPlugin() {
           for (const node of programPath.node.body) {
             if (node.type === 'ImportDeclaration') {
               imports.push(node);
-            } else {
+            }
+            else {
               others.push(node);
             }
           }
@@ -44,7 +45,8 @@ function findRnSrcDirs() {
 
   // Direct install (npm/yarn)
   const directPath = path.join(projectRoot, 'node_modules', 'react-native', 'src');
-  if (fs.existsSync(directPath)) dirs.push(directPath);
+  if (fs.existsSync(directPath))
+    dirs.push(directPath);
 
   // pnpm virtual store — react-native lives under .pnpm/react-native@<ver>/node_modules/
   const pnpmStore = path.join(projectRoot, 'node_modules', '.pnpm');
@@ -53,12 +55,18 @@ function findRnSrcDirs() {
       for (const entry of fs.readdirSync(pnpmStore)) {
         if (entry.startsWith('react-native@')) {
           const candidate = path.join(
-            pnpmStore, entry, 'node_modules', 'react-native', 'src'
+            pnpmStore,
+            entry,
+            'node_modules',
+            'react-native',
+            'src',
           );
-          if (fs.existsSync(candidate)) dirs.push(candidate);
+          if (fs.existsSync(candidate))
+            dirs.push(candidate);
         }
       }
-    } catch (_) {}
+    }
+    catch {}
   }
 
   return dirs;
@@ -66,11 +74,14 @@ function findRnSrcDirs() {
 
 function walkJs(dir, callback) {
   let entries;
-  try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch (_) { return; }
+  try { entries = fs.readdirSync(dir, { withFileTypes: true }); }
+  catch { return; }
   for (const e of entries) {
     const full = path.join(dir, e.name);
-    if (e.isDirectory()) walkJs(full, callback);
-    else if (e.isFile() && e.name.endsWith('.js')) callback(full);
+    if (e.isDirectory())
+      walkJs(full, callback);
+    else if (e.isFile() && e.name.endsWith('.js'))
+      callback(full);
   }
 }
 
@@ -87,9 +98,11 @@ let patched = 0;
 for (const srcDir of findRnSrcDirs()) {
   walkJs(srcDir, (filePath) => {
     let code;
-    try { code = fs.readFileSync(filePath, 'utf8'); } catch (_) { return; }
+    try { code = fs.readFileSync(filePath, 'utf8'); }
+    catch { return; }
     // Process if: (a) has private class fields, or (b) was badly transformed before
-    if (!PRIVATE_FIELD_RE.test(code) && !BAD_TRANSFORM_RE.test(code)) return;
+    if (!PRIVATE_FIELD_RE.test(code) && !BAD_TRANSFORM_RE.test(code))
+      return;
 
     try {
       const result = transformSync(code, {
@@ -118,7 +131,8 @@ for (const srcDir of findRnSrcDirs()) {
         fs.writeFileSync(filePath, result.code, 'utf8');
         patched++;
       }
-    } catch (_) {
+    }
+    catch {
       // Skip files that fail to parse — Metro's Babel will try to handle them
     }
   });

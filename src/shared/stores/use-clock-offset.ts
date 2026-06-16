@@ -8,6 +8,6 @@ type ClockOffsetState = {
 
 export const useClockOffset = create<ClockOffsetState>()((set, get) => ({
   clockOffset: 0,
-  setClockOffset: (offset) => set({ clockOffset: offset }),
+  setClockOffset: offset => set({ clockOffset: offset }),
   now: () => Date.now() + get().clockOffset,
 }));
