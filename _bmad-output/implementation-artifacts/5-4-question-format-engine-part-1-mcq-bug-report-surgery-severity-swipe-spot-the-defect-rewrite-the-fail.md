@@ -4,7 +4,7 @@ baseline_commit: 52fab0ec59d9e246382cbdb61b0bd915265fa8ab
 
 # Story 5.4: Question Format Engine Part 1 — MCQ, Bug Report Surgery, Severity Swipe, Spot the Defect, Rewrite the Fail
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -278,11 +278,11 @@ Code review 2026-06-17 — 3 layers (Blind Hunter + Edge Case Hunter + Acceptanc
 - [x] [Review][Defer] D1 — SFX chime thiếu (AC6): defer sang Epic 6 reward SFX pipeline (`expo-audio` + toàn bộ sound BC/QP earn). Không thêm dependency cô lập cho 1 sound. [DEF-5.4-0]
 
 #### Patches
-- [ ] [Review][Patch] P1 (HIGH) — Resume session cũ (optionIndex) → sai score: `handleResume` restore answers từ DB; schema cũ lưu optionIndex (0–3), code mới đếm `=== 1` → score sai âm thầm. Guard: nếu bất kỳ restored value > 1 → discard answers (clear stale map). [src/app/(app)/core-mission.tsx:handleResume]
-- [ ] [Review][Patch] P2 (HIGH) — Confetti `delay` tính mà không dùng: `PieceSpec.delay` random 0–300ms nhưng `ConfettiPiece` gọi `withTiming(...)` không wrap `withDelay` → 50 mảnh rơi đồng loạt thay vì stagger. Fix: `withDelay(spec.delay, withTiming(1, ...))`. [src/components/confetti.tsx:ConfettiPiece useEffect]
-- [ ] [Review][Patch] P3 (MEDIUM) — `isWarmup` positional thay data-driven: `const isWarmup = currentQ === 0` bỏ qua field `question.isWarmup`. Thêm `isWarmup: true` vào `q-mcq-1` trong sample-questions.ts + restore `!!question.isWarmup` trong core-mission. [src/app/(app)/core-mission.tsx:70, src/features/quiz/sample-questions.ts]
-- [ ] [Review][Patch] P4 (MEDIUM) — Double-submit race: SpotTheDefect / BugReportSurgery / RewriteTheFail / SeveritySwipe dùng React state cho committed guard → rapid double-tap/swipe có thể qua guard trước state commit → `onAnswered` gọi 2 lần. Fix: dùng `committedRef = useRef(false)` thay `committed` state. [formats/spot-the-defect.tsx, bug-report-surgery.tsx, rewrite-the-fail.tsx, severity-swipe.tsx]
-- [ ] [Review][Patch] P5 (LOW) — AC4 wrong-tap color-only: Spot the Defect chỉ đổi màu khi tap sai, không có shake. AC6 "input error không chỉ dùng màu" + AC4 "shake + error color". Fix: thêm `withSequence(withTiming(-5), withTiming(5), withTiming(0))` shake trên zone tap sai. [src/features/quiz/components/formats/spot-the-defect.tsx]
+- [x] [Review][Patch] P1 (HIGH) — Resume session cũ (optionIndex) → sai score: `handleResume` restore answers từ DB; schema cũ lưu optionIndex (0–3), code mới đếm `=== 1` → score sai âm thầm. Guard: nếu bất kỳ restored value > 1 → discard answers (clear stale map). [src/app/(app)/core-mission.tsx:handleResume]
+- [x] [Review][Patch] P2 (HIGH) — Confetti `delay` tính mà không dùng: `PieceSpec.delay` random 0–300ms nhưng `ConfettiPiece` gọi `withTiming(...)` không wrap `withDelay` → 50 mảnh rơi đồng loạt thay vì stagger. Fix: `withDelay(spec.delay, withTiming(1, ...))`. [src/components/confetti.tsx:ConfettiPiece useEffect]
+- [x] [Review][Patch] P3 (MEDIUM) — `isWarmup` positional thay data-driven: `const isWarmup = currentQ === 0` bỏ qua field `question.isWarmup`. Thêm `isWarmup: true` vào `q-mcq-1` trong sample-questions.ts + restore `!!question.isWarmup` trong core-mission. [src/app/(app)/core-mission.tsx:70, src/features/quiz/sample-questions.ts]
+- [x] [Review][Patch] P4 (MEDIUM) — Double-submit race: SpotTheDefect / BugReportSurgery / RewriteTheFail / SeveritySwipe dùng React state cho committed guard → rapid double-tap/swipe có thể qua guard trước state commit → `onAnswered` gọi 2 lần. Fix: dùng `committedRef = useRef(false)` thay `committed` state. [formats/spot-the-defect.tsx, bug-report-surgery.tsx, rewrite-the-fail.tsx, severity-swipe.tsx]
+- [x] [Review][Patch] P5 (LOW) — AC4 wrong-tap color-only: Spot the Defect chỉ đổi màu khi tap sai, không có shake. AC6 "input error không chỉ dùng màu" + AC4 "shake + error color". Fix: thêm `withSequence(withTiming(-5), withTiming(5), withTiming(0))` shake trên zone tap sai. [src/features/quiz/components/formats/spot-the-defect.tsx]
 
 #### Deferred
 - [x] [Review][Defer] DEF1 — SpotTheDefect: `left/top` với `%` string trong absolute positioning — verify trên native device (RN 0.81 Yoga 3 hỗ trợ %, web confirm OK; native chưa test). [formats/spot-the-defect.tsx:zone style]

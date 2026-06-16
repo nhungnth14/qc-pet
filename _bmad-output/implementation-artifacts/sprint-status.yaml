@@ -103,7 +103,7 @@ development_status:
   5-1-core-mission-entry-lesson-player-daily-mission-selection: done        # (app)/core-mission.tsx — lesson player
   5-2-quiz-session-engine-framework-2-5-1-2-emotional-arc-auto-save-session-resume: done   # quiz-api.ts + session resume
   5-3-rescue-mechanic-story-rule-feedback-panel-3-2-1-summary-card: done    # Story Rule panel + 3-2-1 cheat sheet
-  5-4-question-format-engine-part-1-mcq-bug-report-surgery-severity-swipe-spot-the-defect-rewrite-the-fail: review   # dev-story done 2026-06-16: Question Format Engine (5 format) + confetti + refactor core-mission; web smoke verified MCQ→advance, fixed counter spacing; type-check/lint/unit pass
+  5-4-question-format-engine-part-1-mcq-bug-report-surgery-severity-swipe-spot-the-defect-rewrite-the-fail: done   # code-review 2026-06-17: P1 resume-guard, P2 confetti-stagger, P3 isWarmup data-driven, P4 committedRef double-submit, P5 SpotTheDefect shake; type-check/lint pass (0 errors)
   5-5-question-format-engine-part-2-priority-severity-duel-boundary-attack-root-cause-chain-risk-radar-complete-the-test-case: backlog
   5-6-side-quests-bug-hunt-peer-review-repro-steps-simulated-bug-hunt: backlog
   5-7-mission-board-kanban-bug-report-wall: backlog
