@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import {
   Animated,
@@ -7,9 +7,14 @@ import {
   Text,
   View,
 } from 'react-native';
+import { getStep, setStep, stepToRoute } from '@/features/onboarding/onboarding-progress';
 
 export default function EggHatchingScreen() {
   const router = useRouter();
+
+  // Kill-app recovery (Story 2.6): nếu user đã đi quá màn trứng, resume tới đúng
+  // màn — KHÔNG replay egg animation. Tính 1 lần lúc mount (đồng bộ từ MMKV).
+  const resumeRoute = useRef(stepToRoute(getStep())).current;
 
   const shakeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -18,6 +23,12 @@ export default function EggHatchingScreen() {
   const tappedRef = useRef(false);
 
   useEffect(() => {
+    // Resume được xử lý bằng <Redirect> bên dưới (chờ Root Layout mounted, tránh
+    // lỗi "navigate before mounting"). Effect chỉ lo egg loop cho user mới.
+    if (resumeRoute)
+      return;
+    // User mới hoàn toàn → checkpoint màn trứng, chạy shake loop như cũ.
+    setStep('hatching');
     const loop = Animated.loop(
       Animated.sequence([
         Animated.timing(shakeAnim, { toValue: 8, duration: 100, useNativeDriver: true }),
@@ -30,10 +41,17 @@ export default function EggHatchingScreen() {
     );
     loop.start();
     return () => loop.stop();
-  }, []);
+  }, [resumeRoute, shakeAnim]);
+
+  // Đang resume → Redirect khai báo: Expo Router chờ navigator sẵn sàng rồi mới
+  // điều hướng (tránh lỗi navigate-before-mount khi chồng với Redirect của (app)).
+  if (resumeRoute) {
+    return <Redirect href={resumeRoute} />;
+  }
 
   const handleTap = () => {
-    if (tappedRef.current) return;
+    if (tappedRef.current)
+      return;
     tappedRef.current = true;
     Animated.sequence([
       Animated.timing(shakeAnim, { toValue: 15, duration: 80, useNativeDriver: true }),

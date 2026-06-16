@@ -1,5 +1,6 @@
+/* eslint-disable max-lines-per-function */
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -10,36 +11,57 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { clearProgress, setStep } from '@/features/onboarding/onboarding-progress';
 import { usePetStore } from '@/stores/pet-store';
 import { useSessionStore } from '@/stores/session-store';
 
 export default function SignUpScreen() {
   const router = useRouter();
-  const petName = usePetStore((s) => s.name);
-  const signUpWithEmail = useSessionStore((s) => s.signUpWithEmail);
+  const petName = usePetStore(s => s.name);
+  const signUpWithEmail = useSessionStore(s => s.signUpWithEmail);
+  const setOnboardingComplete = useSessionStore(s => s.setOnboardingComplete);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Checkpoint resume (Story 2.6 AC5) — màn cuối onboarding.
+  useEffect(() => {
+    setStep('sign_up');
+  }, []);
+
+  // Onboarding hoàn tất TẠI ĐÂY (không phải lúc commit reward) — mở gate vào (app)
+  // và xoá toàn bộ onboarding progress để lần sau không resume nhầm.
+  const finishOnboarding = () => {
+    setOnboardingComplete(true);
+    clearProgress();
+  };
+
   const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && password.length >= 6;
 
   const handleSave = async () => {
-    if (!isValid) return;
+    if (!isValid)
+      return;
     setIsLoading(true);
     setError(null);
     try {
       await signUpWithEmail(email, password);
+      finishOnboarding();
       router.replace('/(app)');
-    } catch (err: any) {
+    }
+    catch (err: any) {
       setError(err?.message ?? 'Đăng ký thất bại, thử lại nhé');
-    } finally {
+    }
+    finally {
       setIsLoading(false);
     }
   };
 
   const handleSkip = () => {
+    if (isLoading)
+      return;
+    finishOnboarding();
     router.replace('/(app)');
   };
 
@@ -50,9 +72,9 @@ export default function SignUpScreen() {
     >
       <View style={styles.top}>
         <Text style={styles.bugsy}>🐣</Text>
-        <Text style={styles.title}>Lưu {petName} lại!</Text>
+        <Text style={styles.title}>{`Lưu ${petName} lại!`}</Text>
         <Text style={styles.subtitle}>
-          Tạo tài khoản để không mất {petName} nếu cài lại app.
+          {`Tạo tài khoản để không mất ${petName} nếu cài lại app.`}
         </Text>
       </View>
 
@@ -84,20 +106,22 @@ export default function SignUpScreen() {
           onPress={handleSave}
           disabled={!isValid || isLoading}
         >
-          {isLoading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.btnPrimaryText}>Lưu {petName} 🐣</Text>
-          )}
+          {isLoading
+            ? (
+                <ActivityIndicator color="#fff" />
+              )
+            : (
+                <Text style={styles.btnPrimaryText}>{`Lưu ${petName} 🐣`}</Text>
+              )}
         </Pressable>
 
-        <Pressable style={styles.btnSkip} onPress={handleSkip}>
+        <Pressable style={styles.btnSkip} onPress={handleSkip} disabled={isLoading}>
           <Text style={styles.btnSkipText}>Để sau</Text>
         </Pressable>
 
         <View style={styles.warningBox}>
           <Text style={styles.warningText}>
-            ⚠️ Nếu xóa app, bạn sẽ mất {petName} và toàn bộ tiến trình.
+            {`⚠️ Nếu xóa app, bạn sẽ mất ${petName} và toàn bộ tiến trình.`}
           </Text>
         </View>
       </View>

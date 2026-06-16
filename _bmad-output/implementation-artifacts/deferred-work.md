@@ -37,3 +37,9 @@ Tổng hợp các việc được hoãn lại từ code review / dev — để c
 - **DEF-H — Lesson file `[]` rỗng silently valid.** validate-content nên warn khi file 0 lesson. [scripts/validate-content.mjs]
 - **DEF-I — EAS/Sentry live + secrets (pending user).** EXPO_TOKEN, Sentry account (DSN + SENTRY_AUTH_TOKEN + config-plugin app.config), project Supabase staging/prod thật, bật branch protection `main` chọn job `quality` required. Xem `docs/ci-cd-setup.md`. (Story-acknowledged.)
 - **DEF-J — Sentry whitespace DSN.** `" "` truthy → `Sentry.init` có thể throw lúc load. Trim/validate DSN khi hardening Sentry. [src/app/_layout.tsx]
+
+## Deferred from: code review of story-2-6 (2026-06-16)
+
+- **DEF-2.6-A — Idempotency reward server-side đầy đủ → Epic 6.** `addCurrency` là read-modify-write qua PostgREST (không idempotent). Cửa sổ cộng-đôi cross-device, hoặc giữa lúc gọi mạng, vẫn còn ngay cả sau patch P1 (P1 chỉ thu hẹp cửa sổ same-device). Chốt ở Resolved Decision #2: Edge Function + Upstash Redis + `X-Idempotency-Key` làm đồng bộ cho cả quiz reward ở Epic 6 (Dual Currency). [src/app/onboarding/reward.tsx, src/lib/supabase-api.ts:135]
+- **DEF-2.6-B — Native push permission ("Được") → Epic 9.** Màn Notification Preference chỉ lưu cờ `onboarding_notif_opt_in` (MMKV); chưa gọi `expo-notifications` / đăng ký Expo Push token. Epic 9 (FR-32) đọc cờ này để quyết định request OS permission. Đã ghi rõ trong code comment. [src/app/onboarding/notification.tsx]
+- **DEF-2.6-C — WAL offline replay lúc launch chưa nối.** Recovery onboarding dùng cờ `reward_committed` + `onboarding_step` thay cho `wal.recover('onboarding')` lúc khởi động. WAL entry offline vẫn write-trước-API/delete-sau-success nhưng không có routine replay → entry offline (mất mạng lúc commit reward) tồn tại tới khi có cơ chế background-sync chung (tương lai). [src/app/onboarding/reward.tsx, src/lib/wal.ts]

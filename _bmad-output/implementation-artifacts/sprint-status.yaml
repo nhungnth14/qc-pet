@@ -72,7 +72,7 @@ development_status:
   2-3-micro-bridge-warm-up-scenario-aha-moment-setup: done   # onboarding/aha-moment.tsx
   2-4-story-rule-feedback-reward-animation-server-committed-cliffhanger: done   # onboarding/reward.tsx + WAL + RewardEventBus
   2-5-notification-permission-sign-up-gate-work-room-entry: done   # onboarding/sign-up.tsx + anon auth session
-  2-6-kill-app-corner-cases-onboarding-flow-recovery: backlog
+  2-6-kill-app-corner-cases-onboarding-flow-recovery: done   # code review 2026-06-16: 5 patch applied (reward idempotency hardening: markCommitted reorder + in-flight guard; maestro currency assert; skip guard; dead-param) + 3 defer (server idempotency→E6, push→E9, WAL replay); tsc/eslint/16-unit pass
   epic-2-retrospective: optional
 
   # -----------------------------------------------------------------

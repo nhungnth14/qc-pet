@@ -1,3 +1,5 @@
+/* eslint-disable max-lines-per-function */
+import type { RewardPayload } from '@/lib/reward-event-bus';
 import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -7,20 +9,26 @@ import {
   Text,
   View,
 } from 'react-native';
+import {
+  isRewardCommitted,
+  markRewardCommitted,
+  setStep,
+  shouldCreditReward,
+} from '@/features/onboarding/onboarding-progress';
+import { rewardEventBus } from '@/lib/reward-event-bus';
+import { storage } from '@/lib/storage';
+import { supabase } from '@/lib/supabase';
+import { addCurrency, getGameState } from '@/lib/supabase-api';
+import { wal } from '@/lib/wal';
 import { usePetStore } from '@/stores/pet-store';
 import { useSessionStore } from '@/stores/session-store';
-import { supabase } from '@/lib/supabase';
-import { addCurrency } from '@/lib/supabase-api';
-import { storage } from '@/lib/storage';
-import { wal } from '@/lib/wal';
 
 export default function RewardScreen() {
   const router = useRouter();
-  const petName = usePetStore((s) => s.name);
-  const addBC = usePetStore((s) => s.addBC);
-  const addQP = usePetStore((s) => s.addQP);
-  const setOnboardingComplete = useSessionStore((s) => s.setOnboardingComplete);
-  const userId = useSessionStore((s) => s.userId);
+  const petName = usePetStore(s => s.name);
+  const addBC = usePetStore(s => s.addBC);
+  const addQP = usePetStore(s => s.addQP);
+  const userId = useSessionStore(s => s.userId);
 
   const [offlineMsg, setOfflineMsg] = useState<string | null>(null);
 
@@ -30,37 +38,87 @@ export default function RewardScreen() {
   const bcOpacity = useRef(new Animated.Value(0)).current;
   const qpOpacity = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    commitRewardToServer().then(() => startAnimations());
-  }, []);
+  // In-flight guard: chặn double-invoke (re-mount / StrictMode dev) chạy commit 2 lần
+  // trong lúc await server — tránh gọi addCurrency / addBC / addQP đôi (NFR-1).
+  const committingRef = useRef(false);
 
-  const commitRewardToServer = async () => {
-    wal.write('onboarding', 'reward', { bc: 10, qp: 6 });
+  async function commitReward() {
+    if (committingRef.current)
+      return;
+    committingRef.current = true;
+
+    const payload: RewardPayload = { type: 'bc', amount: 10, meta: { qp: 6 } };
+
+    // Resume (AC2/AC5): reward đã commit trước khi kill → KHÔNG gọi server lại,
+    // chỉ phát lại animation. Idempotency đảm bảo bởi cờ reward_committed.
+    if (isRewardCommitted()) {
+      rewardEventBus.emit('server_committed', payload);
+      rewardEventBus.emit('animation_triggered', payload);
+      return;
+    }
+
+    // WAL trước API — id = idempotency key ổn định theo user (dedup khi retry/resume).
+    wal.write('onboarding', 'reward', {
+      id: `onboarding-reward:${userId ?? 'anon'}`,
+      action: 'onboarding.reward',
+      payload: { bc: 10, qp: 6 },
+      createdAt: Date.now(),
+    });
 
     const petId = storage.getString('pet_id');
 
     try {
-      if (petId) {
+      // Server-truth guard: nếu onboarding đã completed trên server → đã cộng currency rồi.
+      let serverCompleted = false;
+      if (userId) {
+        const gs = await getGameState(userId);
+        serverCompleted = gs.data.onboardingCompleted;
+      }
+      const credit = shouldCreditReward({
+        committedLocally: isRewardCommitted(),
+        serverCompleted,
+        hasPetId: petId !== null,
+      });
+      if (credit && petId) {
         await addCurrency(petId, 10, 6);
       }
-      if (userId) {
-        await supabase
-          .from('game_state')
-          .upsert({ user_id: userId, onboarding_completed: true }, { onConflict: 'user_id' });
-      }
+      // Chốt committed NGAY khi currency đã trên server (hoặc xác định không cần cộng),
+      // TRƯỚC secondary write game_state → kill sau đây không re-credit (cùng thiết bị).
+      markRewardCommitted();
       wal.delete('onboarding', 'reward');
-      setOnboardingComplete(true);
-      addBC(10);
-      addQP(6);
-    } catch (_err) {
-      setOfflineMsg('Đã lưu offline, sẽ sync khi có mạng');
-      setOnboardingComplete(true);
-      addBC(10);
-      addQP(6);
-    }
-  };
+      if (credit) {
+        addBC(10);
+        addQP(6);
+      }
+      rewardEventBus.emit('server_committed', payload);
+      rewardEventBus.emit('animation_triggered', payload);
 
-  const startAnimations = () => {
+      // Secondary, không-critical: đánh dấu onboarding completed trên server. Lỗi ở đây
+      // KHÔNG kích offline fallback (currency đã commit, animation đã chạy).
+      if (userId) {
+        try {
+          await supabase
+            .from('game_state')
+            .upsert({ user_id: userId, onboarding_completed: true }, { onConflict: 'user_id' });
+        }
+        catch {
+          // game_state flag sẽ được set lại ở flow sau; không ảnh hưởng currency.
+        }
+      }
+    }
+    catch {
+      // Offline (getGameState/addCurrency fail): giữ WAL để sync sau; đánh dấu
+      // committed-local để không cộng đôi. Cộng local 1 lần (chưa cộng ở trên).
+      setOfflineMsg('Đã lưu offline, sẽ sync khi có mạng');
+      markRewardCommitted();
+      addBC(10);
+      addQP(6);
+      rewardEventBus.emit('server_committed', payload);
+      rewardEventBus.emit('animation_triggered', payload);
+    }
+  }
+
+  function startAnimations() {
     Animated.sequence([
       Animated.spring(bugsyBounce, {
         toValue: -20,
@@ -77,15 +135,23 @@ export default function RewardScreen() {
         Animated.timing(qpFloat, { toValue: -40, duration: 800, useNativeDriver: true }),
       ]),
     ]).start();
-  };
+  }
+
+  useEffect(() => {
+    setStep('reward');
+    // NFR-1: animation chỉ chạy qua RewardEventBus (server_committed → animation_triggered).
+    const unsub = rewardEventBus.on('animation_triggered', () => startAnimations());
+    commitReward();
+    return unsub;
+  }, []);
 
   const handleContinue = () => {
-    router.push('/onboarding/sign-up');
+    router.push('/onboarding/cliffhanger');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🎊 Tuyệt vời {petName}!</Text>
+      <Text style={styles.title}>{`🎊 Tuyệt vời ${petName}!`}</Text>
 
       {/* Bugsy bouncing */}
       <Animated.View style={{ transform: [{ translateY: bugsyBounce }] }}>
@@ -130,7 +196,7 @@ export default function RewardScreen() {
       {offlineMsg && <Text style={styles.offlineMsg}>{offlineMsg}</Text>}
 
       <Pressable style={styles.btn} onPress={handleContinue}>
-        <Text style={styles.btnText}>Vào Work Room với Bugsy →</Text>
+        <Text style={styles.btnText}>Tiếp tục nào →</Text>
       </Pressable>
     </View>
   );

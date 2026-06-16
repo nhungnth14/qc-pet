@@ -7,6 +7,8 @@ export default function OnboardingLayout() {
       <Stack.Screen name="naming" />
       <Stack.Screen name="aha-moment" />
       <Stack.Screen name="reward" />
+      <Stack.Screen name="cliffhanger" />
+      <Stack.Screen name="notification" />
       <Stack.Screen name="sign-up" />
     </Stack>
   );

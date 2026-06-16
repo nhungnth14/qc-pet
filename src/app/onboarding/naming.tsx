@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -10,38 +11,54 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import {
+  clearNameDraft,
+  getNameDraft,
+  saveNameDraft,
+  setStep,
+} from '@/features/onboarding/onboarding-progress';
+import { storage } from '@/lib/storage';
+import { supabase } from '@/lib/supabase';
 import { usePetStore } from '@/stores/pet-store';
 import { useSessionStore } from '@/stores/session-store';
-import { supabase } from '@/lib/supabase';
-import { storage } from '@/lib/storage';
 
 const SUGGESTIONS = ['Bugsy', 'Kiwi', 'Pip'];
 
 export default function NamingScreen() {
   const router = useRouter();
-  const savePetLocally = usePetStore((s) => s.savePetLocally);
-  const userId = useSessionStore((s) => s.userId);
-  const [petName, setPetName] = useState('');
+  const savePetLocally = usePetStore(s => s.savePetLocally);
+  const userId = useSessionStore(s => s.userId);
+  // Resume tên đang gõ dở (Story 2.6 AC1) — khởi tạo từ draft đã lưu trong MMKV.
+  const [petName, setPetName] = useState(() => getNameDraft());
   const [selected, setSelected] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const panelAnim = useRef(new Animated.Value(300)).current;
 
   useEffect(() => {
+    setStep('naming');
     Animated.spring(panelAnim, {
       toValue: 0,
       tension: 50,
       friction: 8,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [panelAnim]);
+
+  // Lưu draft tên đang gõ (ghi MMKV đồng bộ) → force-quit vẫn resume đúng.
+  const handleChangeName = (text: string) => {
+    setPetName(text);
+    saveNameDraft(text);
+  };
 
   const handleSelect = (name: string) => {
     setSelected(name);
     setPetName(name);
+    saveNameDraft(name);
   };
 
   const handleConfirm = async () => {
-    if (isSubmitting) return;
+    if (isSubmitting)
+      return;
     setIsSubmitting(true);
     try {
       const name = petName.trim() || 'Bugsy';
@@ -57,13 +74,16 @@ export default function NamingScreen() {
           if (data?.id) {
             storage.set('pet_id', data.id);
           }
-        } catch {
+        }
+        catch {
           // Server write failed — pet saved locally, continues offline
         }
       }
 
+      clearNameDraft();
       router.push('/onboarding/aha-moment');
-    } finally {
+    }
+    finally {
       setIsSubmitting(false);
     }
   };
@@ -89,7 +109,7 @@ export default function NamingScreen() {
 
         {/* Suggestions */}
         <View style={styles.suggestions}>
-          {SUGGESTIONS.map((name) => (
+          {SUGGESTIONS.map(name => (
             <Pressable
               key={name}
               style={[
@@ -116,11 +136,14 @@ export default function NamingScreen() {
           placeholder="Hoặc nhập tên khác..."
           placeholderTextColor="#999"
           value={petName}
-          onChangeText={setPetName}
+          onChangeText={handleChangeName}
           maxLength={20}
           autoCapitalize="words"
         />
-        <Text style={styles.charCount}>{petName.length}/20</Text>
+        <Text style={styles.charCount}>
+          {petName.length}
+          /20
+        </Text>
 
         {/* Confirm */}
         <Pressable
@@ -129,7 +152,11 @@ export default function NamingScreen() {
           disabled={!isValid || isSubmitting}
         >
           <Text style={styles.btnText}>
-            Đặt tên cho {petName.trim() || '...'}  🐣
+            Đặt tên cho
+            {' '}
+            {petName.trim() || '...'}
+            {' '}
+            🐣
           </Text>
         </Pressable>
       </Animated.View>

@@ -1,5 +1,6 @@
+/* eslint-disable max-lines-per-function */
 import { useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Pressable,
@@ -7,20 +8,27 @@ import {
   Text,
   View,
 } from 'react-native';
+import { setStep } from '@/features/onboarding/onboarding-progress';
 import { usePetStore } from '@/stores/pet-store';
 
 type AnswerState = 'idle' | 'correct' | 'wrong';
 
 export default function AhaMomentScreen() {
   const router = useRouter();
-  const petName = usePetStore((s) => s.name);
+  const petName = usePetStore(s => s.name);
   const [answer, setAnswer] = useState<AnswerState>('idle');
   const [showStoryRule, setShowStoryRule] = useState(false);
   const storyPanelAnim = useRef(new Animated.Value(400)).current;
   const confettiAnim = useRef(new Animated.Value(0)).current;
 
+  // Checkpoint resume (Story 2.6) — Aha Moment là warm-up exception, không reward.
+  useEffect(() => {
+    setStep('aha_moment');
+  }, []);
+
   const handleAnswer = (choice: 'pass' | 'fail') => {
-    if (answer !== 'idle') return;
+    if (answer !== 'idle')
+      return;
 
     if (choice === 'fail') {
       // Correct!
@@ -33,7 +41,8 @@ export default function AhaMomentScreen() {
       }).start(() => {
         setTimeout(() => router.push('/onboarding/reward'), 1200);
       });
-    } else {
+    }
+    else {
       // Wrong → Story Rule
       setAnswer('wrong');
       setShowStoryRule(true);
@@ -56,7 +65,7 @@ export default function AhaMomentScreen() {
       <View style={styles.header}>
         <Text style={styles.headerLabel}>🐣 Bugsy nói</Text>
         <Text style={styles.headerSub}>
-          Thử một tình huống nhỏ nha {petName}?
+          {`Thử một tình huống nhỏ nha ${petName}?`}
         </Text>
       </View>
 
@@ -74,7 +83,8 @@ export default function AhaMomentScreen() {
         <View style={styles.ticketDivider} />
         <Text style={styles.scenarioLabel}>📋 Scenario B</Text>
         <Text style={styles.scenarioText}>
-          Developer nói "fixed". Bạn nhận build mới và test lại —{' '}
+          Developer nói "fixed". Bạn nhận build mới và test lại —
+          {' '}
           <Text style={styles.scenarioBold}>bug vẫn còn đó.</Text>
         </Text>
         <Text style={styles.scenarioQuestion}>
@@ -129,8 +139,11 @@ export default function AhaMomentScreen() {
           <Text style={styles.storyText}>
             Huy nhận được build mới từ dev, test lại — vẫn lỗi như cũ.
             Dev nói "tôi đã fix rồi mà" nhưng thực tế chưa deploy lên đúng
-            môi trường. Huy mark{' '}
-            <Text style={styles.storyBold}>Fail</Text> và comment rõ ràng.
+            môi trường. Huy mark
+            {' '}
+            <Text style={styles.storyBold}>Fail</Text>
+            {' '}
+            và comment rõ ràng.
           </Text>
           <View style={styles.ruleBox}>
             <Text style={styles.ruleLabel}>📌 Rule:</Text>
