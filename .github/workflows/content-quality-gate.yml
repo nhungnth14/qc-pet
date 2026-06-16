@@ -1,0 +1,25 @@
+name: Content Quality Gate
+
+# Chặn PR nếu lesson trong content/lessons/ thiếu/sai source_tag (NFR-3).
+on:
+  pull_request:
+    paths:
+      - 'content/lessons/**'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-content:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate lesson source_tag
+        run: node scripts/validate-content.mjs

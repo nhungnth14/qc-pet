@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed": "#c9e6ff",
+                    "on-secondary-container": "#773224",
+                    "surface-container-low": "#f1f3ff",
+                    "secondary-fixed-dim": "#ffb4a5",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#cbdaff",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "surface-container-high": "#e0e8ff",
+                    "on-tertiary-fixed-variant": "#4f319c",
+                    "surface-container": "#e9edff",
+                    "tertiary-fixed": "#e8ddff",
+                    "inverse-on-surface": "#edf0ff",
+                    "primary-fixed-dim": "#8aceff",
+                    "tertiary-fixed-dim": "#cebdff",
+                    "on-error-container": "#93000a",
+                    "on-background": "#001a41",
+                    "error": "#ba1a1a",
+                    "on-primary-container": "#004464",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed-variant": "#004b6f",
+                    "surface-container-highest": "#d8e2ff",
+                    "background": "#f9f9ff",
+                    "outline": "#6e7882",
+                    "on-tertiary-fixed": "#21005e",
+                    "secondary-container": "#fd9d89",
+                    "secondary": "#944839",
+                    "inverse-primary": "#8aceff",
+                    "on-error": "#ffffff",
+                    "surface-tint": "#006491",
+                    "tertiary": "#674bb5",
+                    "surface-variant": "#d8e2ff",
+                    "on-secondary-fixed-variant": "#773124",
+                    "on-tertiary-container": "#472894",
+                    "on-secondary-fixed": "#3d0701",
+                    "surface-bright": "#f9f9ff",
+                    "surface": "#f9f9ff",
+                    "inverse-surface": "#002e69",
+                    "secondary-fixed": "#ffdad3",
+                    "on-surface": "#001a41",
+                    "on-surface-variant": "#3e4851",
+                    "primary-container": "#22b5ff",
+                    "outline-variant": "#bdc8d2",
+                    "on-primary-fixed": "#001e2f",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#b59cff",
+                    "primary": "#006491"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "12px",
+                    "xs": "4px",
+                    "lg": "40px",
+                    "base": "8px",
+                    "md": "24px",
+                    "container-padding": "20px"
+            },
+            "fontFamily": {
+                    "display": ["Nunito Sans"],
+                    "header-lg": ["Nunito Sans"],
+                    "code-sm": ["JetBrains Mono"],
+                    "body-md": ["Nunito Sans"],
+                    "ui-button": ["Nunito Sans"]
+            },
+            "fontSize": {
+                    "display": ["32px", {"lineHeight": "40px", "fontWeight": "900"}],
+                    "header-lg": ["24px", {"lineHeight": "32px", "fontWeight": "800"}],
+                    "code-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "ui-button": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "800"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .squishy-shadow {
+            box-shadow: 0px 6px 0px 0px rgba(0, 26, 65, 1);
+        }
+        .pressed-shadow {
+            box-shadow: 0px 2px 0px 0px rgba(0, 26, 65, 1);
+            transform: translateY(4px);
+        }
+        .bubbly-border {
+            border: 3px solid #001a41;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #bdc8d2;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface overflow-hidden">
+<!-- Background Layer (Dimmed Home Screen Emulation) -->
+<div class="fixed inset-0 z-0 bg-surface-dim pointer-events-none opacity-50 flex flex-col items-center pt-10">
+<!-- Mock Top Bar -->
+<header class="flex justify-between items-center w-full px-container-padding py-base bg-surface-container-highest shadow-[0px_6px_0px_0px_rgba(0,26,65,0.1)] rounded-b-xl max-w-lg">
+<div class="flex items-center gap-base">
+<div class="w-10 h-10 rounded-full bg-primary-container bubbly-border"></div>
+<span class="font-header-lg text-header-lg text-primary">Bugsy QC</span>
+</div>
+<div class="font-ui-button text-ui-button text-on-surface-variant">12 🔥 500 QC</div>
+</header>
+<!-- Mock Content -->
+<div class="mt-md w-full max-w-lg px-container-padding space-y-md">
+<div class="h-32 w-full rounded-xl bubbly-border bg-white p-md flex items-center justify-center">
+<div class="w-2/3 h-4 bg-surface-container-high rounded-full"></div>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="h-24 rounded-xl bubbly-border bg-white"></div>
+<div class="h-24 rounded-xl bubbly-border bg-white"></div>
+</div>
+</div>
+</div>
+<!-- Backdrop Dimmer Overlay -->
+<div class="fixed inset-0 z-10 bg-on-background/60 backdrop-blur-sm"></div>
+<!-- Slide-up Modal Card -->
+<div class="fixed bottom-0 left-0 right-0 z-20 flex justify-center items-end h-full">
+<div class="relative w-full max-w-xl bg-inverse-surface rounded-t-[40px] px-md pt-lg pb-md shadow-[0px_-10px_40px_rgba(0,0,0,0.5)] border-t-4 border-on-surface animate-slide-up">
+<!-- Bugsy Peeking Up -->
+<div class="absolute -top-32 left-1/2 -translate-x-1/2 w-48 h-48 animate-float">
+<img alt="Bugsy" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa5_tTP_psHB6AiUZYprqVQ9L6rv9CtLwIa35edk7VoOjnr5J4-EExI1hh3kTRX9ZXm42XhTw0fFfsunTxxydSGK0dMMJw6x62zSrjVhVX-lri0gvICPDpxjho7D15u0EWYt_SVsHPiRqhCiGMvxBOj4FNrtEpB4aDfyMh8FRopnjQhJ8dfh2rMrY0_oO7JgjM3guAr4tcl1vSH4BCoOYdUC-NU5dN7LWbsMIpwH9Ua5sTi9DmSC3hgpR85wL5Uitpwu5Fiot0gaIv"/>
+</div>
+<!-- Content Area -->
+<div class="mt-8 text-center space-y-md">
+<h2 class="font-header-lg text-header-lg text-white mb-md leading-tight">
+                    Tuần trước bạn gặp bug gì thú vị ở công việc?
+                </h2>
+<!-- Chips Row -->
+<div class="flex flex-wrap justify-center gap-sm mb-base">
+<button class="px-sm py-xs bg-error-container text-on-error-container bubbly-border rounded-full font-code-sm text-code-sm hover:scale-105 transition-transform flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">block</span> Chưa được test thật
+                    </button>
+<button class="px-sm py-xs bg-tertiary-container text-on-tertiary-container bubbly-border rounded-full font-code-sm text-code-sm hover:scale-105 transition-transform flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">lock</span> Team không cho access
+                    </button>
+<button class="px-sm py-xs bg-primary-container text-on-primary-container bubbly-border rounded-full font-code-sm text-code-sm hover:scale-105 transition-transform flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">check_circle</span> Sprint quá nhỏ
+                    </button>
+</div>
+<!-- Terminal-like Input -->
+<div class="relative group">
+<textarea class="w-full min-h-[140px] bg-on-background bubbly-border rounded-2xl p-md font-code-sm text-code-sm text-green-400 placeholder-green-900 focus:ring-0 focus:outline-none custom-scrollbar resize-none" placeholder="Bug Log Entry: #..."></textarea>
+<div class="absolute bottom-4 right-4 flex items-center gap-1 opacity-60">
+<span class="w-2 h-4 bg-green-400 animate-pulse"></span>
+</div>
+</div>
+<!-- Primary Action Button -->
+<div class="pt-sm">
+<button class="w-full bg-[#ccff00] hover:bg-[#b8e600] active:translate-y-1 active:shadow-none text-on-background font-ui-button text-ui-button py-md rounded-full bubbly-border squishy-shadow transition-all flex items-center justify-center gap-base">
+<span>Cho Bugsy ăn 🍔</span>
+</button>
+</div>
+<!-- Secondary Link -->
+<div class="pb-base">
+<button class="text-surface-variant font-body-md underline decoration-2 underline-offset-4 hover:text-white transition-colors">
+                        Bỏ qua tuần này
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Navigation Shell Placeholder (Suppressed for transactional modal view as per rules) -->
+<!-- But we need BottomNavBar as a shell background for the Home Screen emulation -->
+<nav class="fixed bottom-0 left-0 w-full z-0 flex justify-around items-center px-md pb-md pt-sm bg-surface-container-highest border-t-4 border-on-surface opacity-30 pointer-events-none">
+<div class="text-on-surface-variant p-sm"><span class="material-symbols-outlined">assignment</span></div>
+<div class="bg-primary-container text-on-primary-container rounded-lg p-sm border-2 border-on-surface"><span class="material-symbols-outlined">menu</span></div>
+<div class="text-on-surface-variant p-sm"><span class="material-symbols-outlined">gamepad</span></div>
+<div class="text-on-surface-variant p-sm"><span class="material-symbols-outlined">menu_book</span></div>
+</nav>
+<script>
+        // Micro-interaction for input blinking effect or focus
+        const textarea = document.querySelector('textarea');
+        textarea.addEventListener('focus', () => {
+            textarea.parentElement.classList.add('scale-[1.01]');
+        });
+        textarea.addEventListener('blur', () => {
+            textarea.parentElement.classList.remove('scale-[1.01]');
+        });
+
+        // Click interaction for chips
+        document.querySelectorAll('button.rounded-full').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const text = chip.innerText.trim();
+                textarea.value += (textarea.value ? ' ' : '') + '[' + text.replace(/\w+/g, (m) => m) + '] ';
+                textarea.focus();
+            });
+        });
+    </script>
+<style>
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .animate-slide-up {
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</body></html>
