@@ -4,7 +4,7 @@ baseline_commit: 6f65fa19395fb21c8f14744d510c1506f8241e99
 
 # Story 0.2: Supabase Backend Foundation & Prisma Schema
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -265,3 +265,40 @@ Verify chạy trên LOCAL Supabase (`supabase start`, exit 0):
 
 **Gỡ:**
 - `supabase/migrations/002_quiz_sessions.sql` (Prisma tiếp quản — xem README)
+
+## Code Review — 2026-06-16 (BMAD adversarial)
+
+**Mode:** full · **Reviewers:** Blind Hunter + Edge Case Hunter + Acceptance Auditor (song song, Opus) · **Repo:** `qc-pet` · **Diff:** baseline `6f65fa1` → working tree, scoped File List (16 file, +1134).
+
+**AC verdict (Acceptance Auditor):** AC1 PARTIAL (bỏ `supabase_auth_id` — cố ý RLS Phase A) · AC2 ✅ · AC3 PARTIAL (Apple stub thiếu chú thích) · AC4 ✅ · AC5 ✅ · AC6 ✅ · AC7 ✅ · AC8 ✅.
+
+**Triage:** 3 decision-needed · 3 patch · 6 defer · 8 dismissed.
+
+### Review Findings
+
+- [x] [Review][Defer · quyết: giữ minimal/AC1, 0-3 `db pull`] D1 — **Schema Prisma KHÔNG khớp code đã ship.** Thiếu bảng `need_bars` + cột `game_state.{onboarding_completed,last_mission_completed_date,current_lesson_index}` mà `src/lib/supabase-api.ts`, `src/app/onboarding/reward.tsx` và 2 Edge Function đã deploy (`process-quiz-reward`, `process-need-bar-sync`) đang dùng. `schema.prisma` tự nhận "source of truth cho TẤT CẢ bảng app" nhưng không hề có `need_bars`. → (a) thêm vào schema 0-2 ngay (Prisma thật sự authoritative), hoặc (b) giữ minimal-by-design (AC1) + ghi rõ drift + bắt buộc 0-3 baseline bằng `prisma db pull` (KHÔNG `migrate deploy` mù → có thể DROP need_bars/cột → mất data cloud).
+- [x] [Review][Patch ✅ applied+verified · pets] D2 — **Vị trí `bc_balance`/`qp_total` mâu thuẫn 3 chiều.** epics.md (cả 2 ở `game_state`) vs schema 0-2 (`qp_total`@pets, `bc_balance`@game_state) vs code+Edge Function (cả 2 ở `pets`). `process-quiz-reward` (đã deploy) đọc/ghi `pets.bc_balance` → vỡ nếu schema `game_state.bc_balance` áp lên cloud. Ảnh hưởng trực tiếp "server commit trước animation". → Chốt vị trí canonical, đồng bộ schema + Edge Functions + supabase-api + epics.
+- [x] [Review][Patch ✅ applied+verified · trigger] D3 — **Auto-provision `public.users` bị hoãn nhưng code đã phụ thuộc.** Không có trigger tạo `public.users` từ `auth.users`; `createPet`/`getGameState`/`getNeedBars` cần users row trước; onboarding (Epic 2 done) gọi `completeOnboarding`→`createPet` ngay khi signup → FK violation trên DB sạch. → Làm trigger ngay trong 0-2, hay giao story gần?
+- [x] [Review][Patch ✅ applied+verified] P1 — RLS `FOR ALL` + GRANT DELETE cho anon/authenticated cho phép client tự `DELETE` row `users` → `ON DELETE CASCADE` xoá sạch pets/game_state/quiz_sessions (vi phạm "không bao giờ mất data"). [prisma/migrations/20260614195015_enable_rls + 20260614195016_grant_api_roles]
+- [x] [Review][Patch ✅ applied+verified] P2 — `anon` được GRANT INSERT/UPDATE/DELETE mọi bảng (least-privilege). App luôn có JWT (anon user → role `authenticated`) nên `anon` không cần quyền ghi. Thu hồi. [prisma/migrations/20260614195016_grant_api_roles]
+- [x] [Review][Patch ✅ applied+verified] P3 — `prisma.config.ts` dùng `process.env.DIRECT_URL` không guard → thiếu env báo lỗi P1013 khó hiểu. Thêm fail-fast. [prisma.config.ts:13]
+- [x] [Review][Defer] F1 — Cloud drift: init migration tạo lại `quiz_sessions`/enum đã có trên cloud từ 002 → `migrate deploy` fail/clobber. [prisma/migrations/20260614195014_init] — deferred: story đã hoãn cloud wiring sang 0-3; 0-3 PHẢI baseline bằng `prisma db pull`.
+- [x] [Review][Defer] F2 — Stub `auth.uid()` (shadow DB) trả NULL: an toàn vì migration hiện DDL-only, nhưng migration DML tương lai có thể âm thầm tác động 0 row. — deferred: document cho story sau.
+- [x] [Review][Defer] F3 — `initSession` không có concurrency guard → 2 lần gọi tạo 2 anon account. [src/stores/session-store.ts] — deferred: code Story 2-5, thuộc 2-6 (kill-app corner cases).
+- [x] [Review][Defer] F4 — `supabase.ts` throw lúc load module (env fail-fast từ 0-1 Patch #4) có thể vỡ `pnpm test` nếu jest không set env. [src/lib/supabase.ts] — deferred: verify jest env / guard test.
+- [x] [Review][Defer] F5 — `auth-token-storage.ts` chunking: race `removeChunked` vs `setChunked` + slice theo UTF-16 code unit (comment overclaim byte-safe; JWT ASCII nên an toàn hiện tại). [src/lib/auth-token-storage.ts] — deferred: harden cùng lúc test login/logout (carry-forward Patch #5 của 0-1).
+- [x] [Review][Defer] F6 — Reconcile spec/doc: AC1 vẫn ghi `supabase_auth_id` (đã bỏ theo RLS Phase A); Apple stub thiếu comment "STUB" như Google. — deferred: doc-only.
+
+**Dismissed (8 — noise/by-design):** anon key local hardcode trong `rls-smoke.mjs` (key local public, script chỉ trỏ 127.0.0.1) · `users.id` không DEFAULT (cố ý: id=auth.uid()) · `quiz_sessions` không `updated_at` (cố ý: dùng started_at/completed_at) · anon DELETE trả 200/0-row (đúng PostgREST, RLS chặn) · `env.ts` ASSOCIATED_DOMAIN/.url()+VAR_NUMBER/BOOL (template Obytes, không phải thay đổi 0-2) · thiếu `shadowDatabaseUrl` (migrate dev đã chạy OK local, Supabase CLI quản shadow 54320) · rls-smoke không cleanup/abort (script dev) · env validation opt-in/APP_ENV invalid (template).
+
+### Patches applied & verified — 2026-06-16
+
+5 patch (P1, P2, P3, D2→P4, D3→P5) + D1 housekeeping đã áp & verify trên **LOCAL Supabase**:
+- **Code (verified `prisma validate` + `tsc --noemit` exit 0):** `prisma.config.ts` (P3 guard `DIRECT_URL`), `prisma/schema.prisma` (D1 comment + P4 chuyển `bcBalance` GameState→Pet).
+- **Migrations mới (applied, `migrate dev` → "in sync", shadow-safe):** `20260616090001_tighten_api_grants` (P1+P2), `20260616090002_move_bc_balance_to_pets` (P4), `20260616090003_user_provisioning_trigger` (P5).
+- **`scripts/rls-smoke.mjs`** mở rộng 8 check → **8/8 PASS**: P5 trigger auto-users · P4 pets.bc_balance · RLS cross-user (0 row) · WITH CHECK 403 · P1 client DELETE users chặn 403 · P2 anon insert chặn 401.
+- `prisma generate` lại client (7.8.0) sau đổi schema.
+
+**Carry-forward Story 0-3 (F1/D1):** baseline cloud bằng `prisma db pull` — cloud có `need_bars` + cột feature + `quiz_sessions` cũ → **KHÔNG** `migrate deploy` mù. Defer F2–F6: xem `deferred-work.md`.
+
+**Status: review → done** (decision resolved · patch applied+verified · defer tracked).

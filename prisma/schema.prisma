@@ -1,6 +1,9 @@
 // QC Pet — Prisma 7.8.0
-// Prisma là SOURCE OF TRUTH cho data model + migrations + type generation của
-// TẤT CẢ bảng app trong schema `public` (users, pets, game_state, quiz_sessions).
+// Prisma quản schema CỐT LÕI (cột tối thiểu) của các bảng app trong `public`:
+// users, pets, game_state, quiz_sessions. ⚠️ CHƯA đầy đủ: bảng `need_bars` + một số
+// cột feature (vd game_state.onboarding_completed/current_lesson_index) hiện chỉ có
+// trên cloud dev DB & do feature stories sở hữu — Story 0-3 baseline cloud bằng
+// `prisma db pull`. (Code review 0-2, D1.)
 // ⚠️ KHÔNG dùng Prisma client trong app React Native hay Edge Functions (Deno).
 //    Prisma chỉ dùng dev-time. Data access runtime: @supabase/supabase-js (PostgREST).
 //
@@ -39,6 +42,7 @@ model Pet {
   name      String
   version   String   @default("v0.1")
   qpTotal   Int      @default(0) @map("qp_total")
+  bcBalance Int      @default(0) @map("bc_balance")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
@@ -51,7 +55,6 @@ model Pet {
 model GameState {
   id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId       String    @unique @map("user_id") @db.Uuid
-  bcBalance    Int       @default(0) @map("bc_balance")
   lastSyncedAt DateTime? @map("last_synced_at") @db.Timestamptz(6)
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)

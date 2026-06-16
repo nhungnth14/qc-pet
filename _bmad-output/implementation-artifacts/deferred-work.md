@@ -1,0 +1,13 @@
+# Deferred Work
+
+Tổng hợp các việc được hoãn lại từ code review / dev — để các story sau pick up.
+
+## Deferred from: code review of story-0-2 (2026-06-16)
+
+- **F1 — Cloud migration drift (0-3).** Init migration Prisma tạo lại `quiz_sessions` + enum `quiz_session_status` đã tồn tại trên cloud dev (từ `002_quiz_sessions.sql` cũ) → `prisma migrate deploy` sẽ fail/clobber. Story 0-3 PHẢI baseline cloud bằng `prisma db pull` (introspect schema thật, gồm cả `need_bars` + cột feature) trước khi quản bằng Prisma — KHÔNG `migrate deploy` mù (rủi ro DROP bảng/cột → mất data). [prisma/migrations/20260614195014_init]
+- **F2 — Stub `auth.uid()` shadow DB.** Stub trả `NULL::uuid` để `migrate dev` chạy được trên shadow DB (không có schema `auth`). An toàn hiện tại vì mọi migration là DDL-only; nhưng migration tương lai trộn DML trên bảng RLS có thể âm thầm tác động 0 row (không lỗi). Document cảnh báo cho người viết migration sau. [prisma/migrations/20260614195015_enable_rls]
+- **F3 — `initSession` thiếu concurrency guard.** Gọi `initSession` 2 lần trước khi lần đầu resolve (React StrictMode double-effect, điều hướng nhanh) → tạo 2 anonymous account, account đầu mồ côi. Thuộc code Story 2-5; xử lý trong Story 2-6 (kill-app corner cases). [src/stores/session-store.ts]
+- **F4 — `supabase.ts` throw lúc load module.** Env fail-fast (từ 0-1 Patch #4) throw ở module-eval; nếu `pnpm test` chạy mà jest không inject env Supabase → cả suite fail với lỗi khó hiểu. Verify `jest.config.js`/setup có set env không; nếu không, guard cho môi trường test. [src/lib/supabase.ts]
+- **F5 — `auth-token-storage.ts` chunking edge cases.** (a) Race `removeChunked` đọc head rồi xoá, `setChunked` đồng thời ghi head mới → chunk mồ côi, mất token → logout bất ngờ. (b) Slice theo UTF-16 code unit, comment overclaim "byte-safe"; JWT là ASCII nên an toàn hiện tại, nhưng giá trị non-ASCII tương lai có thể vỡ. Harden cùng lúc test luồng login/logout thật (carry-forward Patch #5 của Story 0-1, cần backend). [src/lib/auth-token-storage.ts]
+- **F6 — Reconcile spec/doc.** AC1 vẫn liệt kê cột `supabase_auth_id` dù đã bỏ theo quyết định RLS Phase A (`users.id = auth.uid()`); cập nhật AC1. Apple OAuth stub (`[auth.external.apple]`) thiếu comment "STUB (Story 0-2)" như block Google → thêm cho rõ là stub cố ý. Doc-only.
+- **D1 — Giữ schema Prisma minimal (quyết định review 0-2).** Lý do: đúng AC1 (cột tối thiểu, feature stories tự thêm). Việc còn lại: feature stories viết migration cho `need_bars` + cột `game_state` của họ; Story 0-3 baseline cloud bằng `prisma db pull` để Prisma nắm schema thật (gồm `need_bars`). 0-2 chỉ sửa comment "source of truth" trong `schema.prisma` cho khớp thực tế.
