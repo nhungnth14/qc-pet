@@ -1,5 +1,5 @@
 import type { AnswerResult, SeverityLevel, SeveritySwipeQuestion } from '../../question-types';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -34,12 +34,14 @@ function triggerHaptic() {}
  */
 export function SeveritySwipeView({ question, disabled, onAnswered }: Props) {
   const [chosen, setChosen] = useState<SeverityLevel | null>(null);
+  const committedRef = useRef(false);
   const tx = useSharedValue(0);
   const ty = useSharedValue(0);
 
   const commit = (sev: SeverityLevel) => {
-    if (disabled || chosen)
+    if (committedRef.current || disabled)
       return;
+    committedRef.current = true;
     triggerHaptic();
     setChosen(sev);
     onAnswered({ isCorrect: gradeSeveritySwipe(question, sev), answer: sev });

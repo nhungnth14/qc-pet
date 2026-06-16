@@ -1,6 +1,12 @@
 import type { AnswerResult, SpotTheDefectQuestion } from '../../question-types';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 import { gradeSpotTheDefect } from '../../question-types';
 
 type Props = {
@@ -9,13 +15,70 @@ type Props = {
   onAnswered: (result: AnswerResult) => void;
 };
 
+type ZoneProps = {
+  zone: SpotTheDefectQuestion['zones'][number];
+  isTapped: boolean;
+  committed: boolean;
+  disabled: boolean;
+  onToggle: (id: string) => void;
+};
+
+function ZoneItem({ zone: z, isTapped, committed, disabled, onToggle }: ZoneProps) {
+  const shakeX = useSharedValue(0);
+  const shakeStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: shakeX.value }],
+  }));
+
+  useEffect(() => {
+    if (committed && isTapped && !z.isDefect) {
+      // eslint-disable-next-line react-hooks/immutability
+      shakeX.value = withSequence(
+        withTiming(-8, { duration: 50 }),
+        withTiming(8, { duration: 50 }),
+        withTiming(-6, { duration: 50 }),
+        withTiming(6, { duration: 50 }),
+        withTiming(0, { duration: 50 }),
+      );
+    }
+  }, [committed, isTapped, z.isDefect, shakeX]);
+
+  return (
+    <Animated.View
+      style={[
+        styles.zoneWrapper,
+        { left: `${z.x}%` as const, top: `${z.y}%` as const, width: `${z.w}%` as const, height: `${z.h}%` as const },
+        shakeStyle,
+      ]}
+    >
+      <Pressable
+        style={[
+          styles.zone,
+          isTapped && !committed && styles.zoneTapped,
+          committed && z.isDefect && styles.zoneDefect,
+          committed && isTapped && !z.isDefect && styles.zoneWrong,
+          { flex: 1 },
+        ]}
+        disabled={disabled || committed}
+        onPress={() => onToggle(z.id)}
+        accessibilityRole="button"
+        accessibilityLabel={z.label}
+        accessibilityState={{ selected: isTapped }}
+      >
+        <Text style={styles.zoneLabel} numberOfLines={2}>{z.label}</Text>
+      </Pressable>
+    </Animated.View>
+  );
+}
+
 /**
  * Spot the Defect (AC4) — tap vùng có lỗi trên mockup (Pressable zones theo %),
  * hỗ trợ multi-defect, commit bằng "Xong". KHÔNG dùng Skia (Resolved Decision #2).
+ * Sai → shake + màu đỏ (AC4 + AC6).
  */
 export function SpotTheDefectView({ question, disabled, onAnswered }: Props) {
   const [tapped, setTapped] = useState<string[]>([]);
   const [committed, setCommitted] = useState(false);
+  const committedRef = useRef(false);
 
   const toggleZone = (id: string) => {
     if (disabled || committed)
@@ -24,8 +87,9 @@ export function SpotTheDefectView({ question, disabled, onAnswered }: Props) {
   };
 
   const handleDone = () => {
-    if (disabled || committed || tapped.length === 0)
+    if (committedRef.current || disabled || tapped.length === 0)
       return;
+    committedRef.current = true;
     setCommitted(true);
     onAnswered({ isCorrect: gradeSpotTheDefect(question, tapped), answer: tapped.join(',') });
   };
@@ -39,29 +103,16 @@ export function SpotTheDefectView({ question, disabled, onAnswered }: Props) {
           🖼️
           {question.sceneLabel}
         </Text>
-        {question.zones.map((z) => {
-          const isTapped = tapped.includes(z.id);
-          const zoneStyle = [
-            styles.zone,
-            { left: `${z.x}%` as const, top: `${z.y}%` as const, width: `${z.w}%` as const, height: `${z.h}%` as const },
-            isTapped && !committed && styles.zoneTapped,
-            committed && z.isDefect && styles.zoneDefect,
-            committed && isTapped && !z.isDefect && styles.zoneWrong,
-          ];
-          return (
-            <Pressable
-              key={z.id}
-              style={zoneStyle}
-              disabled={disabled || committed}
-              onPress={() => toggleZone(z.id)}
-              accessibilityRole="button"
-              accessibilityLabel={z.label}
-              accessibilityState={{ selected: isTapped }}
-            >
-              <Text style={styles.zoneLabel} numberOfLines={2}>{z.label}</Text>
-            </Pressable>
-          );
-        })}
+        {question.zones.map(z => (
+          <ZoneItem
+            key={z.id}
+            zone={z}
+            isTapped={tapped.includes(z.id)}
+            committed={committed}
+            disabled={disabled}
+            onToggle={toggleZone}
+          />
+        ))}
       </View>
 
       {!committed && (
@@ -95,8 +146,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   sceneCaption: { position: 'absolute', top: 8, left: 10, right: 10, fontSize: 11, color: '#6a8bc0', fontWeight: '600' },
+  zoneWrapper: { position: 'absolute' },
   zone: {
-    position: 'absolute',
     borderWidth: 2,
     borderColor: '#3a5a8c',
     borderStyle: 'dashed',

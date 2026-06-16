@@ -1,5 +1,5 @@
 import type { AnswerResult, RewriteTheFailQuestion } from '../../question-types';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { gradeRewriteTheFail } from '../../question-types';
 
@@ -16,6 +16,7 @@ type Props = {
 export function RewriteTheFailView({ question, disabled, onAnswered }: Props) {
   const [order, setOrder] = useState<string[]>([]);
   const [committed, setCommitted] = useState(false);
+  const committedRef = useRef(false);
 
   const pool = question.blocks.filter(b => !order.includes(b.id));
   const allPlaced = order.length === question.blocks.length;
@@ -32,8 +33,9 @@ export function RewriteTheFailView({ question, disabled, onAnswered }: Props) {
   };
 
   const handleDone = () => {
-    if (disabled || committed || !allPlaced)
+    if (committedRef.current || disabled || !allPlaced)
       return;
+    committedRef.current = true;
     setCommitted(true);
     onAnswered({ isCorrect: gradeRewriteTheFail(question, order), answer: order.join('>') });
   };

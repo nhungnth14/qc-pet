@@ -70,7 +70,7 @@ export default function CoreMissionScreen() {
 
   const question = QUESTIONS[currentQ];
   const totalQ = QUESTIONS.length;
-  const isWarmup = currentQ === 0;
+  const isWarmup = !!question?.isWarmup;
 
   // On mount: check for incomplete session or create new one
   useEffect(() => {
@@ -102,8 +102,16 @@ export default function CoreMissionScreen() {
     for (const [k, v] of Object.entries(resumeInfo.answers)) {
       restored[Number(k)] = v;
     }
-    answersRef.current = restored;
-    setAnswers(restored);
+    // Guard: sessions trước Story 5.4 lưu optionIndex (0–3); code mới đếm === 1.
+    // Nếu phát hiện value > 1 → discard để tránh score sai khi finish.
+    if (Object.values(restored).some(v => v > 1)) {
+      answersRef.current = {};
+      setAnswers({});
+    }
+    else {
+      answersRef.current = restored;
+      setAnswers(restored);
+    }
     setResumeInfo(null);
     setPhase('quiz');
   };
