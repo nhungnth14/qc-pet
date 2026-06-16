@@ -1,0 +1,49 @@
+# Deferred Work
+
+Tổng hợp các việc được hoãn lại từ code review / dev — để các story sau pick up.
+
+## Deferred from: code review of story-0-2 (2026-06-16)
+
+- **F1 — Cloud migration drift (0-3).** Init migration Prisma tạo lại `quiz_sessions` + enum `quiz_session_status` đã tồn tại trên cloud dev (từ `002_quiz_sessions.sql` cũ) → `prisma migrate deploy` sẽ fail/clobber. Story 0-3 PHẢI baseline cloud bằng `prisma db pull` (introspect schema thật, gồm cả `need_bars` + cột feature) trước khi quản bằng Prisma — KHÔNG `migrate deploy` mù (rủi ro DROP bảng/cột → mất data). [prisma/migrations/20260614195014_init]
+- **F2 — Stub `auth.uid()` shadow DB.** Stub trả `NULL::uuid` để `migrate dev` chạy được trên shadow DB (không có schema `auth`). An toàn hiện tại vì mọi migration là DDL-only; nhưng migration tương lai trộn DML trên bảng RLS có thể âm thầm tác động 0 row (không lỗi). Document cảnh báo cho người viết migration sau. [prisma/migrations/20260614195015_enable_rls]
+- **F3 — `initSession` thiếu concurrency guard.** Gọi `initSession` 2 lần trước khi lần đầu resolve (React StrictMode double-effect, điều hướng nhanh) → tạo 2 anonymous account, account đầu mồ côi. Thuộc code Story 2-5; xử lý trong Story 2-6 (kill-app corner cases). [src/stores/session-store.ts]
+- **F4 — `supabase.ts` throw lúc load module.** Env fail-fast (từ 0-1 Patch #4) throw ở module-eval; nếu `pnpm test` chạy mà jest không inject env Supabase → cả suite fail với lỗi khó hiểu. Verify `jest.config.js`/setup có set env không; nếu không, guard cho môi trường test. [src/lib/supabase.ts]
+- **F5 — `auth-token-storage.ts` chunking edge cases.** (a) Race `removeChunked` đọc head rồi xoá, `setChunked` đồng thời ghi head mới → chunk mồ côi, mất token → logout bất ngờ. (b) Slice theo UTF-16 code unit, comment overclaim "byte-safe"; JWT là ASCII nên an toàn hiện tại, nhưng giá trị non-ASCII tương lai có thể vỡ. Harden cùng lúc test luồng login/logout thật (carry-forward Patch #5 của Story 0-1, cần backend). [src/lib/auth-token-storage.ts]
+- **F6 — Reconcile spec/doc.** AC1 vẫn liệt kê cột `supabase_auth_id` dù đã bỏ theo quyết định RLS Phase A (`users.id = auth.uid()`); cập nhật AC1. Apple OAuth stub (`[auth.external.apple]`) thiếu comment "STUB (Story 0-2)" như block Google → thêm cho rõ là stub cố ý. Doc-only.
+- **D1 — Giữ schema Prisma minimal (quyết định review 0-2).** Lý do: đúng AC1 (cột tối thiểu, feature stories tự thêm). Việc còn lại: feature stories viết migration cho `need_bars` + cột `game_state` của họ; Story 0-3 baseline cloud bằng `prisma db pull` để Prisma nắm schema thật (gồm `need_bars`). 0-2 chỉ sửa comment "source of truth" trong `schema.prisma` cho khớp thực tế.
+
+## Deferred from: code review of story-0-6 (2026-06-16)
+
+- **DEF1 — TactileButton boxShadow animated: native fidelity.** RN 0.81 New Arch hỗ trợ `boxShadow`; web smoke render OK. Animated boxShadow (Reanimated) cần verify cảm quan/hiệu năng trên device build. [src/components/tactile-button.tsx]
+- **DEF2 — Jest harness vỡ sẵn từ baseline.** `__mocks__/@gorhom/bottom-sheet` → RN TextInput/Text jest mock crash (RN 0.81 + jest-expo 54). Chặn MỌI component test (0-6 + suite cũ). Ưu tiên fix để bật lại test. Liên quan 0-2 F4 (supabase.ts throw lúc load module cũng cản test). [jest.config.js, __mocks__]
+- **DEF3 — NeedBar mất fill animation/shimmer.** Bản cũ dùng `Animated.timing` cho width; component mới set width tĩnh → bar nhảy. Re-add animation + shimmer (DESIGN.md §Need Bar). [src/components/need-bar.tsx]
+- **DEF4 — Token hygiene.** `bg-primary`(#006491 MD3) vs `bg-primary-600`(Obytes cam) nhập nhằng; `colors.js` camelCase vs CSS kebab; `--color-need-*` thiếu trong `colors.js`; `error` vs `destructive` trùng đỏ. Dọn 1 lượt khi re-skin screen cũ. [src/global.css, src/components/ui/colors.js]
+- **DEF5 — Component robustness + a11y.** TactileButton/SpeechBubble render rỗng khi thiếu label/children; `disabled` không chặn press animation (Android); shared value chạy sau unmount; double-tap stutter; drag-off kẹt pressed; CurrencyChip `amount` không guard NaN/Infinity/âm; snapPoints inline array invalidate memo; `textClassName` bị bỏ khi dùng children; thiếu `accessibilityState`. Làm trong component-polish/a11y pass. [src/components/*]
+- **DEF6 — NeedBar.fillClassName free-string.** Typo class ngoài `@theme` → bar vô hình (Tailwind v4 không JIT dynamic string). Cân nhắc đổi sang token enum (`need: 'hunger'|...`). [src/components/need-bar.tsx]
+- **DEF7 — iOS JetBrains Mono PostScript name.** Verify tên PostScript trong .ttf khớp `font-family` để không fallback. Verify trên device build. [app.config.ts]
+- **DEF8 — Cleanup.** Gỡ dead dep `@expo-google-fonts/inter`; bổ sung `no-restricted-imports` (tamagui, gluestack-ui, react-native-ui-lib...). [package.json, eslint.config.mjs]
+- **DEF9 — Cosmetic/a11y nhỏ.** Gỡ sạch `dark:` variant inert (story-acknowledged); SpeechBubble tail gap 2px; TactileButton `accessibilityState={{disabled}}`. [src/components/*, ui/*]
+- **DEF10 — DESIGN.md vs story AC lệch.** TactileButton resting shadow 4px (DESIGN.md) vs 6px (AC/code); SpeechBubble border 4px (DESIGN.md) vs 3px (code). Reconcile với designer; cập nhật nguồn thắng. [DESIGN.md / story AC]
+
+## Deferred from: code review of story-0-3 (2026-06-16)
+
+- **DEF-A — jest `continue-on-error` trong ci.yml.** Che MỌI test fail (gate test vô hiệu). Gỡ dòng `continue-on-error: true` sau khi fix jest harness (xem DEF2 phần 0-6). [.github/workflows/ci.yml]
+- **DEF-B — SHA-pin GitHub Actions.** Đặc biệt `expo/expo-github-action@v8` (mang EXPO_TOKEN/SENTRY_AUTH_TOKEN) nên pin full commit SHA chống supply-chain. Story chọn major-tag (`@v4/@v8`) — đủ theo AC nhưng nên nâng cấp. [.github/workflows/*]
+- **DEF-C — `expo config` không enforce env.** Thiếu `STRICT_ENV_VALIDATION=1` nên config-check pass dù env hỏng. Bật strict khi CI có secrets/EAS env thật (đang pending). [.github/workflows/ci.yml]
+- **DEF-D — OTA channel hardcode `production`.** Mọi push main → eas update branch `production`. Refine multi-channel khi có staging/preview live. [.github/workflows/eas-build.yml]
+- **DEF-E — `eas build --no-wait` không wire kết quả.** Workflow xanh dù build EAS fail. Thêm cơ chế báo kết quả build sau. [.github/workflows/eas-build.yml]
+- **DEF-F — Node version floating (`20`).** Pin patch qua `.nvmrc`/`node-version-file` cho reproducible. [.github/workflows/*]
+- **DEF-G — `concurrency cancel-in-progress` trên push main.** Push dồn (merge queue) có thể để commit chưa verify. Cân nhắc tách group cho push vs PR. [.github/workflows/ci.yml]
+- **DEF-H — Lesson file `[]` rỗng silently valid.** validate-content nên warn khi file 0 lesson. [scripts/validate-content.mjs]
+- **DEF-I — EAS/Sentry live + secrets (pending user).** EXPO_TOKEN, Sentry account (DSN + SENTRY_AUTH_TOKEN + config-plugin app.config), project Supabase staging/prod thật, bật branch protection `main` chọn job `quality` required. Xem `docs/ci-cd-setup.md`. (Story-acknowledged.)
+- **DEF-J — Sentry whitespace DSN.** `" "` truthy → `Sentry.init` có thể throw lúc load. Trim/validate DSN khi hardening Sentry. [src/app/_layout.tsx]
+
+## Deferred from: code review of story-2-6 (2026-06-16)
+
+- **DEF-2.6-A — Idempotency reward server-side đầy đủ → Epic 6.** `addCurrency` là read-modify-write qua PostgREST (không idempotent). Cửa sổ cộng-đôi cross-device, hoặc giữa lúc gọi mạng, vẫn còn ngay cả sau patch P1 (P1 chỉ thu hẹp cửa sổ same-device). Chốt ở Resolved Decision #2: Edge Function + Upstash Redis + `X-Idempotency-Key` làm đồng bộ cho cả quiz reward ở Epic 6 (Dual Currency). [src/app/onboarding/reward.tsx, src/lib/supabase-api.ts:135]
+- **DEF-2.6-B — Native push permission ("Được") → Epic 9.** Màn Notification Preference chỉ lưu cờ `onboarding_notif_opt_in` (MMKV); chưa gọi `expo-notifications` / đăng ký Expo Push token. Epic 9 (FR-32) đọc cờ này để quyết định request OS permission. Đã ghi rõ trong code comment. [src/app/onboarding/notification.tsx]
+- **DEF-2.6-C — WAL offline replay lúc launch chưa nối.** Recovery onboarding dùng cờ `reward_committed` + `onboarding_step` thay cho `wal.recover('onboarding')` lúc khởi động. WAL entry offline vẫn write-trước-API/delete-sau-success nhưng không có routine replay → entry offline (mất mạng lúc commit reward) tồn tại tới khi có cơ chế background-sync chung (tương lai). [src/app/onboarding/reward.tsx, src/lib/wal.ts]
+
+## Deferred from: CI lint debt (phát hiện 2026-06-17 khi PR #2 chạy full lint lần đầu)
+
+- **DEF-LINT-1 — Dọn nợ lint repo-wide (~360 lỗi src).** CI (`eslint .`) chưa từng chạy trên PR nào trước PR #2 (các story chỉ lint scoped `src/...`), nên debt tích tụ lộ ra một lần. Sau khi ignore vendored/docs/generated (`_bmad/`, `_bmad-output/`, `bmad/`, `uniwind-types.d.ts`) còn **~363 errors / 153 warnings** trong source thật: `src/components`, `src/features/{quiz,rooms,pet,currency}`, `src/shared`, `src/lib`, `src/stores`, `src/app/(app)`, `supabase/functions/`, `scripts/`, vài config gốc. Phần lớn auto-fix được (`eslint . --fix`, ~302). **Việc cần làm (story riêng):** (1) `eslint . --fix` + sửa tay phần còn lại; (2) quyết định `unicorn/filename-case` — dự án đặt hook camelCase (`useQuizSession.ts`…) xung khắc rule kebabCase → hoặc đổi rule cho phép camelCase hook, hoặc rename file (rủi ro import) → chọn 1 và áp nhất quán; (3) sau khi sạch, XOÁ `continue-on-error` ở bước Lint trong `.github/workflows/ci.yml` để biến lint thành hard-gate. **Tạm thời:** Lint là advisory (continue-on-error) + chỉ lint file đổi trong PR — mirror cách jest/expo-doctor đang xử lý nợ baseline. KHÔNG phải lỗi của story 2-6 (file 2-6 đã lint sạch). [.github/workflows/ci.yml, eslint.config.mjs]

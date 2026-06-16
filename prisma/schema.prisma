@@ -1,0 +1,92 @@
+// QC Pet — Prisma 7.8.0
+// Prisma quản schema CỐT LÕI (cột tối thiểu) của các bảng app trong `public`:
+// users, pets, game_state, quiz_sessions. ⚠️ CHƯA đầy đủ: bảng `need_bars` + một số
+// cột feature (vd game_state.onboarding_completed/current_lesson_index) hiện chỉ có
+// trên cloud dev DB & do feature stories sở hữu — Story 0-3 baseline cloud bằng
+// `prisma db pull`. (Code review 0-2, D1.)
+// ⚠️ KHÔNG dùng Prisma client trong app React Native hay Edge Functions (Deno).
+//    Prisma chỉ dùng dev-time. Data access runtime: @supabase/supabase-js (PostgREST).
+//
+// RLS Phase A: public.users.id = auth.users.id (theo quy ước, KHÔNG đặt FK cross-schema
+//   tới auth.users để Prisma không phải kéo/migrate schema `auth` của Supabase → tránh
+//   drift). Mọi bảng tham chiếu public.users(id); policy = (auth.uid() = user_id).
+//   Liên kết auth.users → public.users (tạo row, cascade xoá) thuộc app logic / trigger
+//   ở story sau, KHÔNG phải FK Prisma.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// App user. id = Supabase auth.users.id (set khi tạo, không auto-gen).
+model User {
+  id        String   @id @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  pets         Pet[]
+  gameState    GameState?
+  quizSessions QuizSession[]
+
+  @@map("users")
+}
+
+/// Thú cưng Bugsy. Cột tối thiểu — feature stories thêm sau.
+model Pet {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  name      String
+  version   String   @default("v0.1")
+  qpTotal   Int      @default(0) @map("qp_total")
+  bcBalance Int      @default(0) @map("bc_balance")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("pets")
+}
+
+/// Trạng thái game per-user (1-1). Cột tối thiểu — feature stories thêm sau.
+model GameState {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String    @unique @map("user_id") @db.Uuid
+  lastSyncedAt DateTime? @map("last_synced_at") @db.Timestamptz(6)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("game_state")
+}
+
+enum QuizSessionStatus {
+  in_progress
+  completed
+  abandoned
+
+  @@map("quiz_session_status")
+}
+
+/// Phiên làm quiz. Tiếp quản từ supabase/migrations/002_quiz_sessions.sql
+/// (user_id đổi tham chiếu auth.users → public.users để hết cross-schema FK).
+model QuizSession {
+  id                   String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId               String            @map("user_id") @db.Uuid
+  lessonId             String            @map("lesson_id")
+  currentQuestionIndex Int               @default(0) @map("current_question_index")
+  answers              Json              @default("{}")
+  status               QuizSessionStatus @default(in_progress)
+  bcEarned             Int               @default(0) @map("bc_earned")
+  qpEarned             Int               @default(0) @map("qp_earned")
+  startedAt            DateTime          @default(now()) @map("started_at") @db.Timestamptz(6)
+  completedAt          DateTime?         @map("completed_at") @db.Timestamptz(6)
+
+  user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("quiz_sessions")
+}

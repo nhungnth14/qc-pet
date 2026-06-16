@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bugsy QC - Home Office</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@600;800;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed": "#c9e6ff",
+                    "on-secondary-container": "#773224",
+                    "surface-container-low": "#f1f3ff",
+                    "secondary-fixed-dim": "#ffb4a5",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#cbdaff",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "surface-container-high": "#e0e8ff",
+                    "on-tertiary-fixed-variant": "#4f319c",
+                    "surface-container": "#e9edff",
+                    "tertiary-fixed": "#e8ddff",
+                    "inverse-on-surface": "#edf0ff",
+                    "primary-fixed-dim": "#8aceff",
+                    "tertiary-fixed-dim": "#cebdff",
+                    "on-error-container": "#93000a",
+                    "on-background": "#001a41",
+                    "error": "#ba1a1a",
+                    "on-primary-container": "#004464",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed-variant": "#004b6f",
+                    "surface-container-highest": "#d8e2ff",
+                    "background": "#f9f9ff",
+                    "outline": "#6e7882",
+                    "on-tertiary-fixed": "#21005e",
+                    "secondary-container": "#fd9d89",
+                    "secondary": "#944839",
+                    "inverse-primary": "#8aceff",
+                    "on-error": "#ffffff",
+                    "surface-tint": "#006491",
+                    "tertiary": "#674bb5",
+                    "surface-variant": "#d8e2ff",
+                    "on-secondary-fixed-variant": "#773124",
+                    "on-tertiary-container": "#472894",
+                    "on-secondary-fixed": "#3d0701",
+                    "surface-bright": "#f9f9ff",
+                    "surface": "#f9f9ff",
+                    "inverse-surface": "#002e69",
+                    "secondary-fixed": "#ffdad3",
+                    "on-surface": "#001a41",
+                    "on-surface-variant": "#3e4851",
+                    "primary-container": "#22b5ff",
+                    "outline-variant": "#bdc8d2",
+                    "on-primary-fixed": "#001e2f",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#b59cff",
+                    "primary": "#006491"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "12px",
+                    "xs": "4px",
+                    "lg": "40px",
+                    "base": "8px",
+                    "md": "24px",
+                    "container-padding": "20px"
+            },
+            "fontFamily": {
+                    "display": ["Nunito Sans"],
+                    "header-lg": ["Nunito Sans"],
+                    "code-sm": ["JetBrains Mono"],
+                    "body-md": ["Nunito Sans"],
+                    "ui-button": ["Nunito Sans"]
+            },
+            "fontSize": {
+                    "display": ["32px", {"lineHeight": "40px", "fontWeight": "900"}],
+                    "header-lg": ["24px", {"lineHeight": "32px", "fontWeight": "800"}],
+                    "code-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "ui-button": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "800"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        @keyframes bounce-subtle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        .animate-bounce-subtle { animation: bounce-subtle 3s ease-in-out infinite; }
+        .shimmer-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer-effect::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        .tactile-border {
+            border: 3px solid #001a41;
+            box-shadow: 0px 6px 0px 0px rgba(0,26,65,1);
+        }
+        .active-interaction:active {
+            transform: translateY(4px);
+            box-shadow: 0px 2px 0px 0px rgba(0,26,65,1);
+        }
+        .terminal-blink { animation: blink 1s step-end infinite; }
+        
+        .floating-glow {
+            box-shadow: 0 0 20px rgba(34, 181, 255, 0.6);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(34, 181, 255, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(34, 181, 255, 0.8); }
+        }
+    </style>
+</head>
+<body class="bg-[#f9f9ff] text-on-surface font-body-md min-h-screen flex flex-col overflow-hidden">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface-dim border-b-4 border-on-surface dark:border-on-surface-variant shadow-[0px_6px_0px_0px_rgba(0,26,65,1)] fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding py-base">
+<div class="flex items-center gap-base">
+<div class="w-10 h-10 rounded-full border-2 border-on-surface overflow-hidden bg-primary-container">
+<img alt="Avatar" class="w-full h-full object-cover" data-alt="A macro 3D render of a fluffy yellow chick wearing miniature purple headphones, sitting at a miniature workstation. The lighting is soft and warm, casting gentle shadows in a clean, studio-lit environment. The aesthetic is high-quality CGI with a tactile, soft-touch finish, emphasizing the cute and playful nature of the character." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE6moTE7HPfqGle4qS0sGK45CH6WCATFEKPJfgfu1sztSY4cT22NbBbZukfaVqWv0WzXGI5DhvwkATT7aSaRNEQp7rtBk1UiGZyWW5kCIp94D4VoMqOGm3fkQzx_NwmwS-qm15zHw-4HUHXTtm7ReFMEES-EyGRjJT8jfktCGzFj__7U2WkXRSbe4DHZ0Tc3ZSg-2h18V8oiHdja_NIJn3jBUi1zD_Pc23C8rjqUAnY96PUAaUpyJPJ6jAu9TfHzNaWCa_qHL2Fe_Y"/>
+</div>
+<h1 class="font-display text-display text-primary dark:text-primary-fixed">Bugsy QC</h1>
+</div>
+<div class="flex items-center gap-sm">
+<div class="bg-surface-container-high rounded-full px-sm py-xs border-2 border-on-surface flex items-center gap-1">
+<span class="text-teal-500 font-bold">12 🔥</span>
+</div>
+<div class="bg-surface-container-high rounded-full px-sm py-xs border-2 border-on-surface flex items-center gap-1">
+<span class="text-primary font-bold">500 QC</span>
+</div>
+<div class="bg-surface-container-high rounded-full px-sm py-xs border-2 border-on-surface flex items-center gap-1">
+<span class="text-secondary font-bold">25 BC</span>
+</div>
+</div>
+</header>
+<!-- Main Content Area (Canvas) -->
+<main class="flex-grow pt-24 pb-32 relative w-full h-full">
+<!-- Background Atmospheric Scene -->
+<div class="absolute inset-0 z-0 opacity-20 pointer-events-none overflow-hidden">
+<!-- Asymmetric visual noise -->
+<div class="absolute top-1/4 right-0 w-64 h-64 bg-tertiary-container rounded-full blur-3xl"></div>
+<div class="absolute bottom-1/4 left-10 w-96 h-96 bg-primary-container rounded-full blur-3xl"></div>
+</div>
+<!-- Layout Grid: Bento Style -->
+<div class="relative z-10 grid grid-cols-12 h-full gap-md px-container-padding max-w-7xl mx-auto">
+<!-- Left Side: Need Bars -->
+<div class="col-span-12 md:col-span-3 flex flex-col gap-sm justify-center">
+<!-- Hunger -->
+<div class="bg-white p-sm tactile-border rounded-xl flex flex-col gap-xs hover:scale-105 transition-transform duration-200 cursor-pointer">
+<div class="flex justify-between items-center">
+<span class="flex items-center gap-1 font-bold"><span class="text-xl">🍔</span> Hunger</span>
+<span class="font-code-sm text-on-surface-variant">85%</span>
+</div>
+<div class="h-4 w-full bg-surface-container rounded-full border-2 border-on-surface overflow-hidden">
+<div class="h-full bg-lime-500 shimmer-effect" style="width: 85%;"></div>
+</div>
+</div>
+<!-- Happiness -->
+<div class="bg-white p-sm tactile-border rounded-xl flex flex-col gap-xs hover:scale-105 transition-transform duration-200 cursor-pointer">
+<div class="flex justify-between items-center">
+<span class="flex items-center gap-1 font-bold"><span class="text-xl">😊</span> Happiness</span>
+<span class="font-code-sm text-on-surface-variant">92%</span>
+</div>
+<div class="h-4 w-full bg-surface-container rounded-full border-2 border-on-surface overflow-hidden">
+<div class="h-full bg-primary-container shimmer-effect" style="width: 92%;"></div>
+</div>
+</div>
+<!-- Health -->
+<div class="bg-white p-sm tactile-border rounded-xl flex flex-col gap-xs hover:scale-105 transition-transform duration-200 cursor-pointer">
+<div class="flex justify-between items-center">
+<span class="flex items-center gap-1 font-bold"><span class="text-xl">❤️</span> Health</span>
+<span class="font-code-sm text-on-surface-variant">100%</span>
+</div>
+<div class="h-4 w-full bg-surface-container rounded-full border-2 border-on-surface overflow-hidden">
+<div class="h-full bg-error shimmer-effect" style="width: 100%;"></div>
+</div>
+</div>
+<!-- Discipline -->
+<div class="bg-white p-sm tactile-border rounded-xl flex flex-col gap-xs hover:scale-105 transition-transform duration-200 cursor-pointer">
+<div class="flex justify-between items-center">
+<span class="flex items-center gap-1 font-bold"><span class="text-xl">🎯</span> Discipline</span>
+<span class="font-code-sm text-on-surface-variant">64%</span>
+</div>
+<div class="h-4 w-full bg-surface-container rounded-full border-2 border-on-surface overflow-hidden">
+<div class="h-full bg-tertiary-container shimmer-effect" style="width: 64%;"></div>
+</div>
+</div>
+</div>
+<!-- Center: Bugsy in Office -->
+<div class="col-span-12 md:col-span-6 flex flex-col items-center justify-center relative">
+<!-- Desk Scene -->
+<div class="relative w-full aspect-square flex items-center justify-center">
+<!-- Desk Illustration Layer -->
+<div class="absolute inset-0 flex flex-col items-center justify-end pb-8">
+<!-- Monitor & Desk -->
+<div class="w-4/5 h-24 bg-surface-container border-4 border-on-surface rounded-t-xl relative mb-[-4px]">
+<!-- Monitor screen -->
+<div class="absolute -top-32 left-1/2 transform -translate-x-1/2 w-48 h-32 bg-on-background border-4 border-on-surface rounded-lg p-2 flex flex-col gap-1 overflow-hidden">
+<div class="text-[8px] text-lime-400 font-code-sm">
+                                    &gt; running bug_scan.sh...<br/>
+                                    &gt; [PASS] Button_Alignment<br/>
+                                    &gt; [FAIL] Fluffiness_Check<br/>
+                                    &gt; <span class="terminal-blink">_</span>
+</div>
+</div>
+<!-- Desk Lamp -->
+<div class="absolute -top-16 -left-4 w-12 h-20 bg-secondary-container border-2 border-on-surface rounded-full"></div>
+</div>
+</div>
+<!-- Bugsy Character -->
+<div class="animate-bounce-subtle z-20">
+<img alt="Bugsy at work" class="w-64 h-64 object-contain" data-alt="A very high-quality 3D cute mascot chick character sitting at a miniature tech desk. The chick has large glossy eyes, rosy cheeks, and is wearing oversized purple headphones. It is positioned in front of a glowing miniature computer screen. The setting is a cozy isometric office with soft clay-style textures, bright saturated colors, and playful lighting. The scene is rendered in a soft-focus toy aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa5_tTP_psHB6AiUZYprqVQ9L6rv9CtLwIa35edk7VoOjnr5J4-EExI1hh3kTRX9ZXm42XhTw0fFfsunTxxydSGK0dMMJw6x62zSrjVhVX-lri0gvICPDpxjho7D15u0EWYt_SVsHPiRqhCiGMvxBOj4FNrtEpB4aDfyMh8FRopnjQhJ8dfh2rMrY0_oO7JgjM3guAr4tcl1vSH4BCoOYdUC-NU5dN7LWbsMIpwH9Ua5sTi9DmSC3hgpR85wL5Uitpwu5Fiot0gaIv"/>
+</div>
+</div>
+<!-- "Mission Hôm Nay" Glowing Card -->
+<div class="absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-xs px-4">
+<div class="bg-primary-container text-on-primary-container tactile-border rounded-2xl p-sm floating-glow text-center cursor-pointer active-interaction transition-all">
+<div class="font-ui-button text-ui-button">Mission Hôm Nay</div>
+<div class="text-sm font-bold flex items-center justify-center gap-1 mt-1">
+<span class="material-symbols-outlined text-sm">assignment_turned_in</span>
+                            Tiêu diệt 5 bugs trong "Code Arena"
+                        </div>
+</div>
+</div>
+</div>
+<!-- Right Side: Stats / Mini Dashboard (Extra content to fill Bento) -->
+<div class="hidden md:flex md:col-span-3 flex-col gap-md justify-center">
+<div class="bg-tertiary text-on-tertiary tactile-border rounded-2xl p-md flex flex-col gap-2">
+<div class="text-xs font-bold uppercase tracking-widest opacity-80">Next Unlock</div>
+<div class="font-display text-header-lg">Mechanical Keyboard</div>
+<div class="text-sm font-body-md">Reach level 15 to upgrade workspace</div>
+<div class="mt-2 h-2 bg-on-tertiary/20 rounded-full overflow-hidden">
+<div class="h-full bg-on-tertiary" style="width: 45%;"></div>
+</div>
+</div>
+<div class="bg-white tactile-border rounded-2xl p-md flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">trending_up</span>
+<div class="font-bold">Weekly Progress</div>
+</div>
+<div class="flex gap-2 justify-between mt-2">
+<div class="w-8 h-16 bg-surface-container rounded-lg border-2 border-on-surface flex items-end">
+<div class="w-full bg-primary h-2/3 rounded-b-md"></div>
+</div>
+<div class="w-8 h-16 bg-surface-container rounded-lg border-2 border-on-surface flex items-end">
+<div class="w-full bg-primary h-full rounded-b-md"></div>
+</div>
+<div class="w-8 h-16 bg-surface-container rounded-lg border-2 border-on-surface flex items-end">
+<div class="w-full bg-primary h-1/2 rounded-b-md"></div>
+</div>
+<div class="w-8 h-16 bg-surface-container rounded-lg border-2 border-on-surface flex items-end">
+<div class="w-full bg-secondary h-4/5 rounded-b-md"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar / Dock -->
+<nav class="bg-surface-container dark:bg-surface-container-highest border-t-4 border-on-surface shadow-[0px_-6px_0px_0px_rgba(0,26,65,1)] fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-md pb-md pt-sm rounded-t-xl">
+<!-- Missions -->
+<button class="flex flex-col items-center gap-1 text-on-surface-variant p-sm hover:bg-surface-container-high transition-colors active:scale-90 duration-100">
+<span class="material-symbols-outlined text-2xl" data-icon="assignment">assignment</span>
+<span class="text-[10px] font-bold uppercase">Mission</span>
+</button>
+<!-- Feed -->
+<button class="flex flex-col items-center gap-1 text-on-surface-variant p-sm hover:bg-surface-container-high transition-colors active:scale-90 duration-100">
+<span class="material-symbols-outlined text-2xl" data-icon="menu">restaurant</span>
+<span class="text-[10px] font-bold uppercase">Feed</span>
+</button>
+<!-- Home (Active) -->
+<button class="bg-primary-container text-on-primary-container rounded-lg p-sm border-2 border-on-surface shadow-[0px_4px_0px_0px_rgba(0,26,65,1)] flex flex-col items-center gap-1 active:scale-90 transition-transform duration-100">
+<span class="material-symbols-outlined text-2xl" data-icon="gamepad">gamepad</span>
+<span class="text-[10px] font-bold uppercase">Play</span>
+</button>
+<!-- Train -->
+<button class="flex flex-col items-center gap-1 text-on-surface-variant p-sm hover:bg-surface-container-high transition-colors active:scale-90 duration-100">
+<span class="material-symbols-outlined text-2xl" data-icon="menu_book">menu_book</span>
+<span class="text-[10px] font-bold uppercase">Train</span>
+</button>
+</nav>
+<script>
+        // Simple micro-interaction for tapping Bugsy
+        document.querySelector('.animate-bounce-subtle').addEventListener('click', function() {
+            const el = this;
+            el.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                el.style.transform = 'scale(1)';
+            }, 150);
+            
+            // Trigger a toast-like reaction (bubbly speech bubble)
+            const bubble = document.createElement('div');
+            bubble.className = 'absolute top-0 right-0 bg-white tactile-border rounded-full px-4 py-2 font-bold text-sm z-50 animate-bounce';
+            bubble.innerHTML = 'Cheep! (Debugging...)';
+            el.appendChild(bubble);
+            setTimeout(() => bubble.remove(), 2000);
+        });
+    </script>
+</body></html>

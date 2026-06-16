@@ -1,0 +1,22 @@
+{
+  "title": "Câu hỏi kiểm tra",
+  "question_of": "Câu {{current}} / {{total}}",
+  "submit": "Nộp bài",
+  "next_question": "Câu tiếp theo",
+  "correct": "Chính xác!",
+  "incorrect": "Sai rồi",
+  "result": {
+    "title": "Kết quả",
+    "score": "Điểm: {{score}}/{{total}}",
+    "earned_qp": "Bạn nhận được {{amount}} QP",
+    "earned_bc": "Bạn nhận được {{amount}} BC"
+  },
+  "status": {
+    "idle": "Chưa bắt đầu",
+    "in_progress": "Đang làm bài",
+    "submitting": "Đang nộp...",
+    "submitted": "Đã nộp",
+    "rewarding": "Đang tính điểm...",
+    "complete": "Hoàn thành"
+  }
+}
