@@ -13,6 +13,7 @@ const envSchema = z.object({
   EXPO_PUBLIC_API_URL: z.string().url(),
   EXPO_PUBLIC_SUPABASE_URL: z.string().url(),
   EXPO_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
+  EXPO_PUBLIC_SENTRY_DSN: z.string().optional(), // DSN không phải secret cứng; trống = tắt Sentry
   EXPO_PUBLIC_ASSOCIATED_DOMAIN: z.string().url().optional(),
   EXPO_PUBLIC_VAR_NUMBER: z.number(),
   EXPO_PUBLIC_VAR_BOOL: z.boolean(),
@@ -59,6 +60,7 @@ const _env: z.infer<typeof envSchema> = {
   EXPO_PUBLIC_API_URL: process.env.EXPO_PUBLIC_API_URL ?? '',
   EXPO_PUBLIC_SUPABASE_URL: process.env.EXPO_PUBLIC_SUPABASE_URL ?? '',
   EXPO_PUBLIC_SUPABASE_ANON_KEY: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '',
+  EXPO_PUBLIC_SENTRY_DSN: process.env.EXPO_PUBLIC_SENTRY_DSN,
   EXPO_PUBLIC_ASSOCIATED_DOMAIN: process.env.EXPO_PUBLIC_ASSOCIATED_DOMAIN,
   EXPO_PUBLIC_VAR_NUMBER: Number(process.env.EXPO_PUBLIC_VAR_NUMBER ?? 0),
   EXPO_PUBLIC_VAR_BOOL: process.env.EXPO_PUBLIC_VAR_BOOL === 'true',

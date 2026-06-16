@@ -1,0 +1,69 @@
+name: EAS Build & Update
+
+# Pipeline mobile (Story 0-3). Cần secret EXPO_TOKEN (GitHub repo secrets).
+# - push vào main      → eas update (OTA, JS-only) — RẺ, không tốn quota build.
+# - workflow_dispatch  → eas build full (chọn profile) — chạy TAY để giữ quota free 30/tháng.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'EAS build profile'
+        type: choice
+        options: [development, preview, production]
+        default: production
+
+permissions:
+  contents: read
+
+jobs:
+  # OTA update (JS-only) tự động khi merge vào main
+  ota-update:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - run: pnpm install --frozen-lockfile
+      - name: EAS Update (OTA)
+        # Commit message qua env var — KHÔNG nội suy ${{ }} thẳng vào shell (chống injection).
+        env:
+          EAS_UPDATE_MESSAGE: ${{ github.event.head_commit.message }}
+        run: eas update --branch production --message "$EAS_UPDATE_MESSAGE" --non-interactive
+
+  # Build full iOS (.ipa) + Android (.aab/.apk) — chạy tay qua "Run workflow"
+  build:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - run: pnpm install --frozen-lockfile
+      - name: EAS Build (${{ inputs.profile }})
+        # --no-wait: trả về ngay, build chạy trên EAS cloud. Source maps Sentry upload
+        # tự động trong build nếu có SENTRY_AUTH_TOKEN + plugin cấu hình org/project.
+        env:
+          BUILD_PROFILE: ${{ inputs.profile }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: eas build --profile "$BUILD_PROFILE" --platform all --non-interactive --no-wait

@@ -24,3 +24,16 @@ Tổng hợp các việc được hoãn lại từ code review / dev — để c
 - **DEF8 — Cleanup.** Gỡ dead dep `@expo-google-fonts/inter`; bổ sung `no-restricted-imports` (tamagui, gluestack-ui, react-native-ui-lib...). [package.json, eslint.config.mjs]
 - **DEF9 — Cosmetic/a11y nhỏ.** Gỡ sạch `dark:` variant inert (story-acknowledged); SpeechBubble tail gap 2px; TactileButton `accessibilityState={{disabled}}`. [src/components/*, ui/*]
 - **DEF10 — DESIGN.md vs story AC lệch.** TactileButton resting shadow 4px (DESIGN.md) vs 6px (AC/code); SpeechBubble border 4px (DESIGN.md) vs 3px (code). Reconcile với designer; cập nhật nguồn thắng. [DESIGN.md / story AC]
+
+## Deferred from: code review of story-0-3 (2026-06-16)
+
+- **DEF-A — jest `continue-on-error` trong ci.yml.** Che MỌI test fail (gate test vô hiệu). Gỡ dòng `continue-on-error: true` sau khi fix jest harness (xem DEF2 phần 0-6). [.github/workflows/ci.yml]
+- **DEF-B — SHA-pin GitHub Actions.** Đặc biệt `expo/expo-github-action@v8` (mang EXPO_TOKEN/SENTRY_AUTH_TOKEN) nên pin full commit SHA chống supply-chain. Story chọn major-tag (`@v4/@v8`) — đủ theo AC nhưng nên nâng cấp. [.github/workflows/*]
+- **DEF-C — `expo config` không enforce env.** Thiếu `STRICT_ENV_VALIDATION=1` nên config-check pass dù env hỏng. Bật strict khi CI có secrets/EAS env thật (đang pending). [.github/workflows/ci.yml]
+- **DEF-D — OTA channel hardcode `production`.** Mọi push main → eas update branch `production`. Refine multi-channel khi có staging/preview live. [.github/workflows/eas-build.yml]
+- **DEF-E — `eas build --no-wait` không wire kết quả.** Workflow xanh dù build EAS fail. Thêm cơ chế báo kết quả build sau. [.github/workflows/eas-build.yml]
+- **DEF-F — Node version floating (`20`).** Pin patch qua `.nvmrc`/`node-version-file` cho reproducible. [.github/workflows/*]
+- **DEF-G — `concurrency cancel-in-progress` trên push main.** Push dồn (merge queue) có thể để commit chưa verify. Cân nhắc tách group cho push vs PR. [.github/workflows/ci.yml]
+- **DEF-H — Lesson file `[]` rỗng silently valid.** validate-content nên warn khi file 0 lesson. [scripts/validate-content.mjs]
+- **DEF-I — EAS/Sentry live + secrets (pending user).** EXPO_TOKEN, Sentry account (DSN + SENTRY_AUTH_TOKEN + config-plugin app.config), project Supabase staging/prod thật, bật branch protection `main` chọn job `quality` required. Xem `docs/ci-cd-setup.md`. (Story-acknowledged.)
+- **DEF-J — Sentry whitespace DSN.** `" "` truthy → `Sentry.init` có thể throw lúc load. Trim/validate DSN khi hardening Sentry. [src/app/_layout.tsx]

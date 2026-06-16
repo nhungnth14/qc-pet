@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-06-14
-last_updated: 2026-06-16  # 0-1 → done; 0-2 → done; 0-3 → ready-for-dev; 0-6 → done (review patches applied)
+last_updated: 2026-06-16  # 0-1..0-6 đều done (review patches applied); Epic 0 hoàn tất
 project: qc-pet
 project_key: NOKEY
 tracking_system: file-system
@@ -43,12 +43,12 @@ story_location: _bmad-output/implementation-artifacts
 
 development_status:
   # -----------------------------------------------------------------
-  # Epic 0: Project Foundation & Infrastructure (3 done, 2 review, 1 ready-for-dev)
+  # Epic 0: Project Foundation & Infrastructure (6/6 done — all reviewed 2026-06-16)
   # -----------------------------------------------------------------
-  epic-0: in-progress
+  epic-0: done
   0-1-app-scaffold-local-dev-environment: done          # Expo Router scaffold, pnpm web smoke-test, local Supabase
   0-2-supabase-backend-foundation-prisma-schema: done          # code review 2026-06-16: 5 patch applied+verified (rls-smoke 8/8) + 3 migration; F1→0-3 db pull
-  0-3-github-actions-ci-cd-eas-build-update-pipeline: ready-for-dev
+  0-3-github-actions-ci-cd-eas-build-update-pipeline: done          # code review 2026-06-16: 8 patch (P1 shell-injection fix; tsc+eslint+content-gate); EAS/Sentry live pending (docs/ci-cd-setup.md)
   0-4-client-side-critical-patterns-rewardeventbus-wal-mmkv-isystemclock: done        # storage.tsx(MMKV), clock.ts, reward-event-bus.ts, wal.ts
   0-5-server-side-api-patterns-standardresponse-idempotency-rfc-7807-clock-offset: done          # _shared/{response,redis}.ts + health-check deployed to bwbsqnjikshgzcmpcgyz
   0-6-design-system-foundation-color-tokens-typography-core-components: done          # code review 2026-06-16: 6 patch applied (tsc+eslint), 10 defer → deferred-work
