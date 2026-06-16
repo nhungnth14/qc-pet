@@ -17,7 +17,7 @@ type Props = {
  */
 export function SpeechBubble({ text, children, className = '', textClassName = '' }: Props) {
   return (
-    <View className={className}>
+    <View className={`relative ${className}`}>
       <View
         className="rounded-2xl border-[3px] border-card-border bg-white px-4 py-3"
         style={TACTILE_SHADOW}

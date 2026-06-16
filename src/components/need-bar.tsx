@@ -16,7 +16,7 @@ type Props = {
  * ở work-room-screen). value clamp 0–100; màu fill qua token (`bg-need-*`).
  */
 export function NeedBarComponent({ label, value, fillClassName = 'bg-qp-teal', className = '' }: Props) {
-  const pct = Math.max(0, Math.min(100, value));
+  const pct = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
   const isCritical = pct <= 29;
   return (
     <View className={`mb-3 ${className}`}>

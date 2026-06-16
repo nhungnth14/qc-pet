@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-06-14
-last_updated: 2026-06-16  # 0-1 → done; 0-2 → done (review patches applied+verified); 0-3 → ready-for-dev; 0-6 → review
+last_updated: 2026-06-16  # 0-1 → done; 0-2 → done; 0-3 → ready-for-dev; 0-6 → done (review patches applied)
 project: qc-pet
 project_key: NOKEY
 tracking_system: file-system
@@ -51,7 +51,7 @@ development_status:
   0-3-github-actions-ci-cd-eas-build-update-pipeline: ready-for-dev
   0-4-client-side-critical-patterns-rewardeventbus-wal-mmkv-isystemclock: done        # storage.tsx(MMKV), clock.ts, reward-event-bus.ts, wal.ts
   0-5-server-side-api-patterns-standardresponse-idempotency-rfc-7807-clock-offset: done          # _shared/{response,redis}.ts + health-check deployed to bwbsqnjikshgzcmpcgyz
-  0-6-design-system-foundation-color-tokens-typography-core-components: review
+  0-6-design-system-foundation-color-tokens-typography-core-components: done          # code review 2026-06-16: 6 patch applied (tsc+eslint), 10 defer → deferred-work
   epic-0-retrospective: optional
 
   # -----------------------------------------------------------------

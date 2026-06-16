@@ -36,12 +36,8 @@ export default function Root({ children }: { children: React.ReactNode }) {
   );
 }
 
+// MVP light-only (Story 0-6 AC2): KHÔNG dark mode → web body luôn trắng.
 const responsiveBackground = `
 body {
   background-color: #fff;
-}
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #000;
-  }
 }`;

@@ -4,7 +4,7 @@ baseline_commit: b9e2314
 
 # Story 0.6: Design System Foundation (Color Tokens, Typography, Core Components)
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -199,3 +199,47 @@ Claude Opus 4.8 (claude-opus-4-8) — Claude Code dev-story.
 | Date | Change |
 |---|---|
 | 2026-06-15 | Implement Story 0-6: design tokens (MD3 + QC Pet), Nunito Sans/JetBrains Mono fonts, dark-mode off, 6 tactile components, ESLint guardrails, work-room NeedBar consolidation. Verified via tsc + eslint + web smoke (jest harness pre-existing broken — deferred). Status → review. |
+
+## Code Review — 2026-06-16 (BMAD adversarial)
+
+**Mode:** full · **Reviewers:** Blind Hunter + Edge Case Hunter + Acceptance Auditor (song song, Opus) · **Diff:** `b9e2314..a3ef08d` scoped File List (18 file, +359/−117).
+
+**AC verdict:** AC1 PARTIAL (token hex lệch DESIGN.md) · AC2 PARTIAL (`dark:` inert) · AC3 PASS · AC4 PARTIAL (focus trap thiếu) · AC5 PASS · AC6 PASS (caveat: jest harness vỡ sẵn).
+
+**Triage:** 2 decision-needed · 5 patch · 10 defer · 8 dismissed.
+
+### Review Findings
+
+- [x] [Review][Defer token→DESIGN · chip contrast verified PASS ~5.8:1, KHÔNG sửa] D1 — Token hex lệch giữa 2 nguồn spec: `on-surface` code/epics `#1a1a2e` vs DESIGN.md `#001a41`; `surface-container` code `#f0f4f8` vs DESIGN.md `#e9edff`. Liên quan contrast: `CurrencyChip` dùng `text-on-surface` trên `bg-qp-teal` ~3.5:1 < WCAG AA. → Chốt nguồn canonical (epics hay DESIGN.md) + sửa token + màu chữ chip teal.
+- [x] [Review][Patch ✅ · accessibilityViewIsModal] D2 — `SlideUpPanel` thiếu focus trap + return-focus (AC4 + project-context §Accessibility Floor yêu cầu, KHÔNG ghi defer). `@gorhom/bottom-sheet` không tự trap focus WCAG. → Làm a11y cơ bản ngay (`accessibilityViewIsModal`) hay defer sang a11y pass (verify device)?
+- [x] [Review][Patch ✅] P1 — `SlideUpPanel` dùng ĐỒNG THỜI controlled `index={isOpen?0:-1}` + imperative `expand()/close()` (useEffect) → đánh nhau, `expand()` nhảy snap cuối, race khi toggle nhanh / swipe-dismiss re-open. Giữ 1 cơ chế (controlled `index`). [slide-up-panel.tsx]
+- [x] [Review][Patch ✅] P2 — `app.config.ts` `userInterfaceStyle:'automatic'` + web `prefers-color-scheme:dark` còn → system chrome/web body tối lệch app light (vi phạm AC2 dark-off). Đổi `'light'` + gỡ web dark bg. [app.config.ts, +html]
+- [x] [Review][Patch ✅] P3 — `NeedBarComponent` value=NaN/undefined → width `"NaN%"` (bar trống) + label "NaN%" + mất cảnh báo critical. Guard NaN→0. [need-bar.tsx]
+- [x] [Review][Patch ✅] P4 — `SpeechBubble` tail `absolute` nhưng outer View thiếu `relative` → đuôi lệch trên web (môi trường smoke). Thêm `relative`. [speech-bubble.tsx]
+- [x] [Review][Patch ✅] P5 — `input.tsx` dùng `font-medium` (500) nhưng Nunito Sans chỉ load 600+ → weight synthesized, vi phạm AC3 min-600. Đổi `font-semibold`. [ui/input.tsx]
+- [x] [Review][Defer] DEF1 — boxShadow animated (TactileButton) native fidelity — story đã note verify device. — deferred (RN 0.81 New Arch hỗ trợ boxShadow; web smoke OK).
+- [x] [Review][Defer] DEF2 — jest harness vỡ sẵn baseline (`@gorhom/bottom-sheet` mock + RN mock crash) → component test không chạy. — deferred: task riêng; **chặn mọi component test — ưu tiên fix** (liên quan 0-2 F4).
+- [x] [Review][Defer] DEF3 — NeedBar mất fill animation/shimmer (cũ dùng `Animated.timing`). — deferred: re-add animation.
+- [x] [Review][Defer] DEF4 — Token naming chồng/nhập nhằng: `bg-primary`(#006491 MD3) vs `bg-primary-600`(Obytes cam) cùng tồn tại; colors.js camelCase vs CSS kebab; `need-*` thiếu trong colors.js; `error` vs `destructive` trùng. — deferred: token hygiene pass.
+- [x] [Review][Defer] DEF5 — Robustness component: empty khi thiếu label/children (TactileButton/SpeechBubble); `disabled` không chặn press animation; shared value chạy sau unmount; double-tap stutter; drag-off kẹt pressed; CurrencyChip `amount` NaN/Infinity/âm; snapPoints inline array memo; `textClassName` bị bỏ khi có children. — deferred: component polish + a11y pass.
+- [x] [Review][Defer] DEF6 — `NeedBar.fillClassName` free-string → typo class ngoài `@theme` = bar vô hình (Tailwind v4 không JIT dynamic). — deferred: cân nhắc token enum.
+- [x] [Review][Defer] DEF7 — iOS JetBrains Mono PostScript name chưa verify khớp (có thể fallback). — deferred: verify device build.
+- [x] [Review][Defer] DEF8 — Dead dep `@expo-google-fonts/inter`; `no-restricted-imports` thiếu tamagui/gluestack/ui-lib. — deferred: cleanup.
+- [x] [Review][Defer] DEF9 — `dark:` variant inert chưa gỡ sạch (story-acknowledged); SpeechBubble tail gap 2px; TactileButton thiếu `accessibilityState` disabled. — deferred: cosmetic/a11y.
+- [x] [Review][Defer] DEF10 — DESIGN.md vs story AC lệch: TactileButton resting shadow 4px (DESIGN) vs 6px (AC/code); SpeechBubble border 4px (DESIGN) vs 3px (code). — deferred: doc reconciliation với designer.
+
+**Dismissed (8):** boxShadow static "broken native" (RN 0.81 New Arch hỗ trợ — dev's documented choice, web smoke OK) · text base `font-semibold` "regression" (CỐ Ý theo AC3 min-600) · eslint hex regex selector "invalid" (Debug Log: hex warnings ĐÃ emit → rule chạy; esquery hỗ trợ regex) · NeedBar threshold 30 (đúng spec ≤29%) · TactileButton worklet (Blind tự rút lại) · NeedBar default fillClassName dead (vô hại) · barrel path (alternative cho phép) · work-room hex hardcode (cố ý, warn, story-acknowledged).
+
+### Patches applied & verified — 2026-06-16
+
+6 patch (P1–P5, P7/D2) áp + verified **`tsc` exit 0 + `eslint` exit 0** (changed files). **P6 (chip contrast) BỎ**: tính lại WCAG `#1a1a2e` trên `#00A8A8` = **~5.8:1 PASS AA** (reviewer tính nhầm "3.5:1") → không cần sửa.
+- **P1** `SlideUpPanel`: `index={-1}` tĩnh + `snapToIndex(0)` thay `expand()` → 1 cơ chế điều khiển, hết race controlled/imperative.
+- **P2** `app.config.ts` `userInterfaceStyle:'light'` + `+html.tsx` gỡ `prefers-color-scheme:dark` (AC2 dark-off triệt để).
+- **P3** `NeedBarComponent` `Number.isFinite(value)` guard → NaN/undefined ra 0%.
+- **P4** `SpeechBubble` outer View `relative` (đuôi đúng vị trí trên web).
+- **P5** `input.tsx` `font-medium`→`font-semibold` (AC3 min-weight 600).
+- **P7 (D2)** `SlideUpPanel` `accessibilityViewIsModal` (a11y modal cơ bản; return-focus đầy đủ defer device).
+
+**D1** token-value (on-surface/surface-container vs DESIGN.md) → defer doc-reconciliation; chip contrast verified PASS nên không đổi màu.
+
+**Status: review → done** (2 decision resolved · 6 patch applied+verified · 10 defer tracked → `deferred-work.md`).

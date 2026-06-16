@@ -24,7 +24,7 @@ export function SlideUpPanel({ isOpen, onClose, children, snapPoints }: Props) {
 
   React.useEffect(() => {
     if (isOpen)
-      ref.current?.expand();
+      ref.current?.snapToIndex(0);
     else
       ref.current?.close();
   }, [isOpen]);
@@ -32,7 +32,7 @@ export function SlideUpPanel({ isOpen, onClose, children, snapPoints }: Props) {
   return (
     <BottomSheet
       ref={ref}
-      index={isOpen ? 0 : -1}
+      index={-1}
       snapPoints={points}
       enablePanDownToClose
       onClose={onClose}
@@ -41,7 +41,7 @@ export function SlideUpPanel({ isOpen, onClose, children, snapPoints }: Props) {
         <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
       )}
     >
-      <BottomSheetView className="flex-1 px-4 pb-6">{children}</BottomSheetView>
+      <BottomSheetView accessibilityViewIsModal className="flex-1 px-4 pb-6">{children}</BottomSheetView>
     </BottomSheet>
   );
 }
