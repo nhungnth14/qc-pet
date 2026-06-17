@@ -19,6 +19,7 @@ import {
   getIncompleteSession,
   saveAnswer,
 } from '@/features/work-room/quiz-api';
+import { rewardEventBus } from '@/lib/reward-event-bus';
 import { updateGameState } from '@/lib/supabase-api';
 import { usePetStore } from '@/stores/pet-store';
 import { useSessionStore } from '@/stores/session-store';
@@ -184,11 +185,23 @@ export default function CoreMissionScreen() {
     const localBC = 10;
     const localQP = Math.max(6, Math.round((finalCorrectCount / totalQ) * 20));
 
+    let earnedBc = localBC;
+
     try {
       if (sessionId && userId) {
         const result = await completeQuizSession(sessionId, userId, finalCorrectCount, totalQ);
         addBC(result.bcEarned);
         addQP(result.qpEarned);
+        earnedBc = result.bcEarned;
+        // Story 6.2: emit CHỈ sau server success (NFR-1). Derive from/to từ store sau addBC
+        // → tránh race với syncFromSupabase (6.1) có thể resolve trong lúc await.
+        const currentBc = usePetStore.getState().bcBalance;
+        rewardEventBus.emit('server_committed', {
+          type: 'bc',
+          amount: earnedBc,
+          from: currentBc - earnedBc,
+          to: currentBc,
+        });
       }
       else {
         addBC(localBC);
