@@ -1,0 +1,94 @@
+# Story 2.6 — Kill-App Corner Cases: Onboarding Flow Recovery (FR-29)
+# Chạy: pnpm e2e-test   (→ maestro test .maestro/ -e APP_ID=com.qcpet.development)
+#
+# Mỗi case: reset (clearState) → đi tới đúng step → stopApp (force-quit) →
+# launchApp KHÔNG clearState (giữ MMKV) → assert resume đúng màn.
+# Selector dùng text tiếng Việt (Maestro match theo regex). Nếu chạy on-device thấy
+# selector trùng/đổi, cân nhắc thêm testID (xem README.md).
+appId: ${APP_ID}
+---
+# ── CASE 1 — Force-quit tại màn Đặt tên → resume Đặt tên (draft tên giữ nguyên) ──
+- launchApp:
+    clearState: true
+- assertVisible: '.*Học QC mỗi ngày.*'
+- tapOn: Tap để nở!
+- assertVisible: Đặt tên cho Bugsy
+- tapOn: Kiwi # chọn gợi ý → draft 'Kiwi' lưu vào MMKV
+- stopApp
+- launchApp:
+    clearState: false
+# Resume router đọc onboarding_step='naming' → quay lại đúng màn đặt tên, KHÔNG về trứng
+- assertVisible: Đặt tên cho Bugsy
+- assertVisible: Kiwi
+
+# ── CASE 2 — Force-quit tại Reward (server đã commit) → resume Reward, không cộng đôi ──
+- launchApp:
+    clearState: true
+- tapOn: Tap để nở!
+- assertVisible: Đặt tên cho Bugsy
+- tapOn: Bugsy
+- tapOn: 'Đặt tên cho .*🐣' # CTA xác nhận
+- assertVisible: '.*Câu khởi động.*'
+- tapOn: Fail ✗ # trả lời đúng → reward
+- assertVisible: '.*Tuyệt vời.*' # Reward screen (đã setStep('reward') + commit)
+- stopApp
+- launchApp:
+    clearState: false
+# Resume tại Reward: isRewardCommitted=true → KHÔNG gọi server lại, chỉ play animation
+- assertVisible: '.*Tuyệt vời.*'
+- assertVisible: 'Bạn vừa học được:' # summary card hiển thị lại
+# Task 7: currency hiển thị đúng +10 BC / +6 QP sau resume (KHÔNG cộng đôi)
+- assertVisible: '.*10.*BC.*' # badge +10 🪲 BC
+- assertVisible: '.*6.*QP.*' # badge +6 ⭐ QP
+
+# ── CASE 3 — Force-quit tại Cliffhanger → resume Cliffhanger ──
+- launchApp:
+    clearState: true
+- tapOn: Tap để nở!
+- tapOn: Bugsy
+- tapOn: 'Đặt tên cho .*🐣'
+- tapOn: Fail ✗
+- assertVisible: '.*Tuyệt vời.*'
+- tapOn: Tiếp tục nào → # Reward → Cliffhanger
+- assertVisible: 'Còn một chuyện nữa.*'
+- stopApp
+- launchApp:
+    clearState: false
+- assertVisible: 'Còn một chuyện nữa.*' # resume đúng Cliffhanger
+
+# ── CASE 4 — Force-quit tại Notification Preference → resume Notification ──
+- launchApp:
+    clearState: true
+- tapOn: Tap để nở!
+- tapOn: Bugsy
+- tapOn: 'Đặt tên cho .*🐣'
+- tapOn: Fail ✗
+- assertVisible: '.*Tuyệt vời.*'
+- tapOn: Tiếp tục nào →
+- tapOn: 'Lưu .* lại nào →' # Cliffhanger → Notification
+- assertVisible: '.*cho mình nhắn tin.*'
+- stopApp
+- launchApp:
+    clearState: false
+- assertVisible: '.*cho mình nhắn tin.*' # resume đúng Notification
+
+# ── CASE 5 — Force-quit trước Sign-up Gate (đã earn reward) → resume Sign-up, currency đúng ──
+- launchApp:
+    clearState: true
+- tapOn: Tap để nở!
+- tapOn: Bugsy
+- tapOn: 'Đặt tên cho .*🐣'
+- tapOn: Fail ✗
+- assertVisible: '.*Tuyệt vời.*'
+- tapOn: Tiếp tục nào →
+- tapOn: 'Lưu .* lại nào →'
+- assertVisible: '.*cho mình nhắn tin.*'
+- tapOn: 'Được, nhắc mình nha.*' # Notification → Sign-up
+- assertVisible: 'Lưu .* lại!'
+- stopApp
+- launchApp:
+    clearState: false
+# Resume tại Sign-up Gate; onboarding CHƯA complete nên không nhảy vào (app);
+# reward đã commit server (BC/QP earned) — verify gián tiếp: vẫn ở Sign-up, không lỗi.
+- assertVisible: 'Lưu .* lại!'
+- assertVisible: '.*Nếu xóa app.*' # cảnh báo data-loss vẫn hiển thị

@@ -1,0 +1,156 @@
+# generated: 2026-06-14
+# last_updated: 2026-06-14
+# project: qc-pet
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-06-14
+last_updated: 2026-06-16  # 0-1..0-6 đều done (review patches applied); Epic 0 hoàn tất
+project: qc-pet
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # -----------------------------------------------------------------
+  # Epic 0: Project Foundation & Infrastructure (6/6 done — all reviewed 2026-06-16)
+  # -----------------------------------------------------------------
+  epic-0: done
+  0-1-app-scaffold-local-dev-environment: done          # Expo Router scaffold, pnpm web smoke-test, local Supabase
+  0-2-supabase-backend-foundation-prisma-schema: done          # code review 2026-06-16: 5 patch applied+verified (rls-smoke 8/8) + 3 migration; F1→0-3 db pull
+  0-3-github-actions-ci-cd-eas-build-update-pipeline: done          # code review 2026-06-16: 8 patch (P1 shell-injection fix; tsc+eslint+content-gate); EAS/Sentry live pending (docs/ci-cd-setup.md)
+  0-4-client-side-critical-patterns-rewardeventbus-wal-mmkv-isystemclock: done        # storage.tsx(MMKV), clock.ts, reward-event-bus.ts, wal.ts
+  0-5-server-side-api-patterns-standardresponse-idempotency-rfc-7807-clock-offset: done          # _shared/{response,redis}.ts + health-check deployed to bwbsqnjikshgzcmpcgyz
+  0-6-design-system-foundation-color-tokens-typography-core-components: done          # code review 2026-06-16: 6 patch applied (tsc+eslint), 10 defer → deferred-work
+  epic-0-retrospective: optional
+
+  # -----------------------------------------------------------------
+  # Epic 1: Content Library & Quality Pipeline (all backlog)
+  # -----------------------------------------------------------------
+  epic-1: backlog
+  1-1-lesson-content-schema-json-manifest-structure: backlog
+  1-2-content-authoring-workflow-peer-review-real-bug-of-the-week-format: backlog
+  1-3-ota-content-delivery-version-management: backlog
+  epic-1-retrospective: optional
+
+  # -----------------------------------------------------------------
+  # Epic 2: Onboarding & First Experience (6/6 done ✓)
+  # -----------------------------------------------------------------
+  epic-2: done
+  2-1-splash-screen-egg-hatching-animation: done        # onboarding/index.tsx — Bugsy hatching animation
+  2-2-pet-naming-flow: done                             # onboarding/naming.tsx — 3 gợi ý + free text
+  2-3-micro-bridge-warm-up-scenario-aha-moment-setup: done   # onboarding/aha-moment.tsx
+  2-4-story-rule-feedback-reward-animation-server-committed-cliffhanger: done   # onboarding/reward.tsx + WAL + RewardEventBus
+  2-5-notification-permission-sign-up-gate-work-room-entry: done   # onboarding/sign-up.tsx + anon auth session
+  2-6-kill-app-corner-cases-onboarding-flow-recovery: done   # code review 2026-06-16: 5 patch applied (reward idempotency hardening: markCommitted reorder + in-flight guard; maestro currency assert; skip guard; dead-param) + 3 defer (server idempotency→E6, push→E9, WAL replay); tsc/eslint/16-unit pass
+  epic-2-retrospective: optional
+
+  # -----------------------------------------------------------------
+  # Epic 3: Pet World & Apartment Navigation (all backlog)
+  # -----------------------------------------------------------------
+  epic-3: backlog
+  3-1-6-room-apartment-layout-room-data-model-environment-assets: backlog
+  3-2-apartment-view-isometric-room-navigation: backlog
+  3-3-bugsy-idle-states-character-asset-system: backlog
+  3-4-room-unlock-sequence-trigger-based: backlog
+  3-5-pet-evolution-system-souvenir-display: backlog
+  epic-3-retrospective: optional
+
+  # -----------------------------------------------------------------
+  # Epic 4: Need Bar System & Pet Wellness (all backlog)
+  # -----------------------------------------------------------------
+  epic-4: backlog
+  4-1-need-bar-data-model-real-time-decay-engine: backlog
+  4-2-pet-care-actions-quick-feed-quick-play-quick-train: backlog
+  4-3-weekend-mode-never-die-logic-offline-last-known-state: backlog
+  4-4-good-morning-moment-one-room-emergency-daily-highlight: backlog
+  epic-4-retrospective: optional
+
+  # -----------------------------------------------------------------
+  # Epic 5: Daily Learning Loop (4 done, 3 backlog)
+  # -----------------------------------------------------------------
+  epic-5: in-progress
+  5-1-core-mission-entry-lesson-player-daily-mission-selection: done        # (app)/core-mission.tsx — lesson player
+  5-2-quiz-session-engine-framework-2-5-1-2-emotional-arc-auto-save-session-resume: done   # quiz-api.ts + session resume
+  5-3-rescue-mechanic-story-rule-feedback-panel-3-2-1-summary-card: done    # Story Rule panel + 3-2-1 cheat sheet
+  5-4-question-format-engine-part-1-mcq-bug-report-surgery-severity-swipe-spot-the-defect-rewrite-the-fail: done   # code-review 2026-06-17: P1 resume-guard, P2 confetti-stagger, P3 isWarmup data-driven, P4 committedRef double-submit, P5 SpotTheDefect shake; type-check/lint pass (0 errors)
+  5-5-question-format-engine-part-2-priority-severity-duel-boundary-attack-root-cause-chain-risk-radar-complete-the-test-case: backlog
+  5-6-side-quests-bug-hunt-peer-review-repro-steps-simulated-bug-hunt: backlog
+  5-7-mission-board-kanban-bug-report-wall: backlog
+  epic-5-retrospective: optional
+
+  # -----------------------------------------------------------------
+  # Epic 6: Dual Currency & Reward Animations (all backlog)
+  # -----------------------------------------------------------------
+  epic-6: in-progress
+  6-1-dual-currency-data-model-persistent-header-display: review   # dev-story done 2026-06-16: CurrencyHeader (web verified amber/teal chips) + syncFromSupabase on mount + CHECK bc>=0 migration (chưa apply, cần DB); type-check/lint/17-unit pass
+  6-2-bc-earn-rules-miss-penalty-reward-animation-pipeline: review   # dev-story done 2026-06-16: reward animation pipeline (web verified float+consume) + core-mission emit + miss-penalty pg_cron migration (chưa apply, cần DB); xoá dead bus; type-check/lint/31-unit pass
+  6-3-qp-earn-rules-server-authoritative-immutability: backlog
+  epic-6-retrospective: optional
+
+  # -----------------------------------------------------------------
+  # Epic 7: Sprint Lifecycle & Real-World Transfer (all backlog)
+  # -----------------------------------------------------------------
+  epic-7: backlog
+  7-1-transfer-gate-evidence-submission: backlog
+  7-2-my-journey-view-evidence-timeline: backlog
+  7-3-weekly-bug-log-zero-bug-2-option-response: backlog
+  7-4-sprint-hold-token-system: backlog
+  7-5-retrospective-loop-end-of-sprint-prompt: backlog
+  7-6-sprint-demo-card-generation-native-sharing: backlog
+  epic-7-retrospective: optional
+
+  # -----------------------------------------------------------------
+  # Epic 8: Spaced Repetition & Flash Quiz Layer (all backlog)
+  # -----------------------------------------------------------------
+  epic-8: backlog
+  8-1-spaced-repetition-algorithm-server-queue: backlog
+  8-2-bedroom-sr-session-tat-den-flow-daily-recap-bubble: backlog
+  8-3-bathroom-flash-quiz-mirror-moment: backlog
+  epic-8-retrospective: optional
+
+  # -----------------------------------------------------------------
+  # Epic 9: Notifications & Smart Timing (all backlog)
+  # -----------------------------------------------------------------
+  epic-9: backlog
+  9-1-push-notification-infrastructure-bugsy-voice-copy-templates: backlog
+  9-2-smart-timing-logic-daily-cap-deep-links: backlog
+  epic-9-retrospective: optional
+
+  # -----------------------------------------------------------------
+  # Epic 10: Sân & Item Shop Placeholder (all backlog)
+  # -----------------------------------------------------------------
+  epic-10: backlog
+  10-1-san-day-7-cinematic-unlock-open-space-environment: backlog
+  10-2-item-shop-placeholder-browse-only-coming-soon: backlog
+  epic-10-retrospective: optional

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@600;800;900&family=JetBrains+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "primary-fixed": "#c9e6ff",
+                  "on-secondary-container": "#773224",
+                  "surface-container-low": "#f1f3ff",
+                  "secondary-fixed-dim": "#ffb4a5",
+                  "on-secondary": "#ffffff",
+                  "surface-dim": "#cbdaff",
+                  "surface-container-lowest": "#ffffff",
+                  "error-container": "#ffdad6",
+                  "surface-container-high": "#e0e8ff",
+                  "on-tertiary-fixed-variant": "#4f319c",
+                  "surface-container": "#e9edff",
+                  "tertiary-fixed": "#e8ddff",
+                  "inverse-on-surface": "#edf0ff",
+                  "primary-fixed-dim": "#8aceff",
+                  "tertiary-fixed-dim": "#cebdff",
+                  "on-error-container": "#93000a",
+                  "on-background": "#001a41",
+                  "error": "#ba1a1a",
+                  "on-primary-container": "#004464",
+                  "on-primary": "#ffffff",
+                  "on-primary-fixed-variant": "#004b6f",
+                  "surface-container-highest": "#d8e2ff",
+                  "background": "#f9f9ff",
+                  "outline": "#6e7882",
+                  "on-tertiary-fixed": "#21005e",
+                  "secondary-container": "#fd9d89",
+                  "secondary": "#944839",
+                  "inverse-primary": "#8aceff",
+                  "on-error": "#ffffff",
+                  "surface-tint": "#006491",
+                  "tertiary": "#674bb5",
+                  "surface-variant": "#d8e2ff",
+                  "on-secondary-fixed-variant": "#773124",
+                  "on-tertiary-container": "#472894",
+                  "on-secondary-fixed": "#3d0701",
+                  "surface-bright": "#f9f9ff",
+                  "surface": "#f9f9ff",
+                  "inverse-surface": "#002e69",
+                  "secondary-fixed": "#ffdad3",
+                  "on-surface": "#001a41",
+                  "on-surface-variant": "#3e4851",
+                  "primary-container": "#22b5ff",
+                  "outline-variant": "#bdc8d2",
+                  "on-primary-fixed": "#001e2f",
+                  "on-tertiary": "#ffffff",
+                  "tertiary-container": "#b59cff",
+                  "primary": "#006491"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "sm": "12px",
+                  "xs": "4px",
+                  "lg": "40px",
+                  "base": "8px",
+                  "md": "24px",
+                  "container-padding": "20px"
+          },
+          "fontFamily": {
+                  "display": ["Nunito Sans"],
+                  "header-lg": ["Nunito Sans"],
+                  "code-sm": ["JetBrains Mono"],
+                  "body-md": ["Nunito Sans"],
+                  "ui-button": ["Nunito Sans"]
+          },
+          "fontSize": {
+                  "display": ["32px", {"lineHeight": "40px", "fontWeight": "900"}],
+                  "header-lg": ["24px", {"lineHeight": "32px", "fontWeight": "800"}],
+                  "code-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                  "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                  "ui-button": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "800"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+    }
+    
+    .squishy-button {
+      box-shadow: 0px 6px 0px 0px rgba(0, 26, 65, 1);
+      transition: all 0.1s ease;
+    }
+    
+    .squishy-button:active {
+      transform: translateY(4px);
+      box-shadow: 0px 2px 0px 0px rgba(0, 26, 65, 1);
+    }
+
+    .bubble-tail::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 40px;
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-top: 12px solid #001a41;
+    }
+
+    .bubble-tail-inner::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 42px;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid #ffffff;
+    }
+
+    @keyframes bounce-subtle {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .animate-bounce-soft {
+      animation: bounce-subtle 3s ease-in-out infinite;
+    }
+
+    .pixel-bg {
+      background-image: radial-gradient(#001a41 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    #story-panel {
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+  </style>
+</head>
+<body class="bg-[#FFE5D9] min-h-screen font-body-md text-on-surface overflow-hidden">
+<!-- Top Navigation Shell (Mapped from JSON) -->
+<header class="bg-surface dark:bg-surface-dim docked full-width top-0 border-b-4 border-on-surface dark:border-on-surface-variant shadow-[0px_6px_0px_0px_rgba(0,26,65,1)] flex justify-between items-center w-full px-container-padding py-base z-40">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full border-2 border-on-surface overflow-hidden bg-primary-container">
+<img alt="Bugsy" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa5_tTP_psHB6AiUZYprqVQ9L6rv9CtLwIa35edk7VoOjnr5J4-EExI1hh3kTRX9ZXm42XhTw0fFfsunTxxydSGK0dMMJw6x62zSrjVhVX-lri0gvICPDpxjho7D15u0EWYt_SVsHPiRqhCiGMvxBOj4FNrtEpB4aDfyMh8FRopnjQhJ8dfh2rMrY0_oO7JgjM3guAr4tcl1vSH4BCoOYdUC-NU5dN7LWbsMIpwH9Ua5sTi9DmSC3hgpR85wL5Uitpwu5Fiot0gaIv"/>
+</div>
+<h1 class="font-display text-display text-primary dark:text-primary-fixed">Bugsy QC</h1>
+</div>
+<div class="flex items-center gap-xs bg-surface-container-high px-sm py-xs rounded-full border-2 border-on-surface">
+<span class="font-ui-button text-ui-button">12 🔥 500 QC</span>
+</div>
+</header>
+<main class="relative flex flex-col items-center pt-lg px-md pb-32 max-w-lg mx-auto h-[calc(100vh-80px)] overflow-y-auto">
+<!-- Character & Speech Bubble Section -->
+<section class="w-full mb-md relative flex flex-col items-center">
+<div class="relative w-full max-w-[320px] mb-lg bubble-tail">
+<div class="bg-white border-4 border-on-surface rounded-[32px] p-md relative bubble-tail-inner shadow-[6px_6px_0px_0px_rgba(0,26,65,0.1)]">
+<p class="font-header-lg text-header-lg leading-tight">
+            Mình hơi đói rồi đó bạn ơi. Bạn có thể giúp mình tìm bug đầu tiên không?
+          </p>
+</div>
+</div>
+<div class="w-48 h-48 animate-bounce-soft">
+<img alt="Bugsy character with headphones" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa5_tTP_psHB6AiUZYprqVQ9L6rv9CtLwIa35edk7VoOjnr5J4-EExI1hh3kTRX9ZXm42XhTw0fFfsunTxxydSGK0dMMJw6x62zSrjVhVX-lri0gvICPDpxjho7D15u0EWYt_SVsHPiRqhCiGMvxBOj4FNrtEpB4aDfyMh8FRopnjQhJ8dfh2rMrY0_oO7JgjM3guAr4tcl1vSH4BCoOYdUC-NU5dN7LWbsMIpwH9Ua5sTi9DmSC3hgpR85wL5Uitpwu5Fiot0gaIv"/>
+</div>
+</section>
+<!-- Bug Ticket Card -->
+<section class="w-full transition-all duration-300 transform" id="bug-task">
+<div class="bg-white border-[3px] border-on-surface rounded-xl overflow-hidden shadow-[0px_6px_0px_0px_rgba(0,26,65,1)]">
+<!-- Card Header -->
+<div class="bg-tertiary-container border-b-[3px] border-on-surface px-md py-sm flex justify-between items-center">
+<span class="font-code-sm text-code-sm uppercase tracking-widest text-on-tertiary-container">Ticket #QA-001</span>
+<div class="bg-error text-white px-sm py-xs rounded-lg flex items-center gap-xs border-2 border-on-surface">
+<span class="material-symbols-outlined text-[14px]">report</span>
+<span class="font-code-sm text-code-sm">CRITICAL</span>
+</div>
+</div>
+<!-- Card Content -->
+<div class="p-md bg-surface-container-lowest">
+<h3 class="font-header-lg text-header-lg mb-sm">Lỗi hiển thị giá tiền</h3>
+<p class="text-on-surface-variant mb-md">
+            Trang thanh toán đang hiển thị <code class="bg-surface-variant p-xs rounded font-code-sm">NaN VND</code> khi người dùng nhấn áp dụng mã giảm giá 100%.
+          </p>
+<div class="bg-on-background rounded-lg p-md mb-md border-2 border-on-surface overflow-hidden relative">
+<div class="flex items-center gap-sm mb-xs">
+<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div>
+<span class="font-code-sm text-lime-400">DEBUG_CONSOLE_V1.0</span>
+</div>
+<pre class="font-code-sm text-lime-400 opacity-80 leading-relaxed">> applyDiscount(1.0)
+> total_price = current - (current * 1.0)
+> display(total_price)
+[OUT]: NaN</pre>
+<div class="absolute right-2 bottom-2 opacity-10">
+<span class="material-symbols-outlined text-4xl text-white">bug_report</span>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="grid grid-cols-2 gap-sm p-md pt-0">
+<button class="squishy-button bg-primary-container border-[3px] border-on-surface rounded-full py-sm font-ui-button text-ui-button flex items-center justify-center gap-xs hover:scale-105 active:scale-95 transition-transform" onclick="showResolution()">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+            PASS
+          </button>
+<button class="squishy-button bg-error-container border-[3px] border-on-surface rounded-full py-sm font-ui-button text-ui-button flex items-center justify-center gap-xs hover:scale-105 active:scale-95 transition-transform" onclick="showResolution()">
+<span class="material-symbols-outlined" data-icon="cancel">cancel</span>
+            FAIL
+          </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Story & Rule Sliding Panel -->
+<div class="fixed inset-x-0 bottom-0 z-50 transform translate-y-full px-md pb-md" id="story-panel">
+<div class="bg-inverse-surface border-x-4 border-t-4 border-on-surface rounded-t-[32px] p-md shadow-[0px_-8px_20px_rgba(0,0,0,0.2)]">
+<div class="w-12 h-1.5 bg-on-surface-variant/30 rounded-full mx-auto mb-md"></div>
+<div class="flex items-start gap-md mb-lg">
+<div class="w-16 h-16 shrink-0 bg-primary-container rounded-2xl border-2 border-on-surface p-1">
+<img alt="Happy Bugsy" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa5_tTP_psHB6AiUZYprqVQ9L6rv9CtLwIa35edk7VoOjnr5J4-EExI1hh3kTRX9ZXm42XhTw0fFfsunTxxydSGK0dMMJw6x62zSrjVhVX-lri0gvICPDpxjho7D15u0EWYt_SVsHPiRqhCiGMvxBOj4FNrtEpB4aDfyMh8FRopnjQhJ8dfh2rMrY0_oO7JgjM3guAr4tcl1vSH4BCoOYdUC-NU5dN7LWbsMIpwH9Ua5sTi9DmSC3hgpR85wL5Uitpwu5Fiot0gaIv"/>
+</div>
+<div>
+<h4 class="text-primary-fixed font-header-lg text-header-lg mb-xs">Tuyệt vời!</h4>
+<p class="text-surface-variant font-body-md leading-relaxed">
+            Bạn đã phát hiện ra lỗi logic cơ bản rồi đấy! Trong giới testing, đây gọi là "Edge Case" khi giá trị về 0 khiến hệ thống bối rối.
+          </p>
+</div>
+</div>
+<!-- Rule Landing Box -->
+<div class="bg-[#BFFFA1] border-[3px] border-on-surface rounded-2xl p-md mb-md relative shadow-[4px_4px_0px_0px_rgba(0,26,65,1)]">
+<div class="absolute -top-4 left-6 bg-on-surface text-white px-sm py-xs rounded-lg font-code-sm flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">push_pin</span>
+          TEST RULE #1
+        </div>
+<p class="font-ui-button text-on-background mt-2">
+          Luôn kiểm tra các giá trị biên (0, null, âm) để đảm bảo UI không bị "vỡ" khi dữ liệu lạ xuất hiện.
+        </p>
+</div>
+<button class="w-full squishy-button bg-primary-container border-[3px] border-on-surface rounded-full py-md font-ui-button text-ui-button flex items-center justify-center gap-sm" onclick="closeResolution()">
+        TIẾP TỤC HỌC
+        <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Bottom Nav Bar (Mapped from JSON) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-md pb-md pt-sm bg-surface-container dark:bg-surface-container-highest border-t-4 border-on-surface shadow-[0px_-6px_0px_0px_rgba(0,26,65,1)] rounded-t-xl md:hidden">
+<div class="bg-primary-container text-on-primary-container rounded-lg p-sm border-2 border-on-surface shadow-[0px_4px_0px_0px_rgba(0,26,65,1)] flex items-center justify-center">
+<span class="material-symbols-outlined">assignment</span>
+</div>
+<div class="text-on-surface-variant p-sm flex items-center justify-center hover:bg-surface-container-high transition-colors rounded-lg">
+<span class="material-symbols-outlined">menu</span>
+</div>
+<div class="text-on-surface-variant p-sm flex items-center justify-center hover:bg-surface-container-high transition-colors rounded-lg">
+<span class="material-symbols-outlined">gamepad</span>
+</div>
+<div class="text-on-surface-variant p-sm flex items-center justify-center hover:bg-surface-container-high transition-colors rounded-lg">
+<span class="material-symbols-outlined">menu_book</span>
+</div>
+</nav>
+<script>
+    function showResolution() {
+      const panel = document.getElementById('story-panel');
+      panel.classList.remove('translate-y-full');
+      panel.classList.add('translate-y-0');
+      
+      // Feedback effect on the card
+      document.getElementById('bug-task').classList.add('opacity-40', 'scale-95');
+    }
+
+    function closeResolution() {
+      const panel = document.getElementById('story-panel');
+      panel.classList.add('translate-y-full');
+      panel.classList.remove('translate-y-0');
+      
+      document.getElementById('bug-task').classList.remove('opacity-40', 'scale-95');
+    }
+  </script>
+</body></html>
