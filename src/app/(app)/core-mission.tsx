@@ -193,14 +193,21 @@ export default function CoreMissionScreen() {
         addBC(result.bcEarned);
         addQP(result.qpEarned);
         earnedBc = result.bcEarned;
-        // Story 6.2: emit CHỈ sau server success (NFR-1). Derive from/to từ store sau addBC
-        // → tránh race với syncFromSupabase (6.1) có thể resolve trong lúc await.
+        // Story 6.2/6.3: emit CHỈ sau server success (NFR-1). Derive from/to từ store sau
+        // addBC/addQP → tránh race với syncFromSupabase (6.1). 1 event chứa cả BC (top-level)
+        // + QP (nested) → CurrencyHeader animate cả 2 chip, 1 pending không bị đè.
         const currentBc = usePetStore.getState().bcBalance;
+        const currentQp = usePetStore.getState().qpTotal;
         rewardEventBus.emit('server_committed', {
           type: 'bc',
           amount: earnedBc,
           from: currentBc - earnedBc,
           to: currentBc,
+          qp: {
+            amount: result.qpEarned,
+            from: currentQp - result.qpEarned,
+            to: currentQp,
+          },
         });
       }
       else {
