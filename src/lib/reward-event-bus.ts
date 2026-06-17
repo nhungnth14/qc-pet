@@ -6,6 +6,9 @@ export type RewardPayload = {
   // Story 6.2: target tuyệt đối cho counter tick-up (tránh race với syncFromSupabase).
   from?: number;
   to?: number;
+  // Story 6.3: reward đa-currency — BC giữ top-level (backward compat onboarding emit),
+  // QP nested. core-mission emit 1 event chứa cả hai → 1 pending, không bị đè.
+  qp?: { amount: number; from: number; to: number };
   meta?: unknown;
 };
 

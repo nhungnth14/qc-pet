@@ -1,131 +1,96 @@
 import type { RewardPayload } from '@/lib/reward-event-bus';
 import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { View } from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withSequence,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { CurrencyChip } from '@/components/currency-chip';
 import { Text } from '@/components/ui/text';
+import { useChipEarnAnimation } from '@/features/currency/use-chip-earn-animation';
 import { rewardEventBus } from '@/lib/reward-event-bus';
 import { usePetStore } from '@/stores/pet-store';
 
 type Props = { className?: string };
+type ChipAnim = ReturnType<typeof useChipEarnAnimation>;
 
-const TICK_MS = 800;
+/** 1 chip có animation bounce + "+N" float (màu theo currency). */
+function AnimatedChip({ anim, type, floatClass }: { anim: ChipAnim; type: 'bc' | 'qp'; floatClass: string }) {
+  return (
+    <View>
+      <Animated.View style={anim.bounceStyle}>
+        <CurrencyChip type={type} amount={anim.shown} />
+      </Animated.View>
+      {anim.floatText != null && (
+        <Animated.View
+          pointerEvents="none"
+          style={[anim.floatStyle, { position: 'absolute', top: -4, left: 0, right: 0, alignItems: 'center' }]}
+        >
+          <Text className={`font-sans text-sm font-extrabold ${floatClass}`}>{anim.floatText}</Text>
+        </Animated.View>
+      )}
+    </View>
+  );
+}
 
 /**
  * CurrencyHeader — hàng 2 chip BC + QP (server-synced từ pet-store, Story 6.1).
  *
- * Story 6.2 — reward animation pipeline: khi mount, consume pending reward
- * (server_committed đã set ở core-mission) → chip BC bounce + "+N" float bay lên +
- * counter tick-up `from→to` 800ms. Deferred: reward commit lúc quiz immersive, chip
- * animate khi user về Work Room. Không mix màu (bc-amber/qp-teal). KHÔNG SFX (defer).
+ * Story 6.2/6.3 — reward animation pipeline: khi mount, consume pending reward
+ * (server_committed ở core-mission) → animate cả chip BC (top-level) lẫn QP (nested)
+ * có delta: bounce + "+N" float (bc-amber / qp-teal) + counter tick-up `from→to` 800ms.
+ * Deferred (reward commit lúc quiz immersive → animate khi về Work Room). Không mix màu.
+ * Không SFX (defer). Pending consume đúng 1 lần.
  */
 export function CurrencyHeader({ className = '' }: Props) {
   const bcBalance = usePetStore(s => s.bcBalance);
   const qpTotal = usePetStore(s => s.qpTotal);
+  const bc = useChipEarnAnimation(bcBalance);
+  const qp = useChipEarnAnimation(qpTotal);
 
-  // tweenBc != null khi đang tick-up; ngược lại hiển thị bcBalance (luôn current).
-  const [tweenBc, setTweenBc] = useState<number | null>(null);
-  const [floatText, setFloatText] = useState<string | null>(null);
+  // Latest-ref pattern: bc/qp are new objects each render (tween state changes during
+  // animation). Storing in refs lets the mount-only effect always call the current trigger
+  // without listing unstable objects as deps (which would re-run consumePending every frame).
+  const bcRef = useRef(bc);
+  const qpRef = useRef(qp);
+  bcRef.current = bc;
+  qpRef.current = qp;
 
-  const scale = useSharedValue(1);
-  const floatY = useSharedValue(0);
-  const floatOpacity = useSharedValue(0);
-  const rafRef = useRef<number | null>(null);
-  const floatTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const pendingConsumedRef = useRef<RewardPayload | null>(null);
-  const animationStartedRef = useRef(false);
-
-  // Khai báo TRƯỚC useEffect (react-compiler: không "access before declared"). Mọi
-  // setState/shared-value chạy qua rAF (event-driven) → không vi phạm sync-setState-in-effect.
-  function runBcAnimation(from: number, to: number, amount: number) {
-    // Bounce chip
-    scale.value = withSequence(
-      withTiming(1.25, { duration: 150 }),
-      withSpring(1, { damping: 6, stiffness: 180 }),
-    );
-    // "+N" float bay lên + mờ dần
-    setFloatText(`+${amount}`);
-    floatY.value = 0;
-    floatOpacity.value = 1;
-    floatY.value = withTiming(-44, { duration: TICK_MS });
-    floatOpacity.value = withDelay(TICK_MS - 350, withTiming(0, { duration: 350 }));
-    floatTimer.current = setTimeout(() => setFloatText(null), TICK_MS + 100);
-    // TODO: SFX hook (sound design story)
-    // Counter tick-up from→to qua rAF (số nguyên)
-    const start = Date.now();
-    const step = () => {
-      const t = Math.min(1, (Date.now() - start) / TICK_MS);
-      setTweenBc(Math.round(from + (to - from) * t));
-      if (t < 1)
-        rafRef.current = requestAnimationFrame(step);
-      else
-        setTweenBc(null); // về null → hiển thị bcBalance (= to)
-    };
-    rafRef.current = requestAnimationFrame(step);
-  }
+  const pendingRef = useRef<RewardPayload | null>(null);
+  const animStartedRef = useRef(false);
 
   useEffect(() => {
     const pending = rewardEventBus.consumePending();
-    pendingConsumedRef.current = pending;
-    animationStartedRef.current = false;
-    if (
-      pending?.type === 'bc'
-      && typeof pending.from === 'number'
-      && typeof pending.to === 'number'
-      && pending.to !== pending.from
-    ) {
-      const { from, to } = pending;
-      const amount = pending.amount ?? to - from;
-      rafRef.current = requestAnimationFrame(() => {
-        animationStartedRef.current = true;
-        runBcAnimation(from, to, amount);
-      });
-    }
+    if (!pending)
+      return;
+    pendingRef.current = pending;
+    animStartedRef.current = false;
+    // rAF: ngoài effect body (react-compiler) + sau khi navigator settle.
+    const rafId = requestAnimationFrame(() => {
+      animStartedRef.current = true;
+      if (
+        typeof pending.from === 'number'
+        && typeof pending.to === 'number'
+        && pending.to !== pending.from
+      ) {
+        bcRef.current.trigger(pending.from, pending.to, pending.amount ?? pending.to - pending.from);
+      }
+      if (pending.qp != null && pending.qp.to !== pending.qp.from) {
+        qpRef.current.trigger(pending.qp.from, pending.qp.to, pending.qp.amount);
+      }
+    });
     return () => {
-      if (rafRef.current != null)
-        cancelAnimationFrame(rafRef.current);
-      // StrictMode restore: nếu animation chưa start (double-invoke dev), đưa pending trở lại
-      // để mount lần 2 còn consume được → animation không bị nuốt trong dev build.
-      if (!animationStartedRef.current && pendingConsumedRef.current != null)
-        rewardEventBus.emit('server_committed', pendingConsumedRef.current);
-      if (floatTimer.current != null)
-        clearTimeout(floatTimer.current);
+      cancelAnimationFrame(rafId);
+      // StrictMode: effect runs twice on mount. If cleanup fires before rAF executes,
+      // restore pending so the remount effect can re-consume it.
+      if (!animStartedRef.current && pendingRef.current != null)
+        rewardEventBus.emit('server_committed', pendingRef.current);
     };
   }, []);
 
-  const bounceStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
-  const floatStyle = useAnimatedStyle(() => ({
-    opacity: floatOpacity.value,
-    transform: [{ translateY: floatY.value }],
-  }));
-
-  const shownBc = tweenBc ?? bcBalance;
-
   return (
     <View className={`flex-row gap-2 ${className}`}>
-      <View>
-        <Animated.View style={bounceStyle}>
-          <CurrencyChip type="bc" amount={shownBc} />
-        </Animated.View>
-        {floatText != null && (
-          <Animated.View
-            pointerEvents="none"
-            style={[floatStyle, { position: 'absolute', top: -4, left: 0, right: 0, alignItems: 'center' }]}
-          >
-            <Text className="font-sans text-sm font-extrabold text-bc-amber">{floatText}</Text>
-          </Animated.View>
-        )}
-      </View>
-      <CurrencyChip type="qp" amount={qpTotal} />
+      <AnimatedChip anim={bc} type="bc" floatClass="text-bc-amber" />
+      <AnimatedChip anim={qp} type="qp" floatClass="text-qp-teal" />
     </View>
   );
 }
