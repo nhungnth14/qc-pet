@@ -3,6 +3,9 @@ import { storage } from './storage';
 export type RewardPayload = {
   type: 'bc' | 'qp' | 'evolution';
   amount?: number;
+  // Story 6.2: target tuyệt đối cho counter tick-up (tránh race với syncFromSupabase).
+  from?: number;
+  to?: number;
   meta?: unknown;
 };
 
@@ -34,5 +37,16 @@ export const rewardEventBus = {
     return () => {
       animationCallbacks.delete(callback);
     };
+  },
+
+  // Story 6.2 — deferred animation: đọc + XOÁ pending reward (server_committed đã set,
+  // chưa animate). Consumer (CurrencyHeader) gọi lúc mount lại (về Work Room) để chạy
+  // animation. Trả null nếu không có. Đảm bảo consume đúng 1 lần (đã remove).
+  consumePending(): RewardPayload | null {
+    const pending = storage.getItem<RewardPayload>(PENDING_KEY);
+    if (pending) {
+      storage.remove(PENDING_KEY);
+    }
+    return pending ?? null;
   },
 };

@@ -114,7 +114,7 @@ development_status:
   # -----------------------------------------------------------------
   epic-6: in-progress
   6-1-dual-currency-data-model-persistent-header-display: review   # dev-story done 2026-06-16: CurrencyHeader (web verified amber/teal chips) + syncFromSupabase on mount + CHECK bc>=0 migration (chưa apply, cần DB); type-check/lint/17-unit pass
-  6-2-bc-earn-rules-miss-penalty-reward-animation-pipeline: backlog
+  6-2-bc-earn-rules-miss-penalty-reward-animation-pipeline: review   # dev-story done 2026-06-16: reward animation pipeline (web verified float+consume) + core-mission emit + miss-penalty pg_cron migration (chưa apply, cần DB); xoá dead bus; type-check/lint/31-unit pass
   6-3-qp-earn-rules-server-authoritative-immutability: backlog
   epic-6-retrospective: optional
 
