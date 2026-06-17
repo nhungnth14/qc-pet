@@ -1,0 +1,45 @@
+version: "6.0.0"
+initialized_at: "2026-06-12T01:38:00Z"
+
+project:
+  name: "QC Pet"
+  type: "mobile-app"
+  level: 2
+
+# Phase 1 — Analysis
+phase_1:
+  product_brief:
+    status: "not_started"    # required for level 2
+    file: "docs/product-brief.md"
+  research:
+    status: "not_started"    # recommended
+    file: "docs/research.md"
+
+# Phase 2 — Planning
+phase_2:
+  prd:
+    status: "required"       # required for level 2
+    file: "docs/prd.md"
+  ux_design:
+    status: "not_started"    # recommended for mobile app
+    file: "docs/ux-design.md"
+  tech_spec:
+    status: "optional"       # optional (covered by architecture)
+    file: "docs/tech-spec.md"
+
+# Phase 3 — Solutioning
+phase_3:
+  architecture:
+    status: "required"       # required for level 2
+    file: "docs/architecture.md"
+  gate_check:
+    status: "not_started"
+    file: "docs/gate-check.md"
+
+# Phase 4 — Implementation
+phase_4:
+  sprint_planning:
+    status: "not_started"
+    file: "docs/sprint-status.yaml"
+  stories_created: 0
+  stories_completed: 0

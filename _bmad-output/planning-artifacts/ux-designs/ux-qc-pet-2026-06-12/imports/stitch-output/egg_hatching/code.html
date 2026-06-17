@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#c9e6ff",
+                        "on-secondary-container": "#773224",
+                        "surface-container-low": "#f1f3ff",
+                        "secondary-fixed-dim": "#ffb4a5",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#cbdaff",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#e0e8ff",
+                        "on-tertiary-fixed-variant": "#4f319c",
+                        "surface-container": "#e9edff",
+                        "tertiary-fixed": "#e8ddff",
+                        "inverse-on-surface": "#edf0ff",
+                        "primary-fixed-dim": "#8aceff",
+                        "tertiary-fixed-dim": "#cebdff",
+                        "on-error-container": "#93000a",
+                        "on-background": "#001a41",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#004464",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#004b6f",
+                        "surface-container-highest": "#d8e2ff",
+                        "background": "#f9f9ff",
+                        "outline": "#6e7882",
+                        "on-tertiary-fixed": "#21005e",
+                        "secondary-container": "#fd9d89",
+                        "secondary": "#944839",
+                        "inverse-primary": "#8aceff",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#006491",
+                        "tertiary": "#674bb5",
+                        "surface-variant": "#d8e2ff",
+                        "on-secondary-fixed-variant": "#773124",
+                        "on-tertiary-container": "#472894",
+                        "on-secondary-fixed": "#3d0701",
+                        "surface-bright": "#f9f9ff",
+                        "surface": "#f9f9ff",
+                        "inverse-surface": "#002e69",
+                        "secondary-fixed": "#ffdad3",
+                        "on-surface": "#001a41",
+                        "on-surface-variant": "#3e4851",
+                        "primary-container": "#22b5ff",
+                        "outline-variant": "#bdc8d2",
+                        "on-primary-fixed": "#001e2f",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#b59cff",
+                        "primary": "#006491"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "xs": "4px",
+                        "lg": "40px",
+                        "base": "8px",
+                        "md": "24px",
+                        "container-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "display": ["Nunito Sans"],
+                        "header-lg": ["Nunito Sans"],
+                        "code-sm": ["JetBrains Mono"],
+                        "body-md": ["Nunito Sans"],
+                        "ui-button": ["Nunito Sans"]
+                    },
+                    "fontSize": {
+                        "display": ["32px", {"lineHeight": "40px", "fontWeight": "900"}],
+                        "header-lg": ["24px", {"lineHeight": "32px", "fontWeight": "800"}],
+                        "code-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "ui-button": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "800"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+        @keyframes bounce-custom {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(34, 181, 255, 0.6)); }
+            50% { filter: drop-shadow(0 0 25px rgba(34, 181, 255, 0.9)); }
+        }
+        .egg-shake { animation: shake 0.5s ease-in-out infinite; }
+        .egg-glow { animation: pulse-glow 2s infinite ease-in-out; }
+        .bugsy-pop { animation: bounce-custom 2s infinite ease-in-out; }
+        .shadow-blocky { box-shadow: 0px 6px 0px 0px rgba(0, 26, 65, 1); }
+        .shadow-pressed { box-shadow: 0px 2px 0px 0px rgba(0, 26, 65, 1); transform: translateY(4px); }
+        .terminal-cursor { border-right: 2px solid #00ff00; animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="bg-[#FFE5D9] min-h-screen font-body-md text-on-surface flex flex-col overflow-hidden">
+<!-- Top Navigation Bar (Suppressed for focused hatching flow, but title remains) -->
+<header class="bg-surface dark:bg-surface-dim border-b-4 border-on-surface dark:border-on-surface-variant shadow-[0px_6px_0px_0px_rgba(0,26,65,1)] flex justify-between items-center w-full px-container-padding py-base top-0 z-10">
+<div class="font-display text-display text-primary dark:text-primary-fixed">Bugsy QC</div>
+<div class="bg-surface-container-high rounded-full px-4 py-1 border-2 border-on-surface text-ui-button text-primary">
+            12 🔥 500 QC 25 BC
+        </div>
+</header>
+<main class="relative flex-grow flex flex-col items-center justify-center p-md overflow-hidden">
+<!-- Interior Office Background Context -->
+<div class="absolute inset-0 z-0 opacity-40 pointer-events-none">
+<!-- Potted Plant (Left) -->
+<div class="absolute bottom-20 left-10 w-32 h-48 bg-secondary-container rounded-t-full border-4 border-on-surface flex flex-col items-center justify-end">
+<div class="w-16 h-16 bg-on-tertiary-fixed-variant rounded-full -mb-4 border-2 border-on-surface"></div>
+</div>
+<!-- Sticky Notes Wall (Right) -->
+<div class="absolute top-20 right-10 flex flex-col gap-4">
+<div class="w-16 h-16 bg-yellow-200 border-2 border-on-surface -rotate-3 p-2 text-[10px]">FIX BUG #402</div>
+<div class="w-16 h-16 bg-pink-200 border-2 border-on-surface rotate-6 p-2 text-[10px]">COFFEE TIME</div>
+<div class="w-16 h-16 bg-blue-200 border-2 border-on-surface -rotate-12 p-2 text-[10px]">BUG LIST...</div>
+</div>
+<!-- Lamp (Left Top) -->
+<div class="absolute top-10 left-20">
+<div class="w-20 h-10 bg-yellow-400 rounded-t-full border-4 border-on-surface"></div>
+<div class="w-1 h-20 bg-on-surface mx-auto"></div>
+</div>
+</div>
+<!-- The Hatching Table/Desk -->
+<div class="absolute bottom-0 w-full h-1/4 bg-on-secondary-container border-t-8 border-on-surface z-0"></div>
+<!-- The Central Interaction -->
+<div class="relative z-10 cursor-pointer transition-transform active:scale-95 group" id="hatching-container">
+<!-- Sparkle Aura (CSS only) -->
+<div class="absolute -inset-10 animate-spin-slow opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary text-4xl absolute top-0 left-1/2">spark</span>
+<span class="material-symbols-outlined text-tertiary text-4xl absolute bottom-0 left-1/2">spark</span>
+<span class="material-symbols-outlined text-secondary text-4xl absolute left-0 top-1/2">spark</span>
+<span class="material-symbols-outlined text-primary-container text-4xl absolute right-0 top-1/2">spark</span>
+</div>
+<!-- The Egg (Initial State) -->
+<div class="egg-shake egg-glow w-48 h-64 bg-surface-container-lowest rounded-[100%_100%_80%_80%] border-4 border-on-surface shadow-blocky flex items-center justify-center relative overflow-hidden transition-all duration-500" id="the-egg">
+<div class="absolute inset-0 bg-gradient-to-tr from-transparent to-primary/10"></div>
+<span class="material-symbols-outlined text-primary text-6xl opacity-30">egg_alt</span>
+</div>
+<!-- Bugsy (Hidden State) -->
+<div class="hidden flex-col items-center" id="bugsy-revealed">
+<div class="bugsy-pop relative">
+<img alt="Bugsy" class="w-64 h-64 drop-shadow-2xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa5_tTP_psHB6AiUZYprqVQ9L6rv9CtLwIa35edk7VoOjnr5J4-EExI1hh3kTRX9ZXm42XhTw0fFfsunTxxydSGK0dMMJw6x62zSrjVhVX-lri0gvICPDpxjho7D15u0EWYt_SVsHPiRqhCiGMvxBOj4FNrtEpB4aDfyMh8FRopnjQhJ8dfh2rMrY0_oO7JgjM3guAr4tcl1vSH4BCoOYdUC-NU5dN7LWbsMIpwH9Ua5sTi9DmSC3hgpR85wL5Uitpwu5Fiot0gaIv"/>
+<!-- Hatching bits around -->
+<div class="absolute -top-4 -left-4 w-12 h-12 bg-surface-container-lowest border-2 border-on-surface rounded-lg -rotate-12"></div>
+<div class="absolute top-10 -right-6 w-10 h-10 bg-surface-container-lowest border-2 border-on-surface rounded-full rotate-45"></div>
+</div>
+</div>
+</div>
+<!-- Notification / Guide Bubble -->
+<div class="mt-8 bg-surface border-4 border-on-surface rounded-2xl px-6 py-3 shadow-blocky relative animate-bounce" id="guide-bubble">
+<span class="font-header-lg text-on-surface">Chạm để nở trứng! 🐣</span>
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-surface border-l-4 border-t-4 border-on-surface rotate-45"></div>
+</div>
+<!-- Overlay: Name Your Pet Panel -->
+<div class="fixed inset-x-0 bottom-0 z-50 transform translate-y-full transition-transform duration-700 ease-out p-6" id="naming-panel">
+<div class="bg-surface-container border-4 border-on-surface rounded-t-[3rem] p-md pb-lg max-w-xl mx-auto shadow-[0px_-8px_0px_0px_rgba(0,26,65,1)]">
+<div class="w-16 h-2 bg-on-surface-variant rounded-full mx-auto mb-6"></div>
+<h2 class="font-display text-display text-on-surface text-center mb-6">Đặt Tên Thú Cưng</h2>
+<!-- Terminal Input Style -->
+<div class="bg-on-background border-4 border-on-surface rounded-xl p-4 mb-6 relative overflow-hidden">
+<div class="flex items-center gap-2 font-code-sm text-primary-container mb-1">
+<span class="material-symbols-outlined text-xs">terminal</span>
+<span>PET_ID_GEN_01</span>
+</div>
+<input class="w-full bg-transparent border-none text-2xl font-display text-[#00ff00] placeholder:text-primary/30 focus:ring-0 uppercase" id="pet-name-input" placeholder="Nhập tên..." type="text"/>
+<div class="absolute bottom-4 right-4 animate-pulse">
+<span class="material-symbols-outlined text-[#00ff00]">edit_note</span>
+</div>
+</div>
+<!-- Chips/Badges -->
+<div class="flex flex-wrap justify-center gap-3 mb-8">
+<button class="bg-primary-container text-on-primary-container border-2 border-on-surface rounded-full px-4 py-2 font-ui-button hover:scale-105 active:scale-95 transition-all shadow-[0px_4px_0px_0px_rgba(0,26,65,1)] flex items-center gap-2" onclick="setName('Bugsy')">
+                        Bugsy <span class="material-symbols-outlined text-sm">search</span>
+</button>
+<button class="bg-surface-variant text-on-surface-variant border-2 border-on-surface rounded-full px-4 py-2 font-ui-button hover:scale-105 active:scale-95 transition-all shadow-[0px_4px_0px_0px_rgba(0,26,65,1)] flex items-center gap-2" onclick="setName('Null')">
+                        Null <span class="material-symbols-outlined text-sm">smart_toy</span>
+</button>
+<button class="bg-secondary-container text-on-secondary-container border-2 border-on-surface rounded-full px-4 py-2 font-ui-button hover:scale-105 active:scale-95 transition-all shadow-[0px_4px_0px_0px_rgba(0,26,65,1)] flex items-center gap-2" onclick="setName('Mèo Prod')">
+                        Mèo Prod <span class="material-symbols-outlined text-sm">mood_bad</span>
+</button>
+</div>
+<!-- Main Action Button -->
+<button class="w-full bg-primary-container text-on-primary border-4 border-on-surface rounded-full py-4 font-display text-display uppercase shadow-blocky hover:translate-y-1 hover:shadow-pressed active:scale-95 transition-all flex items-center justify-center gap-4" id="confirm-btn">
+<span>Xác nhận</span>
+<span class="material-symbols-outlined text-4xl">check_circle</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Bottom Nav (Suppressed for Onboarding/Task Focused) -->
+<script>
+        const container = document.getElementById('hatching-container');
+        const egg = document.getElementById('the-egg');
+        const bugsy = document.getElementById('bugsy-revealed');
+        const bubble = document.getElementById('guide-bubble');
+        const panel = document.getElementById('naming-panel');
+        const input = document.getElementById('pet-name-input');
+        const confirmBtn = document.getElementById('confirm-btn');
+
+        let clickCount = 0;
+        const requiredClicks = 5;
+
+        container.addEventListener('click', () => {
+            if (clickCount >= requiredClicks) return;
+
+            clickCount++;
+            
+            // Intensify shake and glow
+            egg.style.animationDuration = `${0.5 / clickCount}s`;
+            
+            // Random crack visual would be cool, but we stick to state swap for simplicity
+            if (clickCount >= requiredClicks) {
+                hatch();
+            }
+        });
+
+        function hatch() {
+            egg.classList.add('scale-150', 'opacity-0');
+            setTimeout(() => {
+                egg.classList.add('hidden');
+                bugsy.classList.remove('hidden');
+                bubble.classList.add('hidden');
+                
+                // Slide up naming panel
+                panel.classList.remove('translate-y-full');
+            }, 500);
+        }
+
+        function setName(name) {
+            input.value = name;
+            input.focus();
+        }
+
+        confirmBtn.addEventListener('click', () => {
+            if (input.value.trim() === "") {
+                input.parentElement.classList.add('border-error');
+                setTimeout(() => input.parentElement.classList.remove('border-error'), 1000);
+                return;
+            }
+            
+            // Final transition logic
+            confirmBtn.innerHTML = '<span>Đang Tải...</span><span class="material-symbols-outlined animate-spin">sync</span>';
+            setTimeout(() => {
+                alert(`Chào mừng ${input.value} vào đội ngũ QC!`);
+                // Proceed to next screen logic would go here
+            }, 1000);
+        });
+
+        // Add some atmospheric particles logic? 
+        // Just keeping it clean for now per requirements.
+    </script>
+</body></html>

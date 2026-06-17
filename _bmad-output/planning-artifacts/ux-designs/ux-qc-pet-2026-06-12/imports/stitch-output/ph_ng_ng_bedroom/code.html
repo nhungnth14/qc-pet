@@ -1,0 +1,332 @@
+<!DOCTYPE html><html lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>QC Pet - Bedroom</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-container": "#ff9e8a",
+                    "on-tertiary-fixed-variant": "#2e4f00",
+                    "surface": "#fff8f6",
+                    "surface-container-high": "#f5e5e2",
+                    "primary-fixed": "#ffdad3",
+                    "primary": "#944839",
+                    "surface-bright": "#fff8f6",
+                    "secondary-container": "#24b5ff",
+                    "primary-fixed-dim": "#ffb4a5",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#c9e6ff",
+                    "on-tertiary-fixed": "#102000",
+                    "on-background": "#221a18",
+                    "surface-dim": "#e6d7d4",
+                    "outline-variant": "#dac1bc",
+                    "on-secondary-container": "#004464",
+                    "on-primary-fixed-variant": "#773124",
+                    "background": "#fff8f6",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-on-surface": "#fdedea",
+                    "inverse-primary": "#ffb4a5",
+                    "on-primary-container": "#783325",
+                    "on-secondary-fixed-variant": "#004b6f",
+                    "on-secondary-fixed": "#001e2f",
+                    "on-error-container": "#93000a",
+                    "surface-variant": "#efdfdc",
+                    "secondary": "#006491",
+                    "on-tertiary-container": "#2f5100",
+                    "surface-container-low": "#fff0ee",
+                    "on-surface-variant": "#54433f",
+                    "error": "#ba1a1a",
+                    "surface-tint": "#944839",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#7ecc00",
+                    "on-secondary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-surface": "#221a18",
+                    "secondary-fixed-dim": "#8aceff",
+                    "outline": "#87726e",
+                    "tertiary": "#3f6900",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#3d0701",
+                    "inverse-surface": "#372e2d",
+                    "surface-container-highest": "#efdfdc",
+                    "surface-container": "#faeae7",
+                    "tertiary-fixed": "#a1fa29",
+                    "tertiary-fixed-dim": "#89dc00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "xl": "32px",
+                    "margin-mobile": "20px",
+                    "unit": "8px",
+                    "lg": "24px",
+                    "margin-desktop": "40px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Nunito Sans"],
+                    "headline-lg-mobile": ["Nunito Sans"],
+                    "headline-lg": ["Nunito Sans"],
+                    "label-md": ["Nunito Sans"],
+                    "label-lg": ["Nunito Sans"],
+                    "display-lg": ["Nunito Sans"],
+                    "body-md": ["Nunito Sans"],
+                    "body-lg": ["Nunito Sans"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "800"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "800"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "800"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "800"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "900"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #ECEEFF;
+            font-family: 'Nunito Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .kawaii-shadow {
+            box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        }
+
+        .kawaii-shadow-sm {
+            box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+        }
+
+        .kawaii-border {
+            border: 3px solid #000000;
+        }
+
+        .kawaii-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px 0px rgba(0, 0, 0, 1);
+        }
+
+        .sheen {
+            position: absolute;
+            top: 4px;
+            left: 10%;
+            width: 80%;
+            height: 20%;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 9999px;
+            pointer-events: none;
+        }
+
+        .night-mode-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(16, 32, 0, 0.4);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 40;
+        }
+
+        .night-active .night-mode-overlay {
+            opacity: 1;
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .progress-liquid {
+            background: linear-gradient(90deg, #7ecc00 0%, #a1fa29 100%);
+            position: relative;
+        }
+        .progress-liquid::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="bg-[#ECEEFF] min-h-screen flex flex-col">
+<div class="night-mode-overlay" id="night-overlay"></div>
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface kawaii-border border-t-0 border-x-0 kawaii-shadow">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full kawaii-border overflow-hidden bg-primary-fixed">
+<img alt="Bugsy profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLvZI_Me0fW6NtwRuawE0zq8WQHGMV5R-czPQUXz2st0YSiOfQtq-ZFVlkYFNveNaftwA1e-cnIKMPCFt14iT2zx-uDNyAU28GCJKfhX6vY4TkftZF87PJPUUQPffemPOQ2BOmsnLf4c3OYEmd5StY1gnCNiWgcQZKZYwM1n5r-1yxuoRqAyMd9UHw5HGu8tEUomCeeh2L7ovKCIEfyjul_0LqNFWK7UzrlJVVPTYW93BxTS_0zELd9VA1_7">
+</div>
+<h1 class="font-headline-md text-headline-md-mobile text-primary">Bugsy Pet</h1>
+</div>
+<div class="bg-primary-container kawaii-border px-3 py-1 rounded-full kawaii-shadow-sm flex items-center gap-1 transition-transform hover:scale-95 active:translate-x-[2px] active:translate-y-[2px]">
+<span class="font-label-lg text-on-primary-container">12 🔥</span>
+</div>
+</header>
+<main class="flex-1 mt-16 pb-24 px-margin-mobile relative overflow-hidden flex flex-col items-center justify-center">
+<!-- Constellation Background Elements -->
+<div class="absolute inset-0 pointer-events-none">
+<div class="absolute top-10 left-10 opacity-40 floating" style="animation-delay: 0s;">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="star">star</span>
+</div>
+<div class="absolute top-32 right-12 opacity-30 floating" style="animation-delay: 1s;">
+<span class="material-symbols-outlined text-secondary text-2xl" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div class="absolute bottom-40 left-16 opacity-30 floating" style="animation-delay: 2s;">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="star_half">star_half</span>
+</div>
+</div>
+<!-- Room Scene Container -->
+<div class="relative w-full max-w-lg aspect-square flex items-end justify-center">
+<!-- Bookshelf Left -->
+<div class="absolute left-0 bottom-4 w-24 h-48 bg-primary-fixed kawaii-border rounded-lg kawaii-shadow flex flex-col p-2 gap-2">
+<div class="w-full h-4 bg-primary-container rounded-sm kawaii-border border-0 kawaii-shadow-sm opacity-50"></div>
+<div class="flex-1 flex gap-1 items-end">
+<div class="w-3 h-20 bg-secondary-container kawaii-border rounded-t-sm"></div>
+<div class="w-3 h-24 bg-tertiary-container kawaii-border rounded-t-sm"></div>
+<div class="w-3 h-16 bg-primary-container kawaii-border rounded-t-sm"></div>
+</div>
+</div>
+<!-- Nightstand Right -->
+<div class="absolute right-0 bottom-4 w-20 h-24 bg-primary-fixed kawaii-border rounded-lg kawaii-shadow p-2">
+<div class="w-full h-2 bg-black opacity-10 rounded-full mb-1"></div>
+<div class="relative flex justify-center">
+<div class="absolute -top-8 w-12 h-12 bg-yellow-200 blur-xl opacity-60 transition-opacity" id="lamp-light"></div>
+<span class="material-symbols-outlined text-yellow-500 text-3xl relative z-10" data-icon="lightbulb">lightbulb</span>
+</div>
+</div>
+<!-- The Bed -->
+<div class="relative w-full h-40 bg-[#c5b4e3] kawaii-border rounded-t-3xl kawaii-shadow mx-8 flex flex-col">
+<!-- Patchwork Blanket -->
+<div class="absolute inset-x-2 bottom-2 h-24 rounded-t-xl overflow-hidden border-t-2 border-black/10">
+<div class="grid grid-cols-4 grid-rows-2 h-full w-full">
+<div class="bg-primary-fixed-dim"></div>
+<div class="bg-secondary-fixed"></div>
+<div class="bg-tertiary-fixed-dim"></div>
+<div class="bg-primary-fixed"></div>
+<div class="bg-secondary-fixed-dim"></div>
+<div class="bg-primary-container"></div>
+<div class="bg-secondary-container"></div>
+<div class="bg-tertiary-container"></div>
+</div>
+</div>
+<!-- Bugsy Sitting on Edge -->
+<div class="absolute -top-24 left-1/2 -translate-x-1/2 w-48 h-48 flex flex-col items-center">
+<div class="relative">
+<img alt="Bugsy Pet" class="w-40 h-40 object-contain drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]" data-alt="A cute 2D hand-drawn character named Bugsy, a whimsical small animal with floppy ears, sitting tiredly on the edge of a bed. The character has a sleepy expression with slightly drooping eyes. The style is flat illustration with thick black outlines, bold cel-shaded details, and a high-contrast sticker feel, set in a cozy lavender-colored bedroom with soft lighting." src="https://lh3.googleusercontent.com/aida/AP1WRLvZI_Me0fW6NtwRuawE0zq8WQHGMV5R-czPQUXz2st0YSiOfQtq-ZFVlkYFNveNaftwA1e-cnIKMPCFt14iT2zx-uDNyAU28GCJKfhX6vY4TkftZF87PJPUUQPffemPOQ2BOmsnLf4c3OYEmd5StY1gnCNiWgcQZKZYwM1n5r-1yxuoRqAyMd9UHw5HGu8tEUomCeeh2L7ovKCIEfyjul_0LqNFWK7UzrlJVVPTYW93BxTS_0zELd9VA1_7">
+<!-- Sleepy ZZZs -->
+<div class="absolute -top-4 -right-4 flex flex-col gap-1 text-primary opacity-60 font-bold">
+<span class="text-xs animate-bounce" style="animation-delay: 0.2s">Z</span>
+<span class="text-sm animate-bounce" style="animation-delay: 0.5s">Z</span>
+<span class="text-lg animate-bounce">Z</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Stats & Action UI -->
+<div class="w-full max-w-md mt-8 space-y-6">
+<!-- Health/Energy Bar -->
+<div class="bg-white kawaii-border p-4 rounded-2xl kawaii-shadow">
+<div class="flex justify-between items-center mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error" data-icon="favorite">favorite</span>
+<span class="font-label-lg text-on-surface">Năng lượng</span>
+</div>
+<span class="font-label-lg text-primary">20/100</span>
+</div>
+<div class="w-full h-6 bg-surface-container-high rounded-full kawaii-border relative overflow-hidden">
+<div class="h-full w-1/5 progress-liquid"></div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-4">
+<button class="kawaii-btn w-full bg-secondary-container text-on-secondary-container kawaii-border py-4 rounded-full font-headline-md text-headline-md-mobile kawaii-shadow relative overflow-hidden transition-all group">
+<div class="sheen"></div>
+<span class="relative z-10 flex items-center justify-center gap-3">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+                        Ôn bài trước khi ngủ
+                    </span>
+</button>
+<button class="kawaii-btn w-full bg-primary-container text-on-primary-container kawaii-border py-4 rounded-full font-headline-md text-headline-md-mobile kawaii-shadow relative overflow-hidden transition-all group" onclick="toggleLight()">
+<div class="sheen"></div>
+<span class="relative z-10 flex items-center justify-center gap-3">
+<span class="material-symbols-outlined" data-icon="nightlight" id="light-icon">nightlight</span>
+<span id="light-text" class="">Tắt đèn</span>
+</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-6 pt-2 bg-surface-container border-t-[3px] border-black rounded-t-xl shadow-[0px_-4px_0px_0px_rgba(0,0,0,0.2)]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-secondary-container transition-colors p-2 rounded-xl group">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-md text-label-md">Mission</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-secondary-container transition-colors p-2 rounded-xl group">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+<span class="font-label-md text-label-md">Feed</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-tertiary-container text-on-tertiary-container rounded-full border-[3px] border-black px-4 py-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:scale-90 transition-all">
+<span class="material-symbols-outlined" data-icon="videogame_asset">videogame_asset</span>
+<span class="font-label-md text-label-md">Play</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-secondary-container transition-colors p-2 rounded-xl group">
+<span class="material-symbols-outlined" data-icon="fitness_center">fitness_center</span>
+<span class="font-label-md text-label-md">Train</span>
+</div>
+</nav>
+<script>
+        let isNight = false;
+        
+        function toggleLight() {
+            isNight = !isNight;
+            const body = document.body;
+            const overlay = document.getElementById('night-overlay');
+            const lampLight = document.getElementById('lamp-light');
+            const lightIcon = document.getElementById('light-icon');
+            const lightText = document.getElementById('light-text');
+
+            if (isNight) {
+                body.classList.add('night-active');
+                lampLight.style.opacity = '0';
+                lightIcon.innerText = 'light_mode';
+                lightText.innerText = 'Bật đèn';
+            } else {
+                body.classList.remove('night-active');
+                lampLight.style.opacity = '0.6';
+                lightIcon.innerText = 'nightlight';
+                lightText.innerText = 'Tắt đèn';
+            }
+        }
+    </script>
+
+
+</body></html>

@@ -141,3 +141,28 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Expo / React Native
+.expo/
+web-build/
+expo-env.d.ts
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+.metro-health-check*
+android/
+ios/
+.eas/
+app-example
+
+# Prisma generated client (dev-time only)
+/generated/
+
+# Claude Code / BMAD — tooling cài bằng installer (giống node_modules), không version.
+# Giữ .claude/launch.json + settings.json (config dự án) nếu muốn chia sẻ; bỏ phần còn lại.
+.claude/skills/
+.claude/settings.local.json
+.claude/worktrees/

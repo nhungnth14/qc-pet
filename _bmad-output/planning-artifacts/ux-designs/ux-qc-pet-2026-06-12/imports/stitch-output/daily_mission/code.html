@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bugsy QC - Daily Mission</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed": "#c9e6ff",
+            "on-secondary-container": "#773224",
+            "surface-container-low": "#f1f3ff",
+            "secondary-fixed-dim": "#ffb4a5",
+            "on-secondary": "#ffffff",
+            "surface-dim": "#cbdaff",
+            "surface-container-lowest": "#ffffff",
+            "error-container": "#ffdad6",
+            "surface-container": "#e9edff",
+            "tertiary-fixed": "#e8ddff",
+            "inverse-on-surface": "#edf0ff",
+            "primary-fixed-dim": "#8aceff",
+            "tertiary-fixed-dim": "#cebdff",
+            "on-error-container": "#93000a",
+            "on-background": "#001a41",
+            "error": "#ba1a1a",
+            "on-primary-container": "#004464",
+            "on-primary": "#ffffff",
+            "surface-container-highest": "#d8e2ff",
+            "background": "#f9f9ff",
+            "outline": "#6e7882",
+            "secondary-container": "#fd9d89",
+            "secondary": "#944839",
+            "inverse-primary": "#8aceff",
+            "on-error": "#ffffff",
+            "surface-tint": "#006491",
+            "tertiary": "#674bb5",
+            "surface-variant": "#d8e2ff",
+            "on-tertiary-container": "#472894",
+            "surface-bright": "#f9f9ff",
+            "surface": "#f9f9ff",
+            "inverse-surface": "#002e69",
+            "secondary-fixed": "#ffdad3",
+            "on-surface": "#001a41",
+            "on-surface-variant": "#3e4851",
+            "primary-container": "#22b5ff",
+            "outline-variant": "#bdc8d2",
+            "on-tertiary": "#ffffff",
+            "tertiary-container": "#b59cff",
+            "primary": "#006491"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "sm": "12px",
+            "xs": "4px",
+            "lg": "40px",
+            "base": "8px",
+            "md": "24px",
+            "container-padding": "20px"
+          },
+          "fontFamily": {
+            "display": ["Nunito Sans"],
+            "header-lg": ["Nunito Sans"],
+            "code-sm": ["JetBrains Mono"],
+            "body-md": ["Nunito Sans"],
+            "ui-button": ["Nunito Sans"]
+          },
+          "fontSize": {
+            "display": ["32px", {"lineHeight": "40px", "fontWeight": "900"}],
+            "header-lg": ["24px", {"lineHeight": "32px", "fontWeight": "800"}],
+            "code-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+            "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+            "ui-button": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "800"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      background-color: #f9f9ff;
+      font-family: 'Nunito Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .tactile-card {
+      border: 3px solid #001a41;
+      box-shadow: 0px 6px 0px 0px #001a41;
+    }
+
+    .tactile-button {
+      border: 3px solid #001a41;
+      box-shadow: 0px 4px 0px 0px #001a41;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .tactile-button:active {
+      transform: translateY(4px);
+      box-shadow: 0px 0px 0px 0px #001a41;
+    }
+
+    .ticket-rip {
+      position: relative;
+    }
+    .ticket-rip::before, .ticket-rip::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #f9f9ff;
+      border: 3px solid #001a41;
+      border-radius: 50%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .ticket-rip::before { left: -12px; }
+    .ticket-rip::after { right: -12px; }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    .shimmer-effect {
+      position: relative;
+      overflow: hidden;
+    }
+    .shimmer-effect::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #22b5ff;
+      top: -20px;
+      z-index: 100;
+    }
+
+    .pixel-terminal {
+      background: #001a41;
+      border: 2px solid #3e4851;
+      font-family: 'JetBrains Mono', monospace;
+      color: #8ce68c; /* Lime green neon */
+    }
+
+    .cursor-blink {
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col items-center">
+<!-- Header & Progress -->
+<header class="w-full max-w-2xl px-container-padding py-base flex items-center justify-between z-40">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-highest tactile-button">
+<span class="material-symbols-outlined text-on-surface">close</span>
+</button>
+<div class="flex-1 flex flex-col items-center px-md">
+<div class="bg-secondary-container text-on-secondary-container px-sm py-xs rounded-full border-2 border-on-background flex items-center gap-xs mb-xs">
+<span class="material-symbols-outlined text-[18px]">search</span>
+<span class="font-ui-button text-[12px] font-black uppercase tracking-wider">Bug Detective</span>
+</div>
+<div class="flex gap-xs">
+<div class="w-8 h-2 rounded-full bg-primary-container border border-on-background"></div>
+<div class="w-8 h-2 rounded-full bg-primary-container border border-on-background"></div>
+<div class="w-8 h-2 rounded-full bg-surface-variant border border-on-background"></div>
+<div class="w-8 h-2 rounded-full bg-surface-variant border border-on-background"></div>
+</div>
+</div>
+<div class="flex items-center bg-surface-container-high px-sm py-xs rounded-full border-2 border-on-background font-bold text-on-surface">
+<span class="mr-xs">500</span>
+<span class="text-[14px]">QC</span>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 w-full max-w-2xl px-container-padding flex flex-col items-center justify-center py-md space-y-md">
+<!-- Scenario Card -->
+<div class="w-full tactile-card rounded-xl bg-on-background overflow-hidden ticket-rip relative">
+<div class="bg-tertiary-container text-on-tertiary-container px-md py-base border-b-3 border-on-background font-header-lg text-header-lg flex justify-between items-center">
+<span>Incident Ticket #802</span>
+<span class="material-symbols-outlined" data-weight="fill">bug_report</span>
+</div>
+<div class="p-md space-y-md">
+<p class="text-white font-body-md opacity-80 italic">A user reported that the "Join Room" button is occasionally unresponsive when clicked repeatedly.</p>
+<div class="pixel-terminal p-sm rounded-lg text-code-sm leading-relaxed">
+<div class="flex items-center gap-xs border-b border-on-surface-variant/30 pb-xs mb-xs">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="ml-auto text-[10px] opacity-50 uppercase">Console Log</span>
+</div>
+<code class="block">
+            &gt; [Action] Button Pressed <br/>
+            &gt; [State] isLoading: true <br/>
+            &gt; [Error] Multiple executions detected... <br/>
+            &gt; [Status] Request blocked by race condition.<br/>
+<span class="cursor-blink">_</span>
+</code>
+</div>
+<div class="bg-primary-fixed/10 border border-primary-container/20 rounded-lg p-sm">
+<p class="text-primary-fixed font-header-lg text-lg">What's the best way to fix this bug?</p>
+</div>
+</div>
+</div>
+<!-- Answer Buttons -->
+<div class="w-full grid grid-cols-1 gap-sm">
+<button class="tactile-button bg-surface rounded-xl p-md text-left flex items-center group hover:bg-primary-container transition-colors" onclick="handleAnswer(true)">
+<div class="w-10 h-10 rounded-full border-2 border-on-background bg-surface flex items-center justify-center mr-md group-active:scale-90 transition-transform">
+<span class="font-display font-black">A</span>
+</div>
+<span class="font-ui-button text-on-background">Implement a "Debounce" function on the button click.</span>
+</button>
+<button class="tactile-button bg-surface rounded-xl p-md text-left flex items-center group hover:bg-primary-container transition-colors" onclick="handleAnswer(false)">
+<div class="w-10 h-10 rounded-full border-2 border-on-background bg-surface flex items-center justify-center mr-md group-active:scale-90 transition-transform">
+<span class="font-display font-black">B</span>
+</div>
+<span class="font-ui-button text-on-background">Change the button color to light grey while it's loading.</span>
+</button>
+<button class="tactile-button bg-surface rounded-xl p-md text-left flex items-center group hover:bg-primary-container transition-colors" onclick="handleAnswer(false)">
+<div class="w-10 h-10 rounded-full border-2 border-on-background bg-surface flex items-center justify-center mr-md group-active:scale-90 transition-transform">
+<span class="font-display font-black">C</span>
+</div>
+<span class="font-ui-button text-on-background">Increase the server capacity to handle more requests.</span>
+</button>
+</div>
+</main>
+<!-- Feedback Panel (Hidden by default) -->
+<div class="fixed inset-x-0 bottom-0 z-50 transform translate-y-full transition-transform duration-500 ease-out flex justify-center p-md" id="feedbackPanel">
+<div class="w-full max-w-2xl tactile-card rounded-t-3xl bg-surface p-md flex flex-col md:flex-row gap-md items-center relative overflow-hidden">
+<!-- Confetti container -->
+<div class="absolute inset-0 pointer-events-none" id="confettiContainer"></div>
+<!-- Bugsy Avatar -->
+<div class="relative w-32 h-32 flex-shrink-0">
+<div class="absolute inset-0 bg-secondary-container rounded-full border-3 border-on-background"></div>
+<img alt="Bugsy the chicken" class="relative w-full h-full object-cover rounded-full p-2" data-alt="A highly detailed 3D render of a cute, round, fluffy yellow chick wearing large purple headphones. The chick has sparkling large eyes and a friendly expression, standing in a soft, bright studio lighting environment with a clean white background. The aesthetic is toy-like, squishy, and high-contrast, matching a modern digital pet design style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCv-0w0LD9b2akGC2PNcUHzdkp4LlFeVkurTUraLaKpxGPt8mYiufXTUyinLiraRMDhS9tyxKGOKK1UrnmaI5gMcHmWKfSEt7vYheQKPFd7ouKcRsNioIBuEj2FNvt6u40C_QTf7t3GblYrIdZbARoLfy_9lT0W3u06GWUbmy-_WO4F9hdxcI7ADUYUEup7aC9YGK80FKQNlfWnhabUXyfB0xlBhqdjsZoaLQirswPKDRnYqfc69ZzaTQsVWlcXT5hXq_LfmIC_Ob-_"/>
+</div>
+<!-- Content -->
+<div class="flex-1 text-center md:text-left">
+<h3 class="font-display text-display text-primary mb-xs" id="feedbackTitle">Bug Smashed!</h3>
+<p class="font-body-md text-on-surface-variant mb-md">Debouncing prevents the function from firing too often. You've successfully stabilized the connection!</p>
+<div class="bg-[#8ce68c]/20 border-2 border-[#4da14d] rounded-xl p-sm mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-[#2d6e2d]" data-weight="fill">verified</span>
+<div class="text-left">
+<span class="block text-[10px] font-black uppercase text-[#2d6e2d]">QC Rule #42</span>
+<span class="font-ui-button text-[#1e4a1e] leading-tight">Always handle user input thrashing at the UI level.</span>
+</div>
+</div>
+<button class="w-full tactile-button bg-primary-container py-sm rounded-full font-ui-button text-on-primary-container text-lg shimmer-effect" onclick="resetMission()">
+          Next Mission
+        </button>
+</div>
+</div>
+</div>
+<!-- Bottom Nav Anchor (Suppressed for transactional screen) -->
+<script>
+    function handleAnswer(isCorrect) {
+      const panel = document.getElementById('feedbackPanel');
+      const title = document.getElementById('feedbackTitle');
+      
+      if(isCorrect) {
+        title.innerText = "Bug Smashed! 🔨";
+        title.classList.replace('text-error', 'text-primary');
+        panel.classList.replace('translate-y-full', 'translate-y-0');
+        spawnConfetti();
+      } else {
+        title.innerText = "Bug Escaped! 🐛";
+        title.classList.add('text-error');
+        panel.classList.replace('translate-y-full', 'translate-y-0');
+      }
+    }
+
+    function resetMission() {
+      const panel = document.getElementById('feedbackPanel');
+      panel.classList.replace('translate-y-0', 'translate-y-full');
+      setTimeout(() => {
+        document.getElementById('confettiContainer').innerHTML = '';
+      }, 500);
+    }
+
+    function spawnConfetti() {
+      const container = document.getElementById('confettiContainer');
+      const colors = ['#22b5ff', '#fd9d89', '#b59cff', '#8ce68c'];
+      
+      for(let i = 0; i < 50; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+        
+        container.appendChild(piece);
+        
+        const animation = piece.animate([
+          { top: '-20px', opacity: 1 },
+          { top: '100%', opacity: 0 }
+        ], {
+          duration: 1000 + Math.random() * 2000,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          fill: 'forwards'
+        });
+      }
+    }
+  </script>
+</body></html>
