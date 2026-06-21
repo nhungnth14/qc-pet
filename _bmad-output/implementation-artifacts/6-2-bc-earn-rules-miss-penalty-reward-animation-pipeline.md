@@ -4,7 +4,7 @@ baseline_commit: 4e3de93896fbc54e178c7de248b12744853276d7
 
 # Story 6.2: BC Earn Rules, Miss Penalty & Reward Animation Pipeline
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -247,4 +247,4 @@ Hoàn thành 5 task + 3 AC (phần buildable). **Reward animation pipeline** (Re
 |------|----------|
 | 2026-06-16 | Story created (ready-for-dev) |
 | 2026-06-16 | Party-mode (Winston/Amelia/John/Murat) → 4 Resolved Decisions + 3 finding (absolute-target, consume-once, idempotency-column) gấp vào story |
-| 2026-06-16 | Implement 5 task: reward animation pipeline + core-mission emit + miss-penalty pg_cron + xoá dead bus; web smoke verified float+consume; type-check/lint/31-unit pass → Status: review |
+| 2026-06-16 | Implement 5 task: reward animation pipeline + core-mission emit + miss-penalty pg_cron + xoá dead bus; web smoke verified float+consume; type-check/lint/31-unit pass → Status: done |

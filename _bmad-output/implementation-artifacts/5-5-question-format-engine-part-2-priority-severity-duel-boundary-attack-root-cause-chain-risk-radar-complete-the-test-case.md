@@ -4,7 +4,7 @@ baseline_commit: fdadc8750f4cd11a51b0ced96ce0ca7d5aff3fc5
 
 # Story 5.5: Question Format Engine Part 2 — Priority×Severity Duel, Boundary Attack, Root Cause Chain, Risk Radar, Complete the Test Case
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 

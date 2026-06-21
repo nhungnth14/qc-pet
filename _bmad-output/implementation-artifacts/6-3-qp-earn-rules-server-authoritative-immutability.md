@@ -4,7 +4,7 @@ baseline_commit: ff851a4f2e4a8fe98f71c157f677866c3a7c236b
 
 # Story 6.3: QP Earn Rules & Server-Authoritative Immutability
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -216,4 +216,4 @@ Hoàn thành 5 task + 4 AC (phần buildable). **QP-không-giảm trigger** (imm
 |------|----------|
 | 2026-06-16 | Story created (ready-for-dev) |
 | 2026-06-16 | Party-mode (Winston/Amelia/John/Murat) → 4 Resolved Decisions + security-debt task (column-revoke + Rescue server-validate) |
-| 2026-06-16 | Implement 5 task: QP-không-giảm trigger + QP animation (generalize hook) + emit đa-currency; web smoke verified cả +10 (BC) lẫn +6 (QP) float; type-check/lint/22-unit pass → Status: review |
+| 2026-06-16 | Implement 5 task: QP-không-giảm trigger + QP animation (generalize hook) + emit đa-currency; web smoke verified cả +10 (BC) lẫn +6 (QP) float; type-check/lint/22-unit pass → Status: done |

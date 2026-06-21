@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-06-14
-last_updated: 2026-06-21  # Epic 6 done (6-1/6-2/6-3 reviewed); 19/47 stories done
+last_updated: 2026-06-21  # 29 done; Epic 1 done; Epic 3 in-progress (3-1/3-2); Epic 4 in-progress (4-1/4-2 done)
 project: qc-pet
 project_key: NOKEY
 tracking_system: file-system
@@ -57,10 +57,10 @@ development_status:
   # -----------------------------------------------------------------
   # Epic 1: Content Library & Quality Pipeline (all backlog)
   # -----------------------------------------------------------------
-  epic-1: backlog
-  1-1-lesson-content-schema-json-manifest-structure: backlog
-  1-2-content-authoring-workflow-peer-review-real-bug-of-the-week-format: backlog
-  1-3-ota-content-delivery-version-management: backlog
+  epic-1: in-progress
+  1-1-lesson-content-schema-json-manifest-structure: done          # 2026-06-21 dev: JSON schema draft-07 + ajv validator + 2 seed lessons (BD-1/TA-1) + lesson-types.ts; type-check/lint 0-err + schema valid
+  1-2-content-authoring-workflow-peer-review-real-bug-of-the-week-format: done          # 2026-06-21 dev: RBOTW + author schemas + seed RBOTW-001 + validator cross-ref AI-check + update-manifest.mjs + GH Actions CI/CD; type-check/lint 0-err
+  1-3-ota-content-delivery-version-management: done          # 2026-06-21 dev: ContentRepository + content-index (static Metro) + useContentVersion hook (MMKV lazy-init + expo-updates guard) + game_state migration; type-check/lint 0-err + 14/14 tests
   epic-1-retrospective: optional
 
   # -----------------------------------------------------------------
@@ -78,9 +78,9 @@ development_status:
   # -----------------------------------------------------------------
   # Epic 3: Pet World & Apartment Navigation (all backlog)
   # -----------------------------------------------------------------
-  epic-3: backlog
-  3-1-6-room-apartment-layout-room-data-model-environment-assets: backlog
-  3-2-apartment-view-isometric-room-navigation: backlog
+  epic-3: in-progress
+  3-1-6-room-apartment-layout-room-data-model-environment-assets: done          # 2026-06-21 dev: ROOM_DEFINITIONS + ALL_ROOM_TYPES + useRoomStore(MMKV) + RoomEnvironment(attention/locked anim) + Room Prisma model + migration; lint 0-err + 26/26 tests
+  3-2-apartment-view-isometric-room-navigation: done          # 2026-06-21 dev: apartment-layout (pure nav/suggestion logic) + ApartmentContainer shell (pan-swipe + 🏠 FAB ≥2 unlocked + walk transition 0.8s) + ApartmentView isometric 2×3 (attention/locked/🔥) + RoomScreen generic + long-press Bugsy suggestion; type-check/lint 0-err + 14/14 nav-logic test. Defer: walk SFX/haptic (no audio dep), pixel-art iso, One-Room-Emergency thật (Epic 4)
   3-3-bugsy-idle-states-character-asset-system: backlog
   3-4-room-unlock-sequence-trigger-based: backlog
   3-5-pet-evolution-system-souvenir-display: backlog
@@ -89,24 +89,24 @@ development_status:
   # -----------------------------------------------------------------
   # Epic 4: Need Bar System & Pet Wellness (all backlog)
   # -----------------------------------------------------------------
-  epic-4: backlog
-  4-1-need-bar-data-model-real-time-decay-engine: backlog
-  4-2-pet-care-actions-quick-feed-quick-play-quick-train: backlog
+  epic-4: in-progress
+  4-1-need-bar-data-model-real-time-decay-engine: done          # 2026-06-21 dev: server decay (process-need-bar-sync Edge Fn) ĐÃ CÓ sẵn (weekend-aware) → client wiring: need-bar-decay (pure mirror) + need-bar-api (invoke+fallback) + pet-store baseline/recomputeDecay/syncNeedBars + useNeedBarDecay hook (mount/foreground sync + 60s tick) + NeedBar shimmer/pulse + need_bars Prisma model+migration; type-check/lint 0 + 13 test mới. Defer: weekend client mirror+indicator→4-3, Realtime sub
+  4-2-pet-care-actions-quick-feed-quick-play-quick-train: done          # 2026-06-21 dev: pet-care (CARE_CONFIG feed+25/play+20/train+15, applyCare clamp) + pet-care-api (invoke process-pet-care + fallback + idempotency) + process-pet-care Edge Fn + pet-store.careAction (re-anchor) + CareButton (in-flight guard, a11y ≥44, pop, offline tooltip) + RoomScreen wire; type-check/lint 0 + 8 test mới. Defer: proactive offline-disable→4-3, Bugsy anim/SFX→3-3; care reachable sau 3-4
   4-3-weekend-mode-never-die-logic-offline-last-known-state: backlog
   4-4-good-morning-moment-one-room-emergency-daily-highlight: backlog
   epic-4-retrospective: optional
 
   # -----------------------------------------------------------------
-  # Epic 5: Daily Learning Loop (4 done, 3 backlog)
+  # Epic 5: Daily Learning Loop (7/7 done ✓)
   # -----------------------------------------------------------------
-  epic-5: in-progress
+  epic-5: done
   5-1-core-mission-entry-lesson-player-daily-mission-selection: done        # (app)/core-mission.tsx — lesson player
   5-2-quiz-session-engine-framework-2-5-1-2-emotional-arc-auto-save-session-resume: done   # quiz-api.ts + session resume
   5-3-rescue-mechanic-story-rule-feedback-panel-3-2-1-summary-card: done    # Story Rule panel + 3-2-1 cheat sheet
   5-4-question-format-engine-part-1-mcq-bug-report-surgery-severity-swipe-spot-the-defect-rewrite-the-fail: done   # code-review 2026-06-17: P1 resume-guard, P2 confetti-stagger, P3 isWarmup data-driven, P4 committedRef double-submit, P5 SpotTheDefect shake; type-check/lint pass (0 errors)
-  5-5-question-format-engine-part-2-priority-severity-duel-boundary-attack-root-cause-chain-risk-radar-complete-the-test-case: review   # 2026-06-21 dev: 5 format mới (tap-based) mở rộng engine 5-4; type-check exhaustive + lint 0 + 28/28 quiz logic test; web smoke deferred (pm2 static export cũ)
-  5-6-side-quests-bug-hunt-peer-review-repro-steps-simulated-bug-hunt: in-progress   # story created 2026-06-21: 4 side quest (Bug Hunt/Peer Review/Repro Steps/Simulated) + Zero-Bug flow; reuse reward pipeline 6-2 (BC server-auth + happiness), self-define content, persist local (Wall→5.7)
-  5-7-mission-board-kanban-bug-report-wall: backlog
+  5-5-question-format-engine-part-2-priority-severity-duel-boundary-attack-root-cause-chain-risk-radar-complete-the-test-case: done        # 2026-06-21 dev: 5 format mới (tap-based) mở rộng engine 5-4; type-check exhaustive + lint 0 + 28/28 quiz logic test; web smoke deferred (pm2 static export cũ)
+  5-6-side-quests-bug-hunt-peer-review-repro-steps-simulated-bug-hunt: done        # 2026-06-21 dev: 4 side quest + Zero-Bug flow; reuse reward 6-2 (BC server-auth + happiness); type-check/lint 0-err + 38/38 logic test + web smoke đầy đủ (fix bug persist happiness: setNeedBars trước addBC)
+  5-7-mission-board-kanban-bug-report-wall: done        # 2026-06-21 dev: Mission Board kanban (tap-to-move) + Bug Report Wall (sticky notes); Reanimated animation, local MMKV persist, event Core Mission qua store call; type-check/lint 0-err + 48/48 logic test + web smoke đầy đủ
   epic-5-retrospective: optional
 
   # -----------------------------------------------------------------

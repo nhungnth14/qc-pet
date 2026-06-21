@@ -4,7 +4,7 @@ baseline_commit: a6f6779b1afbe75eff6c07b18a76f1de6c355136
 
 # Story 6.1: Dual Currency Data Model & Persistent Header Display
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -205,4 +205,4 @@ Hoàn thành 5 task + 3 AC. **CurrencyHeader** dùng chung (tái dùng `Currency
 | Ngày | Thay đổi |
 |------|----------|
 | 2026-06-16 | Story created (ready-for-dev); 3 Resolved Decisions chốt với Nhung (pets table, QP immutability→6.3, header per-room) |
-| 2026-06-16 | Implement 5 task: CurrencyHeader + server fetch on mount + CHECK bc>=0 migration; web smoke verified chip màu chuẩn; type-check/lint/unit pass → Status: review |
+| 2026-06-16 | Implement 5 task: CurrencyHeader + server fetch on mount + CHECK bc>=0 migration; web smoke verified chip màu chuẩn; type-check/lint/unit pass → Status: done |

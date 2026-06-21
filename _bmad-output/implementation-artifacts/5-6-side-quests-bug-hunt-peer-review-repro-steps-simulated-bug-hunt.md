@@ -4,7 +4,7 @@ baseline_commit: fdadc8750f4cd11a51b0ced96ce0ca7d5aff3fc5
 
 # Story 5.6: Side Quests (Bug Hunt, Peer Review, Repro Steps, Simulated Bug Hunt)
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
