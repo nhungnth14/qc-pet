@@ -26,7 +26,7 @@ describe('contentRepository', () => {
     it('sorts by dependency_order ascending', () => {
       const bd = contentRepository.getLessonsByCategory('BD');
       for (let i = 1; i < bd.length; i++) {
-        expect((bd[i].dependency_order ?? 0) >= (bd[i - 1].dependency_order ?? 0)).toBe(true);
+        expect((bd[i].dependency_order ?? Infinity) >= (bd[i - 1].dependency_order ?? Infinity)).toBe(true);
       }
     });
 

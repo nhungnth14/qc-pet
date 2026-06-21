@@ -4,7 +4,7 @@ baseline_commit: b5318c4
 
 # Story 1.3: OTA Content Delivery & Version Management
 
-Status: done
+Status: done  <!-- reviewed 2026-06-21 -->
 
 ## Story
 
@@ -181,3 +181,9 @@ lastContentSyncedAt DateTime? @map("last_content_synced_at") @db.Timestamptz(6)
 - [ ] sprint-status.yaml: 1-3 → done
 
 ## Story Points: 3
+
+### Review Findings
+
+- [x] [Review][Patch] Sort assertion uses `?? 0` instead of `?? Infinity` in test — doesn't match production fallback [`src/features/content/content-repository.test.ts:29`]
+- [x] [Review][Defer] `getAllPublishedLessons()` adds `e.id in LESSON_REGISTRY` cross-check not in spec AC-1 — deferred, intentional guard from prior code review to prevent ghost entries [`src/features/content/content-repository.ts:21`]
+- [x] [Review][Defer] RLS policy on `rooms` table (Story 3-1) missing `WITH CHECK` clause — deferred, out of scope for story 1-3, belongs in story 3-1 review [`prisma/schema.prisma`]
