@@ -27,6 +27,8 @@ type PetState = {
   needBarsSyncedAtMs: number;
   isLoading: boolean;
   setName: (name: string) => void;
+  /** Bump evolution version (Story 7.1) — sau khi evolve commit server. */
+  setVersion: (version: string) => void;
   addBC: (amount: number) => void;
   addQP: (amount: number) => void;
   setNeedBars: (bars: Partial<NeedBars>) => void;
@@ -50,6 +52,7 @@ function persistPet(s: PersistablePet): void {
   catch {}
 }
 
+// eslint-disable-next-line max-lines-per-function -- store factory: nhiều action (currency/decay/care/evolve); tách làm rối.
 export const usePetStore = create<PetState>((set, get) => ({
   name: 'Bugsy',
   version: 'v0.1',
@@ -61,6 +64,7 @@ export const usePetStore = create<PetState>((set, get) => ({
   isLoading: false,
 
   setName: name => set({ name }),
+  setVersion: version => set({ version }),
 
   addBC: (amount) => {
     set(s => ({ bcBalance: Math.max(0, s.bcBalance + amount) }));

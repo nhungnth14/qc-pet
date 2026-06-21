@@ -31,9 +31,15 @@ model User {
   pets         Pet[]
   gameState    GameState?
   quizSessions QuizSession[]
-  rooms        Room[]
-  needBars     NeedBars?
-  souvenirs    Souvenir[]
+  rooms                   Room[]
+  needBars                NeedBars?
+  souvenirs               Souvenir[]
+  transferGateSubmissions TransferGateSubmission[]
+  sprintHoldToken         SprintHoldToken?
+  sprintHoldLogs          SprintHoldLog[]
+  weeklyBugLogs           WeeklyBugLog[]
+  retrospectiveEntries    RetrospectiveEntry[]
+  spacedRepetitionQueue   SpacedRepetitionQueue[]
 
   @@map("users")
 }
@@ -137,6 +143,94 @@ model Souvenir {
 
   @@unique([userId, evolutionStep])
   @@map("souvenirs")
+}
+
+/// Transfer Gate evidence (Story 7.1). Bằng chứng công việc thực để unlock evolution. Permanent
+/// (RLS chỉ SELECT + INSERT — không UPDATE/DELETE). Honor system (app không validate nội dung).
+model TransferGateSubmission {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  evolutionStep String   @map("evolution_step")
+  evidenceType  String   @map("evidence_type")
+  content       String
+  submittedAt   DateTime @default(now()) @map("submitted_at") @db.Timestamptz(6)
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("transfer_gate_submissions")
+}
+
+/// Sprint Hold token balance per-user (Story 7.4). Earn qua cron (≥20/28 missions/tháng, max 2).
+/// KHÔNG mua bằng BC/QP. 1-1 với user.
+model SprintHoldToken {
+  userId    String   @id @map("user_id") @db.Uuid
+  balance   Int      @default(0)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sprint_hold_tokens")
+}
+
+/// Log mỗi lần dùng Sprint Hold (Story 7.4). reason bắt buộc; penalty_waived = true (BC miss penalty bỏ qua).
+model SprintHoldLog {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  usedAt        DateTime @default(now()) @map("used_at") @db.Timestamptz(6)
+  reason        String
+  penaltyWaived Boolean  @default(true) @map("penalty_waived")
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sprint_hold_logs")
+}
+
+/// Weekly Bug Log (Story 7.3). Bug thật user ghi lại. severity/priority/description nullable cho
+/// trường hợp no_bugs_this_week. Honor system (không validate). Permanent (RLS select+insert).
+model WeeklyBugLog {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  description String?
+  severity    String?
+  priority    String?
+  outcome     String
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("weekly_bug_logs")
+}
+
+/// Retrospective entry per sprint (Story 7.5). 3 câu hỏi freeform (nullable — answer 1/2/cả 3).
+/// Permanent (RLS select+insert). Skip không lưu (chỉ analytics).
+model RetrospectiveEntry {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  sprintNumber Int      @map("sprint_number")
+  applied      String?
+  stillHard    String?  @map("still_hard")
+  nextToggle   String?  @map("next_toggle")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("retrospective_entries")
+}
+
+/// Spaced Repetition queue (Story 8.1). 1 row / (user, lesson, question). question_id = index trong
+/// lesson (LessonQuestion không có id). Interval MVP simple (computeNextReview).
+model SpacedRepetitionQueue {
+  userId                String   @map("user_id") @db.Uuid
+  lessonId              String   @map("lesson_id")
+  questionId            String   @map("question_id")
+  nextReviewAt          DateTime @map("next_review_at") @db.Timestamptz(6)
+  reviewCount           Int      @default(0) @map("review_count")
+  lastAnsweredCorrectly Boolean? @map("last_answered_correctly")
+
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, lessonId, questionId])
+  @@map("spaced_repetition_queue")
 }
 
 /// Phiên làm quiz. Tiếp quản từ supabase/migrations/002_quiz_sessions.sql

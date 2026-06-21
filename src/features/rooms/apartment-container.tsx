@@ -5,6 +5,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { GoodMorningMoment } from '@/features/pet/components/good-morning-moment';
 import { WeekendBanner } from '@/features/pet/components/weekend-banner';
 import { useNeedBarDecay } from '@/features/pet/use-need-bar-decay';
+import { useSprintStore } from '@/features/sprint/stores/use-sprint-store';
 import { WorkRoomScreen } from '@/features/work-room/work-room-screen';
 import { getAdjacentRoom } from './apartment-layout';
 import { ApartmentView } from './components/apartment-view';
@@ -32,6 +33,8 @@ export function ApartmentContainer() {
 
   const rooms = useRoomStore(s => s.rooms);
   const loadRooms = useRoomStore(s => s.loadFromLocal);
+  const loadSprint = useSprintStore(s => s.loadFromLocal);
+  const recordActivity = useSprintStore(s => s.recordActivity);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Story 4-1: real-time need-bar decay (server sync on mount/foreground + 60s client tick).
@@ -41,12 +44,14 @@ export function ApartmentContainer() {
 
   useEffect(() => {
     loadRooms();
+    loadSprint();
+    recordActivity(); // Story 7.4: cập nhật streak (consecutive-day) khi mở app
     return () => {
       if (timerRef.current)
         clearTimeout(timerRef.current);
       setTransitioning(false);
     };
-  }, [loadRooms, setTransitioning]);
+  }, [loadRooms, loadSprint, recordActivity, setTransitioning]);
 
   const unlockedCount = useMemo(
     () => Object.values(rooms).filter(r => r.isUnlocked).length,

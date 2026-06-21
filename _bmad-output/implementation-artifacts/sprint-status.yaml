@@ -1,5 +1,5 @@
 # generated: 2026-06-14
-# last_updated: 2026-06-21
+# last_updated: 2026-06-22  # 34 done (Epics 0-6 all done); Epic 7 started (7-1 in-progress)
 # project: qc-pet
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-06-14
-last_updated: 2026-06-22  # 34 done; Epics 0/1/2/3/4/5 DONE; next: Epic 6 (currency/sync) hoặc Epic 7 (streak/transfer-gate)
+last_updated: 2026-06-22  # 40 done; Epics 0-7 DONE; next: Epic 8 (spaced repetition / flash quiz) hoặc 9/10
 project: qc-pet
 project_key: NOKEY
 tracking_system: file-system
@@ -55,9 +55,9 @@ development_status:
   epic-0-retrospective: optional
 
   # -----------------------------------------------------------------
-  # Epic 1: Content Library & Quality Pipeline (all backlog)
+  # Epic 1: Content Library & Quality Pipeline (3/3 done ✓)
   # -----------------------------------------------------------------
-  epic-1: in-progress
+  epic-1: done
   1-1-lesson-content-schema-json-manifest-structure: done          # 2026-06-21 dev: JSON schema draft-07 + ajv validator + 2 seed lessons (BD-1/TA-1) + lesson-types.ts; type-check/lint 0-err + schema valid
   1-2-content-authoring-workflow-peer-review-real-bug-of-the-week-format: done          # 2026-06-21 dev: RBOTW + author schemas + seed RBOTW-001 + validator cross-ref AI-check + update-manifest.mjs + GH Actions CI/CD; type-check/lint 0-err
   1-3-ota-content-delivery-version-management: done          # 2026-06-21 dev: ContentRepository + content-index (static Metro) + useContentVersion hook (MMKV lazy-init + expo-updates guard) + game_state migration; type-check/lint 0-err + 14/14 tests
@@ -119,15 +119,15 @@ development_status:
   epic-6-retrospective: optional
 
   # -----------------------------------------------------------------
-  # Epic 7: Sprint Lifecycle & Real-World Transfer (all backlog)
+  # Epic 7: Sprint Lifecycle & Real-World Transfer (1 in-progress)
   # -----------------------------------------------------------------
-  epic-7: backlog
-  7-1-transfer-gate-evidence-submission: backlog
-  7-2-my-journey-view-evidence-timeline: backlog
-  7-3-weekly-bug-log-zero-bug-2-option-response: backlog
-  7-4-sprint-hold-token-system: backlog
-  7-5-retrospective-loop-end-of-sprint-prompt: backlog
-  7-6-sprint-demo-card-generation-native-sharing: backlog
+  epic-7: done
+  7-1-transfer-gate-evidence-submission: done          # 2026-06-22 dev: transfer-gate (EVIDENCE_REQUIREMENTS 4 step + canEvolve, pure) + transfer-gate-api (submitEvidence/getSubmissions/evolvePet) + transfer_gate_submissions table (RLS select+insert only = permanent) + pet-store.setVersion + supabase updatePetVersion + TransferGatePanel (text evidence → evolve: version bump + souvenir unlock + RewardEventBus → Bugsy excited) + EvolutionPending tap→panel. ĐÓNG vòng evolution 3-5. type-check/lint 0 + 4 test mới. Defer: photo (image-picker/Storage), server-side QP+evidence enforcement
+  7-2-my-journey-view-evidence-timeline: done          # 2026-06-22 dev: journey (mergeJourney pure) + journey-api (gộp 4 tables: transfer_gate/weekly_bug_logs/retrospective/souvenirs → timeline) + MyJourneyPanel (newest-first, tap→expand, offline banner) + WorkRoom button. type-check/lint 0 + 2 test mới. CLOSES Epic 7. Defer: sprint grouping, photo thumbnails, Bug Report Wall source, MMKV cache, full route
+  7-3-weekly-bug-log-zero-bug-2-option-response: done          # 2026-06-22 dev: weekly-bug-log enums (severity/priority/outcome, pure) + weekly_bug_logs table + weekly-bug-log-api (submit/logNoBugs) + WeeklyBugLogForm (description + 3 chip-select) + WorkRoom zeroBug panel mở rộng (Có→form / 2 zero-bug option bình đẳng / skip logs no_bugs). type-check/lint 0 + 4 test mới. Defer: auto-prompt sau 7 ngày
+  7-4-sprint-hold-token-system: done          # 2026-06-22 dev: sprint feature foundation — date-key/streak/sprint-hold (pure) + use-sprint-store (MMKV streak/missions/tokens, recordActivity consecutive-day) + sprint_hold_tokens/logs tables + sprint-hold-api (submitSprintHold/getHoldTokens) + SprintHoldButton (reason required, no-consecutive) + wire WorkRoom + apartment-container recordActivity. UNBLOCKED 3-4: BATHROOM/GARDEN dùng streak thật. type-check/lint 0 + 10 test mới. Defer: token earn cron, hold-day BC waive+Discipline 50% (server), recordMission wiring into core-mission
+  7-5-retrospective-loop-end-of-sprint-prompt: done          # 2026-06-22 dev: retrospective_entries table + retrospective-api (submit partial, trim→null) + RetrospectivePanel (3 câu freeform, Lưu/Bỏ qua) + sprintNumber vào use-sprint-store (rollover +1) + WorkRoom button. type-check/lint 0. Defer: auto end-of-sprint prompt (cần recordMission + sprint-end detection), skip-rate analytics
+  7-6-sprint-demo-card-generation-native-sharing: done          # 2026-06-22 dev: sprint-demo-card (buildShareText + isShareable 48h, pure) + SprintDemoCard component (Phòng Khách: Bugsy image + sprint#/streak/version + native Share.share text → happiness+50 clamp) + wire LIVING_ROOM. type-check/lint 0 + 3 test mới. Defer: QP-this-sprint/top-lesson stats, share image (view-shot) + gradient (linear-gradient) + 48h gating UI, server Day-7 auto-generate
   epic-7-retrospective: optional
 
   # -----------------------------------------------------------------

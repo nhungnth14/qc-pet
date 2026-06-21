@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { create } from 'zustand';
+import { useSprintStore } from '@/features/sprint/stores/use-sprint-store';
+import { weekOneComplete } from '@/features/sprint/streak';
 import { getGameState } from '@/lib/supabase-api';
 import { usePetStore } from '@/stores/pet-store';
 import { useSessionStore } from '@/stores/session-store';
@@ -39,6 +41,8 @@ export function useRoomUnlock() {
   const onboardingComplete = useSessionStore(s => s.onboardingComplete);
   const userId = useSessionStore(s => s.userId);
   const happiness = usePetStore(s => s.needBars.happiness);
+  const streakDays = useSprintStore(s => s.streakDays);
+  const missionsThisSprint = useSprintStore(s => s.missionsThisSprint);
   const rooms = useRoomStore(s => s.rooms);
   const setTriggerMet = useRoomStore(s => s.setTriggerMet);
   const [firstCoreMissionDone, setFirstCoreMissionDone] = useState(false);
@@ -56,8 +60,8 @@ export function useRoomUnlock() {
       onboardingComplete,
       firstCoreMissionDone,
       happiness,
-      streakDays: 0, // Epic 7 — chưa có streak tracking
-      weekOneComplete: false, // Epic 5/7 — chưa đếm core mission/tuần
+      streakDays, // Story 7.4 — streak thật
+      weekOneComplete: weekOneComplete(missionsThisSprint),
     });
     for (const room of ALL_ROOM_TYPES) {
       if (met[room] && !rooms[room].unlockTriggerMet) {
@@ -69,7 +73,7 @@ export function useRoomUnlock() {
           void upsertRoomState(userId, room, { unlockTriggerMet: true }).catch(() => {});
       }
     }
-  }, [onboardingComplete, firstCoreMissionDone, happiness, rooms, setTriggerMet, userId]);
+  }, [onboardingComplete, firstCoreMissionDone, happiness, streakDays, missionsThisSprint, rooms, setTriggerMet, userId]);
 
   const message = useUnlockNotice(s => s.message);
   const dismiss = useUnlockNotice(s => s.dismiss);

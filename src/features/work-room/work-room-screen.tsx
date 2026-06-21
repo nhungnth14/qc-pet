@@ -16,7 +16,13 @@ import { EvolutionPending } from '@/features/pet/components/evolution-pending';
 import { SuggestionBubble } from '@/features/rooms/components/suggestion-bubble';
 import { useRoomSuggestion } from '@/features/rooms/use-room-suggestion';
 import { useSideQuestStore } from '@/features/side-quests/side-quest-store';
+import { MyJourneyPanel } from '@/features/sprint/components/my-journey-panel';
+import { RetrospectivePanel } from '@/features/sprint/components/retrospective-panel';
+import { SprintHoldButton } from '@/features/sprint/components/sprint-hold-button';
+import { WeeklyBugLogForm } from '@/features/sprint/components/weekly-bug-log-form';
+import { logNoBugsThisWeek } from '@/features/sprint/weekly-bug-log-api';
 import { usePetStore } from '@/stores/pet-store';
+import { useSessionStore } from '@/stores/session-store';
 import { useConnectivity } from '@/stores/use-connectivity';
 
 // eslint-disable-next-line max-lines-per-function -- screen hub: Bugsy + need bars + 3 CTA + Zero-Bug panel; tách nhỏ làm rối layout.
@@ -31,7 +37,11 @@ export function WorkRoomScreen() {
   const cards = useMissionBoardStore(s => s.cards);
   const mbLoadFromLocal = useMissionBoardStore(s => s.loadFromLocal);
   const online = useConnectivity(s => s.online);
+  const userId = useSessionStore(s => s.userId);
   const [zeroBugOpen, setZeroBugOpen] = useState(false);
+  const [showBugForm, setShowBugForm] = useState(false);
+  const [retroOpen, setRetroOpen] = useState(false);
+  const [journeyOpen, setJourneyOpen] = useState(false);
   const { suggestion, suggest, dismiss } = useRoomSuggestion();
 
   // Story 4-3 never-die: bar = 0 → câu cảm xúc thay lời chào (KHÔNG game-over/modal).
@@ -47,14 +57,21 @@ export function WorkRoomScreen() {
   const wallCount = submissions.length + doneCount;
   const countByCol = (col: string) => cards.filter(c => c.status === col).length;
 
-  const openSimulatedBugHunt = () => {
+  const closeBugLog = () => {
     setZeroBugOpen(false);
+    setShowBugForm(false);
+  };
+
+  const openSimulatedBugHunt = () => {
+    closeBugLog();
     router.push('/(app)/side-quests/simulated_bug_hunt');
   };
 
   const skipBugWeek = () => {
     logZeroBugWeek(new Date().toISOString());
-    setZeroBugOpen(false);
+    if (userId)
+      void logNoBugsThisWeek(userId).catch(() => {});
+    closeBugLog();
   };
 
   useEffect(() => {
@@ -143,6 +160,29 @@ export function WorkRoomScreen() {
           <Text style={styles.bugLogText}>📋 Weekly Bug Log — báo cáo bug tuần này</Text>
         </Pressable>
 
+        {/* Sprint Hold token (Story 7.4) */}
+        <SprintHoldButton />
+
+        {/* Retrospective (Story 7.5) */}
+        <Pressable
+          style={styles.bugLogBtn}
+          onPress={() => setRetroOpen(true)}
+          accessibilityRole="button"
+          accessibilityLabel="Mở Retrospective sprint"
+        >
+          <Text style={styles.bugLogText}>📝 Retrospective sprint</Text>
+        </Pressable>
+
+        {/* My Journey (Story 7.2) */}
+        <Pressable
+          style={styles.bugLogBtn}
+          onPress={() => setJourneyOpen(true)}
+          accessibilityRole="button"
+          accessibilityLabel="Mở Hành trình của bạn"
+        >
+          <Text style={styles.bugLogText}>🗺️ Hành trình của bạn</Text>
+        </Pressable>
+
         {/* Mission Board + Bug Report Wall (Story 5.7) — preview thật, tap để mở */}
         <Pressable
           style={styles.section}
@@ -173,33 +213,48 @@ export function WorkRoomScreen() {
         </Pressable>
       </ScrollView>
 
-      {/* Zero-Bug Response panel (Story 5.6 AC5 / FR-34) */}
-      <SlideUpPanel isOpen={zeroBugOpen} onClose={() => setZeroBugOpen(false)} snapPoints={['42%']}>
-        <View style={styles.zeroBug}>
-          <Text style={styles.zeroBugTitle}>Tuần này bạn có gặp bug nào không?</Text>
-          <Text style={styles.zeroBugSub}>
-            Chưa gặp bug thật cũng không sao — luyện tập với bug giả lập nhé!
-          </Text>
+      {/* Weekly Bug Log + Zero-Bug Response panel (Story 7.3 / 5.6 AC5 / FR-34) */}
+      <SlideUpPanel isOpen={zeroBugOpen} onClose={closeBugLog} snapPoints={['60%']}>
+        {showBugForm
+          ? <WeeklyBugLogForm onDone={closeBugLog} />
+          : (
+              <View style={styles.zeroBug}>
+                <Text style={styles.zeroBugTitle}>Tuần này bạn có gặp bug nào không?</Text>
 
-          <Pressable
-            style={styles.zeroBugPrimary}
-            onPress={openSimulatedBugHunt}
-            accessibilityRole="button"
-            accessibilityLabel="Mở Simulated Bug Hunt"
-          >
-            <Text style={styles.zeroBugPrimaryText}>🧪 Mở Simulated Bug Hunt</Text>
-          </Pressable>
+                <Pressable
+                  style={styles.zeroBugPrimary}
+                  onPress={() => setShowBugForm(true)}
+                  accessibilityRole="button"
+                  accessibilityLabel="Có, ghi lại bug"
+                >
+                  <Text style={styles.zeroBugPrimaryText}>🐞 Có, ghi lại bug</Text>
+                </Pressable>
 
-          <Pressable
-            style={styles.zeroBugSecondary}
-            onPress={skipBugWeek}
-            accessibilityRole="button"
-            accessibilityLabel="Bỏ qua tuần này"
-          >
-            <Text style={styles.zeroBugSecondaryText}>Bỏ qua tuần này</Text>
-          </Pressable>
-        </View>
+                <Text style={styles.zeroBugSub}>Chưa gặp bug thật cũng không sao:</Text>
+
+                <Pressable
+                  style={styles.zeroBugOption}
+                  onPress={openSimulatedBugHunt}
+                  accessibilityRole="button"
+                  accessibilityLabel="Mở Simulated Bug Hunt"
+                >
+                  <Text style={styles.zeroBugOptionText}>🧪 Mở Simulated Bug Hunt</Text>
+                </Pressable>
+
+                <Pressable
+                  style={styles.zeroBugOption}
+                  onPress={skipBugWeek}
+                  accessibilityRole="button"
+                  accessibilityLabel="Bỏ qua tuần này"
+                >
+                  <Text style={styles.zeroBugOptionText}>⏭ Bỏ qua tuần này</Text>
+                </Pressable>
+              </View>
+            )}
       </SlideUpPanel>
+
+      <RetrospectivePanel isOpen={retroOpen} onClose={() => setRetroOpen(false)} />
+      <MyJourneyPanel isOpen={journeyOpen} onClose={() => setJourneyOpen(false)} />
 
       <SuggestionBubble suggestion={suggestion} onDismiss={dismiss} />
     </View>
@@ -321,4 +376,16 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   zeroBugSecondaryText: { fontSize: 14, fontWeight: '700', color: '#3a4a66' },
+  // Story 7.3: 2 zero-bug option bình đẳng visual weight (cùng style)
+  zeroBugOption: {
+    minHeight: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#001a41',
+    padding: 12,
+  },
+  zeroBugOptionText: { fontSize: 14, fontWeight: '700', color: '#001a41' },
 });

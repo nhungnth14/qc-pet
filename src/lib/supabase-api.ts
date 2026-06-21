@@ -135,6 +135,19 @@ export async function updatePetName(petId: string, name: string): Promise<Standa
   return ok(mapPet(data as PetRow));
 }
 
+export async function updatePetVersion(petId: string, version: string): Promise<StandardResponse<Pet>> {
+  const { data, error } = await supabase
+    .from('pets')
+    .update({ version })
+    .eq('id', petId)
+    .select()
+    .single();
+
+  if (error)
+    throw new Error(`updatePetVersion failed: ${error.message}`);
+  return ok(mapPet(data as PetRow));
+}
+
 export async function addCurrency(
   petId: string,
   bcDelta: number,
