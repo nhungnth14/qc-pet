@@ -136,3 +136,17 @@ setNeedBars(bars): merge + re-anchor (baseline = merged, syncedAt = clock.now())
 - Weekend-aware client mirror + Weekend Mode indicator → **4-3** (server đã weekend-aware).
 - Supabase Realtime subscription (thay polling) → sau MVP.
 - Never-die emotional state / offline disabled UI → **4-3**.
+
+## Review Findings
+
+> Reviewed 2026-06-22. Layers: Blind Hunter ✅ · Edge Case Hunter ❌ (session limit) · Acceptance Auditor ❌ (session limit).
+> 4 patch · 4 defer · 4 dismissed.
+
+- [x] [Review][Patch] Migration ALTER TABLE re-declares columns already in CREATE TABLE [`prisma/migrations/20260621120000_need_bars_table/migration.sql:17-19`]
+- [x] [Review][Patch] `syncNeedBars` fallback: `res.data` null guard missing (new user, no row) [`src/features/pet/need-bar-api.ts:49`]
+- [x] [Review][Patch] `careAction` idempotency key uses `clock.now()` ms — changes on retry [`src/stores/pet-store.ts:103`]
+- [x] [Review][Patch] `careAction` missing try/catch — unhandled rejection on network failure [`src/stores/pet-store.ts:102`]
+- [x] [Review][Defer] `loadFromLocal` anchors `needBarsSyncedAtMs = clock.now()` — decay frozen offline until next server sync [`src/stores/pet-store.ts:119`] — deferred, by design per spec OQ-D; fix in 4-3 (DEF-4-1-1)
+- [x] [Review][Defer] Offline retry + AppState active race on reconnect (double-sync) [`src/features/pet/use-need-bar-decay.ts:40-45`] — deferred, benign redundancy (DEF-4-1-2)
+- [x] [Review][Defer] Shimmer animation continues running when `isCritical=true` (invisible waste) [`src/components/need-bar.tsx:35-44`] — deferred, minor resource waste MVP-OK (DEF-4-1-3)
+- [x] [Review][Defer] RLS `need_bars_user_policy` missing `WITH CHECK` clause [`prisma/migrations/20260621120000_need_bars_table/migration.sql:42-43`] — deferred, pre-existing pattern (DEF-4-1-4, same as DEF-1-3-2, DEF-3-1-1)

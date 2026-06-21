@@ -4,7 +4,7 @@ baseline_commit: 37a24bb
 
 # Story 4.3: Weekend Mode, Never-Die Logic & Offline Last Known State
 
-Status: in-progress
+Status: done
 
 ## Story
 
@@ -100,3 +100,10 @@ UTC+7 offset; iterate từng segment ngày; cộng ms cho ngày KHÔNG phải Sa
 
 - Bugsy visual regress states (hungry/tired/sad/discipline-low) → **3-3**.
 - Robust OS-level offline detection (NetInfo/expo-network) → khi thêm dep; hiện suy từ call result.
+
+## Review Findings
+
+> Reviewed 2026-06-22. Layers: Blind Hunter inline · ECH/Auditor skipped.
+> 0 patch · 1 defer · 2 dismissed — CLEAN.
+
+- [x] [Review][Defer] `WeekendBanner` tính `isWeekend` tại render time — không reactive với đổi ngày mid-session [`src/features/pet/components/weekend-banner.tsx`] — deferred, cập nhật trong 60s qua tick (DEF-4-3-1)

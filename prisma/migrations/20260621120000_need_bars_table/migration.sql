@@ -2,18 +2,17 @@
 -- Formalize bảng need_bars (đã tồn tại trên cloud dev DB) — migration idempotent để không vỡ
 -- khi apply lại. Decay tính server-side (Edge Function process-need-bar-sync) từ last_synced_at.
 
+-- Tạo bảng với core columns (idempotent). Timestamp columns ở ALTER TABLE bên dưới để apply
+-- được cả trên cloud DB đã tồn tại (CREATE TABLE IF NOT EXISTS là no-op trên table có sẵn).
 CREATE TABLE IF NOT EXISTS need_bars (
-  user_id        UUID        NOT NULL PRIMARY KEY REFERENCES public.users(id) ON DELETE CASCADE,
-  hunger         INT         NOT NULL DEFAULT 80,
-  happiness      INT         NOT NULL DEFAULT 80,
-  health         INT         NOT NULL DEFAULT 80,
-  discipline     INT         NOT NULL DEFAULT 80,
-  last_synced_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at     TIMESTAMPTZ NOT NULL DEFAULT now()
+  user_id    UUID NOT NULL PRIMARY KEY REFERENCES public.users(id) ON DELETE CASCADE,
+  hunger     INT  NOT NULL DEFAULT 80,
+  happiness  INT  NOT NULL DEFAULT 80,
+  health     INT  NOT NULL DEFAULT 80,
+  discipline INT  NOT NULL DEFAULT 80
 );
 
--- Cột bổ sung idempotent (phòng trường hợp table cloud thiếu cột)
+-- Timestamp columns — idempotent cho cả fresh DB lẫn cloud DB thiếu cột.
 ALTER TABLE need_bars ADD COLUMN IF NOT EXISTS last_synced_at TIMESTAMPTZ NOT NULL DEFAULT now();
 ALTER TABLE need_bars ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT now();
 ALTER TABLE need_bars ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT now();

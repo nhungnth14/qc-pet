@@ -35,11 +35,20 @@ type PetState = {
   /** Server-authoritative sync (Edge Function decay). Gọi khi mount/foreground. */
   syncNeedBars: (userId: string) => Promise<void>;
   /** Care action (feed/play/train) — cộng bar, re-anchor. Throw nếu offline (caller nuốt). */
-  careAction: (userId: string, action: CareAction) => Promise<void>;
+  careAction: (userId: string, action: CareAction, idempotencyKey: string) => Promise<void>;
   loadFromLocal: () => void;
   savePetLocally: (name: string) => void;
   syncFromSupabase: (userId: string) => Promise<void>;
 };
+
+type PersistablePet = Pick<PetState, 'name' | 'bcBalance' | 'qpTotal' | 'needBars'>;
+
+function persistPet(s: PersistablePet): void {
+  try {
+    storage.setItem(PET_KEY, { name: s.name, bcBalance: s.bcBalance, qpTotal: s.qpTotal, needBars: s.needBars });
+  }
+  catch {}
+}
 
 export const usePetStore = create<PetState>((set, get) => ({
   name: 'Bugsy',
@@ -52,22 +61,17 @@ export const usePetStore = create<PetState>((set, get) => ({
   isLoading: false,
 
   setName: name => set({ name }),
+
   addBC: (amount) => {
     set(s => ({ bcBalance: Math.max(0, s.bcBalance + amount) }));
-    const s = get();
-    try {
-      storage.setItem(PET_KEY, { name: s.name, bcBalance: s.bcBalance, qpTotal: s.qpTotal, needBars: s.needBars });
-    }
-    catch {}
+    persistPet(get());
   },
+
   addQP: (amount) => {
     set(s => ({ qpTotal: s.qpTotal + amount }));
-    const s = get();
-    try {
-      storage.setItem(PET_KEY, { name: s.name, bcBalance: s.bcBalance, qpTotal: s.qpTotal, needBars: s.needBars });
-    }
-    catch {}
+    persistPet(get());
   },
+
   // Re-anchor baseline khi set trực tiếp (reward 5-x/6-x, care 4-2) → decay tiếp tục từ giá trị mới.
   setNeedBars: bars => set((s) => {
     const merged = { ...s.needBars, ...bars };
@@ -86,8 +90,7 @@ export const usePetStore = create<PetState>((set, get) => ({
       const { bars, serverTimeMs } = await apiSyncNeedBars(userId);
       clock.updateOffset(serverTimeMs);
       set({ needBars: bars, needBarsBaseline: bars, needBarsSyncedAtMs: serverTimeMs });
-      const s = get();
-      storage.setItem(PET_KEY, { name: s.name, bcBalance: s.bcBalance, qpTotal: s.qpTotal, needBars: s.needBars });
+      persistPet(get());
       useConnectivity.getState().setOnline(true);
     }
     catch {
@@ -96,12 +99,16 @@ export const usePetStore = create<PetState>((set, get) => ({
     }
   },
 
-  careAction: async (userId: string, action: CareAction) => {
-    const idempotencyKey = `care:${userId}:${action}:${clock.now()}`;
-    const { bars } = await apiCareAction(userId, action, idempotencyKey);
-    set({ needBars: bars, needBarsBaseline: bars, needBarsSyncedAtMs: clock.now() });
-    const s = get();
-    storage.setItem(PET_KEY, { name: s.name, bcBalance: s.bcBalance, qpTotal: s.qpTotal, needBars: s.needBars });
+  careAction: async (userId: string, action: CareAction, idempotencyKey: string) => {
+    try {
+      const { bars } = await apiCareAction(userId, action, idempotencyKey);
+      set({ needBars: bars, needBarsBaseline: bars, needBarsSyncedAtMs: clock.now() });
+      persistPet(get());
+    }
+    catch (err) {
+      useConnectivity.getState().setOnline(false);
+      throw err;
+    }
   },
 
   loadFromLocal: () => {
@@ -120,9 +127,8 @@ export const usePetStore = create<PetState>((set, get) => ({
   },
 
   savePetLocally: (name: string) => {
-    const s = get();
-    storage.setItem(PET_KEY, { name, bcBalance: s.bcBalance, qpTotal: s.qpTotal, needBars: s.needBars });
     set({ name });
+    persistPet(get());
   },
 
   syncFromSupabase: async (userId: string) => {
@@ -132,9 +138,10 @@ export const usePetStore = create<PetState>((set, get) => ({
     try {
       const [petRes, needBarsRes] = await Promise.all([getPet(userId), getNeedBars(userId)]);
       const pet = petRes.data;
+      const bars = needBarsRes.data ?? DEFAULT_BARS;
       const update: Partial<PetState> = {
-        needBars: needBarsRes.data,
-        needBarsBaseline: needBarsRes.data,
+        needBars: bars,
+        needBarsBaseline: bars,
         needBarsSyncedAtMs: clock.now(),
         isLoading: false,
       };
@@ -145,8 +152,7 @@ export const usePetStore = create<PetState>((set, get) => ({
         update.qpTotal = pet.qpTotal;
       }
       set(update);
-      const s = get();
-      storage.setItem(PET_KEY, { name: s.name, bcBalance: s.bcBalance, qpTotal: s.qpTotal, needBars: s.needBars });
+      persistPet(get());
     }
     catch (err) {
       set({ isLoading: false });

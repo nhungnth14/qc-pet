@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-06-14
-last_updated: 2026-06-21  # 29 done; Epic 1 done; Epic 3 in-progress (3-1/3-2); Epic 4 in-progress (4-1/4-2 done)
+last_updated: 2026-06-22  # 32 done; Epic 1 done; Epic 4 DONE; Epic 3 in-progress (3-1/3-2/3-3, next 3-4)
 project: qc-pet
 project_key: NOKEY
 tracking_system: file-system
@@ -81,7 +81,7 @@ development_status:
   epic-3: in-progress
   3-1-6-room-apartment-layout-room-data-model-environment-assets: done          # 2026-06-21 dev: ROOM_DEFINITIONS + ALL_ROOM_TYPES + useRoomStore(MMKV) + RoomEnvironment(attention/locked anim) + Room Prisma model + migration; lint 0-err + 26/26 tests
   3-2-apartment-view-isometric-room-navigation: done          # 2026-06-21 dev: apartment-layout (pure nav/suggestion logic) + ApartmentContainer shell (pan-swipe + 🏠 FAB ≥2 unlocked + walk transition 0.8s) + ApartmentView isometric 2×3 (attention/locked/🔥) + RoomScreen generic + long-press Bugsy suggestion; type-check/lint 0-err + 14/14 nav-logic test. Defer: walk SFX/haptic (no audio dep), pixel-art iso, One-Room-Emergency thật (Epic 4)
-  3-3-bugsy-idle-states-character-asset-system: backlog
+  3-3-bugsy-idle-states-character-asset-system: done          # 2026-06-22 dev: bugsy-state (getBugsyState priority hungry>tired>sad>discipline-low + excited override, BUGSY_STATE_CONFIG, ROOM_BUGSY_SIZE) + bugsy-asset (require png CI-safe) + use-bugsy-animation (excited via rewardEventBus) + use-bugsy-state + BugsyCharacter (expo-image + per-state Reanimated anim + cross-fade 0.3s + mood chip) thay 🐣 ở WorkRoom/RoomScreen; type-check/lint 0 + 13 test mới. Defer: SFX, excited trên core-mission reward screen
   3-4-room-unlock-sequence-trigger-based: backlog
   3-5-pet-evolution-system-souvenir-display: backlog
   epic-3-retrospective: optional
@@ -89,11 +89,11 @@ development_status:
   # -----------------------------------------------------------------
   # Epic 4: Need Bar System & Pet Wellness (all backlog)
   # -----------------------------------------------------------------
-  epic-4: in-progress
+  epic-4: done
   4-1-need-bar-data-model-real-time-decay-engine: done          # 2026-06-21 dev: server decay (process-need-bar-sync Edge Fn) ĐÃ CÓ sẵn (weekend-aware) → client wiring: need-bar-decay (pure mirror) + need-bar-api (invoke+fallback) + pet-store baseline/recomputeDecay/syncNeedBars + useNeedBarDecay hook (mount/foreground sync + 60s tick) + NeedBar shimmer/pulse + need_bars Prisma model+migration; type-check/lint 0 + 13 test mới. Defer: weekend client mirror+indicator→4-3, Realtime sub
   4-2-pet-care-actions-quick-feed-quick-play-quick-train: done          # 2026-06-21 dev: pet-care (CARE_CONFIG feed+25/play+20/train+15, applyCare clamp) + pet-care-api (invoke process-pet-care + fallback + idempotency) + process-pet-care Edge Fn + pet-store.careAction (re-anchor) + CareButton (in-flight guard, a11y ≥44, pop, offline tooltip) + RoomScreen wire; type-check/lint 0 + 8 test mới. Defer: proactive offline-disable→4-3, Bugsy anim/SFX→3-3; care reachable sau 3-4
-  4-3-weekend-mode-never-die-logic-offline-last-known-state: backlog
-  4-4-good-morning-moment-one-room-emergency-daily-highlight: backlog
+  4-3-weekend-mode-never-die-logic-offline-last-known-state: done          # 2026-06-21 dev: need-bar-weekend (isWeekend + effectiveElapsedMs port server, loại T7/CN UTC+7) → recomputeDecay weekend-aware; bugsy-mood getNeverDieMessage (bar=0 → câu cảm xúc, no game-over); use-connectivity store (suy từ call result, no NetInfo) + offline 5s retry; WeekendBanner; CareButton + Core Mission offline-disable + tooltip; type-check/lint 0 + 11 test mới. Defer: Bugsy visual regress states→3-3, NetInfo thật
+  4-4-good-morning-moment-one-room-emergency-daily-highlight: done          # 2026-06-21 dev: good-morning (dateKeyUTC7 + getGoodMorningGreeting theo evolution version) + use-good-morning (once/day MMKV, auto-dismiss 2.5s) + GoodMorningMoment overlay; getEmergencyRoom refine (loại Work Room, threshold 50, mọi bar≥50→no 🔥); wire apartment-container; type-check/lint 0 + 5 test mới + emergency tests updated. Defer: server last_app_open_date + dream-destination langs
   epic-4-retrospective: optional
 
   # -----------------------------------------------------------------

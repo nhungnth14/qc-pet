@@ -2,6 +2,8 @@ import type { NeedBars } from './need-bar-decay';
 import { supabase } from '@/lib/supabase';
 import { getNeedBars } from '@/lib/supabase-api';
 
+const FALLBACK_BARS: NeedBars = { hunger: 80, happiness: 80, health: 80, discipline: 80 };
+
 export type NeedBarSyncResult = {
   bars: NeedBars;
   serverTimeMs: number;
@@ -46,5 +48,5 @@ export async function syncNeedBars(userId: string): Promise<NeedBarSyncResult> {
   }
 
   const res = await getNeedBars(userId);
-  return { bars: res.data, serverTimeMs: Date.now() };
+  return { bars: res.data ?? FALLBACK_BARS, serverTimeMs: Date.now() };
 }

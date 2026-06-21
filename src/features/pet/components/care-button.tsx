@@ -2,9 +2,9 @@ import type { CareAction } from '../pet-care';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
-import { useConnectivity } from '@/stores/use-connectivity';
 import { usePetStore } from '@/stores/pet-store';
 import { useSessionStore } from '@/stores/session-store';
+import { useConnectivity } from '@/stores/use-connectivity';
 import { CARE_CONFIG } from '../pet-care';
 
 type CareButtonProps = {
@@ -32,8 +32,9 @@ export function CareButton({ action }: CareButtonProps) {
       return;
     setBusy(true);
     setFailed(false);
+    const idempotencyKey = `care:${userId}:${action}:${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
     try {
-      await care(userId, action);
+      await care(userId, action, idempotencyKey);
       setOnline(true);
       scale.value = withSequence(withTiming(1.18, { duration: 150 }), withTiming(1, { duration: 150 }));
     }
@@ -66,7 +67,7 @@ export function CareButton({ action }: CareButtonProps) {
           </View>
         </Pressable>
       </Animated.View>
-      {(!userId || failed) && (
+      {(!userId || failed || !online) && (
         <Text style={styles.tooltip}>Cần kết nối để chăm Bugsy</Text>
       )}
     </View>

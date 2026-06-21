@@ -113,3 +113,12 @@ export function applyCare(value: number, amount: number): number {
 
 - Proactive offline-disable (NetInfo) → **4-3**.
 - Bugsy eating/jumping/stretching animations + SFX → **3-3** / audio lib.
+
+## Review Findings
+
+> Reviewed 2026-06-22. Layers: Blind Hunter inline · ECH/Auditor skipped (session limits from prior reviews).
+> 1 patch · 2 defer · 2 dismissed.
+
+- [x] [Review][Patch] `CareButton` tooltip không hiện khi `online=false` nhưng `failed=false` (app start offline) [`src/features/pet/components/care-button.tsx:70`]
+- [x] [Review][Defer] Edge Function `process-pet-care` không validate `auth.uid() === userId` — pre-existing pattern [`supabase/functions/process-pet-care/index.ts`] — deferred, pre-existing (DEF-4-2-1)
+- [x] [Review][Defer] `setOnline(false)` trong pet-store.careAction (4-1 patch) + CareButton.catch redundant — harmless double-set [`src/stores/pet-store.ts`, `src/features/pet/components/care-button.tsx`] — deferred, MVP OK (DEF-4-2-2)

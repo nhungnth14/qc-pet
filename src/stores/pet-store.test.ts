@@ -134,7 +134,7 @@ describe('pet-store · decay (Story 4-1)', () => {
       bars: { hunger: 100, happiness: 80, health: 80, discipline: 80 },
       serverCommitted: true,
     });
-    await usePetStore.getState().careAction('u', 'feed');
+    await usePetStore.getState().careAction('u', 'feed', 'care:u:feed:test-key');
     const s = usePetStore.getState();
     expect(s.needBars.hunger).toBe(100);
     expect(s.needBarsBaseline.hunger).toBe(100);
