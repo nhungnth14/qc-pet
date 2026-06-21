@@ -30,7 +30,8 @@
     "authored_by": {
       "type": "string",
       "description": "Author slug — phải khớp với filename trong content/authors/. KHÔNG được là AI/GPT.",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9-]+[a-z0-9]$"
     },
     "context": {
       "type": "string",

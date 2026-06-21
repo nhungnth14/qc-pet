@@ -9,7 +9,7 @@
   "properties": {
     "id": {
       "type": "string",
-      "pattern": "^[a-z][a-z0-9-]+$",
+      "pattern": "^[a-z][a-z0-9-]+[a-z0-9]$",
       "description": "Author slug — khớp với filename (vd file 'nhung-nguyen.json' → id 'nhung-nguyen')"
     },
     "name": {

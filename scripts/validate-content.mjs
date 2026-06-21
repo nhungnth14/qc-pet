@@ -71,7 +71,8 @@ const validateAuthor = ajv.compile(loadSchema('author.schema.json'));
 // Chỉ nhận file khớp pattern "XX-N.json" (vd BD-1.json) — tránh fixture/notes lọt vào gate.
 const LESSON_FILE_RE = /^[A-Z]{2}-\d+\.json$/;
 const lessonFiles = walk(LESSONS_DIR).filter(f => LESSON_FILE_RE.test(path.basename(f)));
-const rbotwFiles = walk(REAL_BUGS_DIR);
+const RBOTW_FILE_RE = /^RBOTW-\d+\.json$/;
+const rbotwFiles = walk(REAL_BUGS_DIR).filter(f => RBOTW_FILE_RE.test(path.basename(f)));
 const authorFiles = walk(AUTHORS_DIR);
 
 const totalFiles = lessonFiles.length + rbotwFiles.length + authorFiles.length;
@@ -157,6 +158,7 @@ for (const file of rbotwFiles) {
   // AI authored_by check (trước schema validation để message rõ hơn)
   if (data.authored_by && AI_PATTERNS.test(data.authored_by)) {
     errors.push(`${relName(file)}: authored_by "${data.authored_by}" không được là AI/GPT — RBOTW phải do người thật viết`);
+    continue;
   }
 
   const valid = validateRbotw(data);
@@ -170,7 +172,7 @@ for (const file of rbotwFiles) {
   }
 
   // Cross-reference: authored_by phải có trong content/authors/
-  if (authorFiles.length > 0 && !validAuthorIds.has(data.authored_by)) {
+  if (!validAuthorIds.has(data.authored_by)) {
     errors.push(`${relName(file)}: authored_by "${data.authored_by}" không tìm thấy trong content/authors/ — tạo content/authors/${data.authored_by}.json trước`);
     continue;
   }

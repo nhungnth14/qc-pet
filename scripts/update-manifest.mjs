@@ -51,8 +51,8 @@ try {
   currentVersion = existing.content_version ?? '0.0.0';
 }
 catch {
-  // manifest chưa tồn tại — bắt đầu từ 0.1.0
-  currentVersion = '0.0.9';
+  // manifest chưa tồn tại — first run tạo 0.0.1
+  currentVersion = '0.0.0';
 }
 
 const nextVersion = patchBump(currentVersion);
@@ -83,19 +83,22 @@ for (const file of lessonFiles) {
   });
 }
 
-// Sort lessons: by category, then dependency_order, then id
+// Sort lessons: by category (catOrder), then id; unknown categories sort last
 lessons.sort((a, b) => {
   const catOrder = ['BD', 'TA', 'MP', 'TM', 'AT'];
-  const catA = catOrder.indexOf(a.category);
-  const catB = catOrder.indexOf(b.category);
-  if (catA !== catB)
-    return catA - catB;
+  const effA = catOrder.indexOf(a.category);
+  const effB = catOrder.indexOf(b.category);
+  const orderA = effA === -1 ? Infinity : effA;
+  const orderB = effB === -1 ? Infinity : effB;
+  if (orderA !== orderB)
+    return orderA - orderB;
   return a.id.localeCompare(b.id);
 });
 
 // ─── Collect RBOTW ────────────────────────────────────────────────────────────
 
-const rbotwFiles = walk(path.join(ROOT, 'content', 'real-bugs'));
+const RBOTW_FILE_RE = /^RBOTW-\d+\.json$/;
+const rbotwFiles = walk(path.join(ROOT, 'content', 'real-bugs')).filter(f => RBOTW_FILE_RE.test(path.basename(f)));
 const realBugs = [];
 
 for (const file of rbotwFiles) {
