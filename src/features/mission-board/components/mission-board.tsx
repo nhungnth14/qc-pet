@@ -1,10 +1,9 @@
-import type { ColumnId } from '../mission-board-types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 import { Confetti } from '@/components/confetti';
 import { useMissionBoardStore } from '../mission-board-store';
-import { COLUMN_LABELS, COLUMN_ORDER, nextColumn } from '../mission-board-types';
+import { COLUMN_LABELS, COLUMN_ORDER } from '../mission-board-types';
 import { MissionCardView } from './mission-card';
 
 /**
@@ -14,17 +13,12 @@ import { MissionCardView } from './mission-card';
 export function MissionBoard() {
   const cards = useMissionBoardStore(s => s.cards);
   const moveCardForward = useMissionBoardStore(s => s.moveCardForward);
-  const loadFromLocal = useMissionBoardStore(s => s.loadFromLocal);
   const [confetti, setConfetti] = useState(false);
 
-  useEffect(() => {
-    loadFromLocal();
-  }, [loadFromLocal]);
-
-  const onCardPress = (id: string, status: ColumnId) => {
-    if (nextColumn(status) === 'done')
-      setConfetti(true);
+  const onCardPress = (id: string) => {
     moveCardForward(id);
+    if (useMissionBoardStore.getState().cards.find(c => c.id === id)?.status === 'done')
+      setConfetti(true);
   };
 
   return (
@@ -38,7 +32,7 @@ export function MissionBoard() {
               {colCards.length === 0 && <Text style={styles.empty}>—</Text>}
               {colCards.map(card => (
                 <Animated.View key={card.id} layout={LinearTransition.duration(300)}>
-                  <MissionCardView card={card} onPress={() => onCardPress(card.id, card.status)} />
+                  <MissionCardView card={card} onPress={() => onCardPress(card.id)} />
                 </Animated.View>
               ))}
             </View>

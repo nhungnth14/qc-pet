@@ -41,7 +41,7 @@ export function buildWallNotes(
     label: card.lessonName,
     sublabel: card.category,
     kind: 'core_mission' as WallNoteKind,
-    createdAt: card.completedAt ?? new Date(0).toISOString(),
+    createdAt: card.completedAt ?? new Date().toISOString(),
   }));
 
   return [...fromSubmissions, ...fromMissions]

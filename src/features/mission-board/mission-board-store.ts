@@ -22,7 +22,10 @@ type MissionBoardState = {
 };
 
 function persist(cards: MissionCard[]): void {
-  storage.setItem(CARDS_KEY, cards);
+  try {
+    storage.setItem(CARDS_KEY, cards);
+  }
+  catch {}
 }
 
 /**
@@ -34,7 +37,10 @@ export const useMissionBoardStore = create<MissionBoardState>((set, get) => ({
 
   loadFromLocal: () => {
     const saved = storage.getItem<MissionCard[]>(CARDS_KEY);
-    set({ cards: Array.isArray(saved) && saved.length > 0 ? saved : [SEED_CARD] });
+    const raw = Array.isArray(saved) && saved.length > 0 ? saved : [SEED_CARD];
+    // Migrate: done cards persisted before completedAt existed get current timestamp.
+    const now = new Date().toISOString();
+    set({ cards: raw.map(c => c.status === 'done' && !c.completedAt ? { ...c, completedAt: now } : c) });
   },
 
   startMission: (lessonId, lessonName, category) => {
