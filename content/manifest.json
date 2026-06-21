@@ -1,0 +1,34 @@
+{
+  "content_version": "0.1.1",
+  "last_updated": "2026-06-21",
+  "lessons": [
+    {
+      "id": "BD-1",
+      "version": "1.0.0",
+      "category": "BD",
+      "bloom_level": "remember",
+      "title": "Bug là gì? Không phải mọi sự khác biệt đều là lỗi",
+      "last_updated": "2026-06-21",
+      "is_published": true
+    },
+    {
+      "id": "TA-1",
+      "version": "1.0.0",
+      "category": "TA",
+      "bloom_level": "understand",
+      "title": "Equivalence Partitioning: Tại sao test 1 giá trị đủ đại diện cả nhóm?",
+      "last_updated": "2026-06-21",
+      "is_published": true
+    }
+  ],
+  "real_bugs": [
+    {
+      "id": "RBOTW-001",
+      "version": "1.0.0",
+      "authored_by": "nhung-nguyen",
+      "context": "E-commerce checkout — payment confirmation flow (web app, React + Node.js backend)",
+      "last_updated": "2026-06-21",
+      "is_published": true
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://qcpet.dev/schemas/rbotw.schema.json",
+  "title": "QC Pet — Real Bug of the Week",
+  "description": "Schema cho Real Bug of the Week entries trong content/real-bugs/. authored_by PHẢI là tên người thật (không phải AI/GPT). CI block nếu thiếu fields bắt buộc hoặc authored_by không hợp lệ.",
+  "type": "object",
+  "required": [
+    "type",
+    "id",
+    "authored_by",
+    "context",
+    "bug_description",
+    "severity",
+    "root_cause",
+    "lesson_learned",
+    "version"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "REAL_BUG_OF_THE_WEEK",
+      "description": "Phân biệt với lesson content — bắt buộc phải là giá trị cố định này"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^RBOTW-\\d+$",
+      "description": "Unique ID, vd 'RBOTW-001'"
+    },
+    "authored_by": {
+      "type": "string",
+      "description": "Author slug — phải khớp với filename trong content/authors/. KHÔNG được là AI/GPT.",
+      "minLength": 1
+    },
+    "context": {
+      "type": "string",
+      "description": "Industry/domain context cho bug (vd: 'E-commerce checkout flow', 'Banking API')",
+      "minLength": 5,
+      "maxLength": 200
+    },
+    "bug_description": {
+      "type": "string",
+      "description": "Mô tả bug từ góc nhìn tester — hành vi quan sát được, reproduction steps",
+      "minLength": 20,
+      "maxLength": 1000
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "Severity level theo ISTQB (technical impact)"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "Business priority (có thể khác severity — teachable moment FR-17b)"
+    },
+    "root_cause": {
+      "type": "string",
+      "description": "Nguyên nhân gốc rễ sau khi debug/resolved (ISTQB: Error → Defect → Failure chain)",
+      "minLength": 10,
+      "maxLength": 500
+    },
+    "lesson_learned": {
+      "type": "string",
+      "description": "Bài học QC rút ra — nối với ISTQB concept hoặc best practice",
+      "minLength": 10,
+      "maxLength": 500
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semver version của entry"
+    },
+    "platform": {
+      "type": "string",
+      "description": "Platform/tech stack liên quan (optional, vd: 'iOS 17', 'REST API', 'Web React')"
+    },
+    "date_occurred": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "Ngày bug xảy ra (YYYY-MM-DD, optional — có thể để trống vì privacy)"
+    },
+    "outcome": {
+      "type": "string",
+      "description": "Kết quả: bug đã fix chưa, impact business, time to fix (optional)"
+    },
+    "istqb_ref": {
+      "type": "string",
+      "description": "ISTQB chapter liên quan (optional, vd 'FL 5.5.1')"
+    },
+    "is_published": {
+      "type": "boolean",
+      "description": "true = hiển thị trong Side Quest rotation; false = draft"
+    }
+  }
+}

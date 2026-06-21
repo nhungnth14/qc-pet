@@ -1,10 +1,14 @@
 name: Content Quality Gate
 
-# Chặn PR nếu lesson trong content/lessons/ thiếu/sai source_tag (NFR-3).
+# Block PR nếu content files vi phạm schema (NFR-3, Story 0-3 + 1-1 + 1-2).
+# Covers: lessons (source_tag + full schema), RBOTW (authored_by non-AI), author profiles.
 on:
   pull_request:
     paths:
       - 'content/lessons/**'
+      - 'content/real-bugs/**'
+      - 'content/authors/**'
+      - 'content/schemas/**'
 
 permissions:
   contents: read
@@ -16,10 +20,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: pnpm
 
-      - name: Validate lesson source_tag
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate all content (lessons + RBOTW + authors)
         run: node scripts/validate-content.mjs
