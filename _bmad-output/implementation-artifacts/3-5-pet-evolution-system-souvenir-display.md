@@ -93,6 +93,14 @@ export type PetVersion = 'v0.1' | 'v0.5' | 'v1.0' | 'v2.0' | 'v3.0';
 
 ## Story Points: 5
 
+## Review Findings
+
+> Reviewed 2026-06-22. Layers: Blind Hunter inline · ECH/Auditor skipped.
+> 0 patch · 2 defer · 0 dismissed — CLEAN.
+
+- [x] [Review][Defer] RLS `souvenirs_user_policy` thiếu explicit `WITH CHECK` — pre-existing pattern (DEF-3-5-1) [`prisma/migrations/20260622090000_souvenirs_table/migration.sql`]
+- [x] [Review][Defer] `use-souvenir-store.ts` imports `@/lib/storage` thay vì `@/shared/lib/storage` — inconsistent pattern, potential jest mock divergence (DEF-3-5-2) [`src/features/pet/stores/use-souvenir-store.ts:3`]
+
 ## Deferred (Epic 7 / art)
 
 - Actual evolution transform: evidence gate, evolve animation (orchestral SFX 3-5s, glow→transform),

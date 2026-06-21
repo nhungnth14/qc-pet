@@ -88,6 +88,11 @@ Tổng hợp các việc được hoãn lại từ code review / dev — để c
 - **DEF-4-1-3 — Shimmer animation tiếp tục khi `isCritical=true`.** Shimmer View không render (`!isCritical && ...`) nhưng `shimmerX` Reanimated shared value vẫn animate. Lãng phí nhỏ; thêm `isCritical` vào deps của shimmer useEffect + `cancelAnimation` khi critical để tiết kiệm CPU/battery. [`src/components/need-bar.tsx:35-44`]
 - **DEF-4-1-4 — RLS `need_bars_user_policy` thiếu `WITH CHECK`.** Giống DEF-1-3-2, DEF-3-1-1. Policy `USING (auth.uid() = user_id)` không có `WITH CHECK` → INSERT/UPDATE không được check tường minh. Thêm `WITH CHECK (auth.uid() = user_id)` trong migration tiếp theo có sửa bảng `need_bars`. [`prisma/migrations/20260621120000_need_bars_table/migration.sql:42-43`]
 
+## Deferred from: code review of 3-5-pet-evolution-system-souvenir-display (2026-06-22)
+
+- **DEF-3-5-1 — RLS `souvenirs_user_policy` thiếu `WITH CHECK`.** Cùng pattern DEF-3-1-1/DEF-4-1-4. `USING (auth.uid() = user_id)` không có explicit `WITH CHECK` → INSERT/UPDATE không check tường minh. Thêm `WITH CHECK (auth.uid() = user_id)` trong migration tiếp theo có đụng bảng `souvenirs`. [`prisma/migrations/20260622090000_souvenirs_table/migration.sql`]
+- **DEF-3-5-2 — `use-souvenir-store.ts` import `@/lib/storage` thay vì `@/shared/lib/storage`.** Functionally đúng (cùng MMKV ID `qc-pet-storage`, cùng API `getItem<T>`/`setItem<T>`). Nhưng inconsistent với tất cả store khác (`use-room-store`, `pet-store`...) dùng `@/shared/lib/storage`. Nếu jest mock chỉ setup cho `@/shared/lib/storage`, tests liên quan souvenir-store có thể hit MMKV thật hoặc mock khác. Chuẩn hóa import path khi refactor store layer. [`src/features/pet/stores/use-souvenir-store.ts:3`]
+
 ## Deferred from: code review of 3-4-room-unlock-sequence-trigger-based (2026-06-22)
 
 - **DEF-3-4-1 — `upsertRoomState` set `updated_at` từ client clock.** `new Date().toISOString()` ghi đè DB trigger `updated_at = now()`. Client clock có thể drift khỏi server. Spec nói timestamp qua DB trigger (3-1 migration). Low impact (accuracy only); đồng nhất lại khi refactor API layer. [`src/features/rooms/rooms-api.ts:15`]
