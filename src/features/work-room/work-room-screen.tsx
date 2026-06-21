@@ -12,6 +12,7 @@ import { CurrencyHeader, NeedBarComponent, SlideUpPanel } from '@/components';
 import { useMissionBoardStore } from '@/features/mission-board/mission-board-store';
 import { getNeverDieMessage } from '@/features/pet/bugsy-mood';
 import { BugsyCharacter } from '@/features/pet/components/bugsy-character';
+import { EvolutionPending } from '@/features/pet/components/evolution-pending';
 import { SuggestionBubble } from '@/features/rooms/components/suggestion-bubble';
 import { useRoomSuggestion } from '@/features/rooms/use-room-suggestion';
 import { useSideQuestStore } from '@/features/side-quests/side-quest-store';
@@ -94,6 +95,9 @@ export function WorkRoomScreen() {
           <NeedBarComponent label="💪 Health" value={needBars.health} fillClassName="bg-need-health" />
           <NeedBarComponent label="📏 Discipline" value={needBars.discipline} fillClassName="bg-need-discipline" />
         </View>
+
+        {/* Evolution Pending indicator (Story 3-5) */}
+        <EvolutionPending />
 
         {/* Core Mission CTA — Story 4-3: disable khi offline */}
         <Pressable

@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { BugsyCharacter } from '@/features/pet/components/bugsy-character';
 import { CareButton } from '@/features/pet/components/care-button';
+import { SouvenirShelf } from '@/features/pet/components/souvenir-shelf';
 import { ROOM_CARE } from '@/features/pet/pet-care';
 import { ROOM_DEFINITIONS } from '../room-types';
 import { useRoomSuggestion } from '../use-room-suggestion';
@@ -42,6 +43,7 @@ export function RoomScreen({ roomType }: RoomScreenProps) {
         {careAction
           ? <CareButton action={careAction} />
           : <Text style={styles.note}>{`Phòng ${def.label} sẽ có hoạt động riêng sớm!`}</Text>}
+        {roomType === 'LIVING_ROOM' && <SouvenirShelf />}
         <Text style={styles.hint}>Vuốt trái/phải để đổi phòng · giữ Bugsy để hỏi gợi ý</Text>
       </View>
 

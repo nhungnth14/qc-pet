@@ -33,6 +33,7 @@ model User {
   quizSessions QuizSession[]
   rooms        Room[]
   needBars     NeedBars?
+  souvenirs    Souvenir[]
 
   @@map("users")
 }
@@ -121,6 +122,21 @@ model NeedBars {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("need_bars")
+}
+
+/// Souvenir unlock per evolution step (Story 3-5). 1 souvenir / evolution_step / user.
+/// Populate khi evolve thật (Epic 7 — Transfer Gate). Static metadata (emoji/label) ở SOUVENIRS.
+model Souvenir {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  evolutionStep String   @map("evolution_step")
+  souvenirType  String   @map("souvenir_type")
+  unlockedAt    DateTime @default(now()) @map("unlocked_at") @db.Timestamptz(6)
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, evolutionStep])
+  @@map("souvenirs")
 }
 
 /// Phiên làm quiz. Tiếp quản từ supabase/migrations/002_quiz_sessions.sql
