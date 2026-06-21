@@ -12,6 +12,7 @@ import { RoomScreen } from './components/room-screen';
 import { WALK_DURATION_MS, WalkTransition } from './components/walk-transition';
 import { useRoomNavigation } from './stores/use-room-navigation';
 import { useRoomStore } from './stores/use-room-store';
+import { useRoomUnlock } from './use-room-unlock';
 
 const SWIPE_THRESHOLD = 60;
 
@@ -35,6 +36,8 @@ export function ApartmentContainer() {
 
   // Story 4-1: real-time need-bar decay (server sync on mount/foreground + 60s client tick).
   useNeedBarDecay();
+  // Story 3-4: room unlock engine (trigger eval → cửa hé mở + notice).
+  const { unlockMessage, dismissUnlock } = useRoomUnlock();
 
   useEffect(() => {
     loadRooms();
@@ -91,6 +94,17 @@ export function ApartmentContainer() {
       {!apartmentViewOpen && <WeekendBanner />}
       {!apartmentViewOpen && <GoodMorningMoment />}
 
+      {!apartmentViewOpen && unlockMessage !== null && (
+        <Pressable
+          style={styles.unlockBanner}
+          onPress={dismissUnlock}
+          accessibilityRole="button"
+          accessibilityLabel="Đóng thông báo mở khóa phòng"
+        >
+          <Text style={styles.unlockText}>{unlockMessage}</Text>
+        </Pressable>
+      )}
+
       {unlockedCount >= 2 && !apartmentViewOpen && !isTransitioning && (
         <Pressable
           style={styles.homeFab}
@@ -136,4 +150,19 @@ const styles = StyleSheet.create({
     zIndex: 40,
   },
   homeFabIcon: { fontSize: 26 },
+  unlockBanner: {
+    position: 'absolute',
+    top: 160,
+    left: 16,
+    right: 16,
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 14,
+    backgroundColor: '#FFE082',
+    borderWidth: 2,
+    borderColor: '#001a41',
+    zIndex: 36,
+  },
+  unlockText: { fontSize: 14, fontWeight: '800', color: '#001a41', textAlign: 'center' },
 });
