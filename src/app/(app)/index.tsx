@@ -1,1 +1,1 @@
-export { WorkRoomScreen as default } from '@/features/work-room/work-room-screen';
+export { ApartmentContainer as default } from '@/features/rooms/apartment-container';

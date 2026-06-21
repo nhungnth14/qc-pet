@@ -1,0 +1,71 @@
+import type { RoomType } from '../stores/use-room-navigation';
+import { StyleSheet, Text, View } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { CareButton } from '@/features/pet/components/care-button';
+import { ROOM_CARE } from '@/features/pet/pet-care';
+import { ROOM_DEFINITIONS } from '../room-types';
+import { useRoomSuggestion } from '../use-room-suggestion';
+import { SuggestionBubble } from './suggestion-bubble';
+
+type RoomScreenProps = {
+  roomType: RoomType;
+};
+
+/**
+ * Immersive screen generic cho các phòng non-WorkRoom. Render môi trường + Bugsy + label.
+ * Hoạt động riêng của từng phòng tới ở story sau (3-3 idle, Epic 4 care, Epic 8 Bedroom/Bathroom).
+ * Long-press Bugsy → suggestion (AC-4).
+ */
+export function RoomScreen({ roomType }: RoomScreenProps) {
+  const def = ROOM_DEFINITIONS[roomType];
+  const careAction = ROOM_CARE[roomType];
+  const { suggestion, suggest, dismiss } = useRoomSuggestion();
+
+  const bugsyLongPress = Gesture.LongPress()
+    .minDuration(500)
+    .runOnJS(true)
+    .onStart(() => suggest());
+
+  return (
+    <View style={[styles.container, { backgroundColor: def.bgColor }]}>
+      <View style={styles.header}>
+        <Text style={styles.label}>{`${def.emoji} ${def.label}`}</Text>
+      </View>
+
+      <View style={styles.body}>
+        <GestureDetector gesture={bugsyLongPress}>
+          <View style={styles.bugsyWrap}>
+            <Text style={styles.bugsy}>🐣</Text>
+          </View>
+        </GestureDetector>
+        {careAction
+          ? <CareButton action={careAction} />
+          : <Text style={styles.note}>{`Phòng ${def.label} sẽ có hoạt động riêng sớm!`}</Text>}
+        <Text style={styles.hint}>Vuốt trái/phải để đổi phòng · giữ Bugsy để hỏi gợi ý</Text>
+      </View>
+
+      <SuggestionBubble suggestion={suggestion} onDismiss={dismiss} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  header: {
+    paddingHorizontal: 20,
+    paddingTop: 60,
+    paddingBottom: 12,
+  },
+  label: { fontSize: 16, fontWeight: '800', color: '#001a41' },
+  body: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+    paddingHorizontal: 32,
+  },
+  bugsyWrap: { padding: 12 },
+  bugsy: { fontSize: 96 },
+  note: { fontSize: 16, fontWeight: '800', color: '#001a41', textAlign: 'center' },
+  hint: { fontSize: 13, fontWeight: '600', color: '#3a4a66', textAlign: 'center' },
+});

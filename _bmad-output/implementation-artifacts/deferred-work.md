@@ -52,10 +52,27 @@ Tổng hợp các việc được hoãn lại từ code review / dev — để c
 - **DEF-5.4-3 — ConfettiPiece entry Y = -20px hardcode.** Start `translateY: -20` bất kể `spec.size` (height 8–17px) → mảnh lớn entry lệch. Đổi sang `-spec.size * 1.4` để consistent. Cosmetic. [src/components/confetti.tsx:useAnimatedStyle]
 - **DEF-5.4-4 — nextQuestion stale closure currentQ.** `if (currentQ < totalQ - 1)` trong `nextQuestion` là closure capture — an toàn với flow hiện tại (single active Q, no concurrent calls). Design smell; refactor dùng ref hoặc callback form khi polish. [src/app/(app)/core-mission.tsx:nextQuestion]
 
+## Deferred from: code review of 3-1-6-room-apartment-layout (2026-06-21)
+
+- **DEF-3-1-1 — RLS `rooms_user_policy` thiếu `WITH CHECK` explicit.** `FOR ALL` policy không có `WITH CHECK` → PG dùng USING làm check cho INSERT (kỹ thuật an toàn), nhưng thiếu explicit so với convention các table khác. Thêm `WITH CHECK (auth.uid() = user_id)` khi có migration tiếp theo. [`prisma/migrations/20260621110000_rooms_table/migration.sql:29`]
+- **DEF-3-1-2 — `SCREEN_WIDTH` static tại module load trong `walk-transition.tsx`.** `Dimensions.get('window').width` chỉ đọc 1 lần → stale sau rotation/resize. Low risk với MVP portrait-only; khi enable landscape đổi sang `useWindowDimensions()`. [`src/features/rooms/components/walk-transition.tsx:6`]
+- **DEF-3-1-3 — `getMostNeededRoom` fallback có thể navigate tới WORK_ROOM khi locked.** Nếu MMKV corrupt (WORK_ROOM.isUnlocked=false), fallback trả WORK_ROOM mà không check lock state. Khó xảy ra vì merge `{ ...INITIAL_ROOMS, ...persisted }`. Story 3-4 nên validate initial state. [`src/features/rooms/apartment-layout.ts:101`]
+- **DEF-3-1-4 — Stale swipe gesture closure nếu rooms unlock mid-swipe.** `useMemo(swipe, [...])` recreate gesture khi deps thay đổi nhưng `onEnd` đang run vẫn dùng closure cũ. 800ms window, unlikely. Story 3-4 unlock logic nên touch. [`src/features/rooms/apartment-container.tsx:60`]
+- **DEF-3-1-5 — `mockStorage` chỉ clear ở `afterEach`, không có `beforeEach`.** Nếu Jest --bail abort giữa suite, state leak sang test khác. Thêm `beforeEach(() => mockStorage.clear())`. [`src/features/rooms/room-types.test.ts:3`]
+
 ## Deferred from: code review of 1-3-ota-content-delivery-version-management (2026-06-21)
 
 - **DEF-1-3-1 — `getAllPublishedLessons()` LESSON_REGISTRY cross-check.** Thêm guard `e.id in LESSON_REGISTRY` ngoài spec AC-1 (spec chỉ filter `is_published`). Intentional: ngăn ghost entries (manifest entry có JSON chưa load). Design choice — nếu spec sau này muốn phân tách "published in manifest" vs "loadable client-side" thì cần tách 2 method. [`src/features/content/content-repository.ts:21`]
 - **DEF-1-3-2 — RLS `WITH CHECK` thiếu trên bảng `rooms` (Story 3-1).** Policy `USING (auth.uid() = user_id)` chặn đọc nhưng không có `WITH CHECK` cho INSERT/UPDATE. PostgREST INSERT bypass nếu thiếu `WITH CHECK`. Out of scope story 1-3 — handle khi review story 3-1. [`prisma/schema.prisma` / rooms migration]
+
+## Deferred from: code review of 3-2-apartment-view-isometric-room-navigation (2026-06-21)
+
+- **DEF-3-2-1 — `WalkTransition` dùng 🚶 thay vì 🐣 (Bugsy).** AC-5 nói "Bugsy emoji trượt ngang"; Bugsy = 🐣 ở mọi nơi khác (room-screen, work-room-screen). 🚶 là walking person generic, không phải Bugsy. Cần design call: dùng 🐣 (consistent identity) hay 🚶 (rõ ý "đi bộ" hơn). [`src/features/rooms/components/walk-transition.tsx:27`]
+- **DEF-3-2-2 — Swipe không bị block trong WalkTransition 800ms.** Swipe thứ 2 fire `navigateToRoom` trong khi overlay đang chạy → extend transition thêm 800ms. Behavior graceful (không crash, không wrong state) nhưng có thể gây rapid-fire nav; spec không cấm explicit. UX polish: add `if (isTransitioning) return` guard. [`src/features/rooms/apartment-container.tsx:69`]
+- **DEF-3-2-3 — `WalkTransition` không có fade-out.** Overlay biến mất ngay khi `isTransitioning` → false (component unmount). Chỉ có fade-in (0→1 trong 200ms). Fade-out cần giữ component mount sau `setTransitioning(false)` rồi animate → phức tạp hơn. Enhancement, ngoài AC-5 spec. [`src/features/rooms/components/walk-transition.tsx:17`]
+- **DEF-3-2-4 — `lockedTip` stale sau unlock event trong lúc ApartmentView mở.** `lockedTip` là `useState` local; không reset khi `rooms` thay đổi. Nếu unlock event (từ trigger khác) fire trong khi user nhìn ApartmentView với lockedTip đang hiển thị, tooltip vẫn hiện "Mở khóa — ..." cho tile đã unlocked. Low probability. [`src/features/rooms/components/apartment-view.tsx:24`]
+- **DEF-3-2-5 — `getUnlockHint` không có unit test.** Function export từ `apartment-layout.ts` nhưng không có `it()` nào trong `apartment-layout.test.ts`. Cần test: lookup key tồn tại → trả hint đúng; lookup key không tồn tại → trả fallback "Tiếp tục chơi để mở khóa". [`src/features/rooms/apartment-layout.test.ts`]
+- **DEF-3-2-6 — Boundary tests tại ATTENTION_THRESHOLD=50 và EMERGENCY_THRESHOLD=30 thiếu.** `getRoomVisualState` test có bar=40 (attention) và bar=80 (normal) nhưng không test bar=50 (phải là normal, `< 50`). `getEmergencyRoom` test có bar=15 (room) và bar=35 (null) nhưng không test bar=30 (phải là null, `< 30`). [`src/features/rooms/apartment-layout.test.ts:84,98`]
 
 ## Deferred from: CI lint debt (phát hiện 2026-06-17 khi PR #2 chạy full lint lần đầu)
 

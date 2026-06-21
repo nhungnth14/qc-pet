@@ -8,10 +8,15 @@ import {
   Text,
   View,
 } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { CurrencyHeader, NeedBarComponent, SlideUpPanel } from '@/components';
 import { useMissionBoardStore } from '@/features/mission-board/mission-board-store';
+import { getNeverDieMessage } from '@/features/pet/bugsy-mood';
+import { SuggestionBubble } from '@/features/rooms/components/suggestion-bubble';
+import { useRoomSuggestion } from '@/features/rooms/use-room-suggestion';
 import { useSideQuestStore } from '@/features/side-quests/side-quest-store';
 import { usePetStore } from '@/stores/pet-store';
+import { useConnectivity } from '@/stores/use-connectivity';
 
 // eslint-disable-next-line max-lines-per-function -- screen hub: Bugsy + need bars + 3 CTA + Zero-Bug panel; tách nhỏ làm rối layout.
 export function WorkRoomScreen() {
@@ -24,8 +29,19 @@ export function WorkRoomScreen() {
   const logZeroBugWeek = useSideQuestStore(s => s.logZeroBugWeek);
   const cards = useMissionBoardStore(s => s.cards);
   const mbLoadFromLocal = useMissionBoardStore(s => s.loadFromLocal);
+  const online = useConnectivity(s => s.online);
   const [zeroBugOpen, setZeroBugOpen] = useState(false);
   const bugsyAnim = useRef(new Animated.Value(0)).current;
+  const { suggestion, suggest, dismiss } = useRoomSuggestion();
+
+  // Story 4-3 never-die: bar = 0 → câu cảm xúc thay lời chào (KHÔNG game-over/modal).
+  const neverDieMessage = getNeverDieMessage(needBars, petName);
+
+  // Long-press Bugsy → gợi ý phòng cần nhất (Story 3-2 AC-4). runOnJS: callback setState ở JS thread.
+  const bugsyLongPress = Gesture.LongPress()
+    .minDuration(500)
+    .runOnJS(true)
+    .onStart(() => suggest());
 
   const doneCount = cards.filter(c => c.status === 'done').length;
   const wallCount = submissions.length + doneCount;
@@ -65,15 +81,19 @@ export function WorkRoomScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll}>
-        {/* Bugsy */}
-        <View style={styles.bugsySection}>
-          <Animated.Text style={[styles.bugsy, { transform: [{ translateY: bugsyAnim }] }]}>
-            🐣
-          </Animated.Text>
-          <View style={styles.speechBubble}>
-            <Text style={styles.speechText}>{`Chào ${petName}! Học gì hôm nay? 📚`}</Text>
+        {/* Bugsy — long-press để hỏi gợi ý phòng (Story 3-2) */}
+        <GestureDetector gesture={bugsyLongPress}>
+          <View style={styles.bugsySection}>
+            <Animated.Text style={[styles.bugsy, { transform: [{ translateY: bugsyAnim }] }]}>
+              🐣
+            </Animated.Text>
+            <View style={styles.speechBubble}>
+              <Text style={styles.speechText}>
+                {neverDieMessage ?? `Chào ${petName}! Học gì hôm nay? 📚`}
+              </Text>
+            </View>
           </View>
-        </View>
+        </GestureDetector>
 
         {/* Need Bars */}
         <View style={styles.section}>
@@ -84,12 +104,21 @@ export function WorkRoomScreen() {
           <NeedBarComponent label="📏 Discipline" value={needBars.discipline} fillClassName="bg-need-discipline" />
         </View>
 
-        {/* Core Mission CTA */}
-        <Pressable style={styles.missionBtn} onPress={() => router.push('/(app)/core-mission')}>
+        {/* Core Mission CTA — Story 4-3: disable khi offline */}
+        <Pressable
+          style={[styles.missionBtn, !online && styles.btnDisabled]}
+          onPress={() => online && router.push('/(app)/core-mission')}
+          disabled={!online}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: !online }}
+          accessibilityLabel="Core Mission hôm nay"
+        >
           <Text style={styles.missionBtnEmoji}>🎯</Text>
           <View style={styles.missionBtnText}>
             <Text style={styles.missionBtnTitle}>Core Mission hôm nay</Text>
-            <Text style={styles.missionBtnSub}>Bug Detective · Lesson 1 · +10 BC · +6 QP</Text>
+            <Text style={styles.missionBtnSub}>
+              {online ? 'Bug Detective · Lesson 1 · +10 BC · +6 QP' : 'Cần kết nối để chăm Bugsy'}
+            </Text>
           </View>
           <Text style={styles.missionBtnArrow}>→</Text>
         </Pressable>
@@ -176,6 +205,8 @@ export function WorkRoomScreen() {
           </Pressable>
         </View>
       </SlideUpPanel>
+
+      <SuggestionBubble suggestion={suggestion} onDismiss={dismiss} />
     </View>
   );
 }
@@ -220,6 +251,7 @@ const styles = StyleSheet.create({
     shadowRadius: 0,
     elevation: 6,
   },
+  btnDisabled: { opacity: 0.5 },
   missionBtnEmoji: { fontSize: 32 },
   missionBtnText: { flex: 1, gap: 2 },
   missionBtnTitle: { fontSize: 16, fontWeight: '800', color: '#fff' },

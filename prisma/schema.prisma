@@ -32,6 +32,7 @@ model User {
   gameState    GameState?
   quizSessions QuizSession[]
   rooms        Room[]
+  needBars     NeedBars?
 
   @@map("users")
 }
@@ -102,6 +103,24 @@ model Room {
 
   @@unique([userId, roomType])
   @@map("rooms")
+}
+
+/// Need Bars per-user (Story 4-1). 1-1 với user (PK = user_id). Decay tính server-side
+/// (Edge Function process-need-bar-sync) từ last_synced_at; client mirror cho display tick.
+/// Bảng đã tồn tại trên cloud dev DB — migration formalize (idempotent).
+model NeedBars {
+  userId       String   @id @map("user_id") @db.Uuid
+  hunger       Int      @default(80)
+  happiness    Int      @default(80)
+  health       Int      @default(80)
+  discipline   Int      @default(80)
+  lastSyncedAt DateTime @default(now()) @map("last_synced_at") @db.Timestamptz(6)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("need_bars")
 }
 
 /// Phiên làm quiz. Tiếp quản từ supabase/migrations/002_quiz_sessions.sql
