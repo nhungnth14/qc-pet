@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import { CurrencyHeader, NeedBarComponent, SlideUpPanel } from '@/components';
+import { useMissionBoardStore } from '@/features/mission-board/mission-board-store';
 import { useSideQuestStore } from '@/features/side-quests/side-quest-store';
 import { usePetStore } from '@/stores/pet-store';
 
@@ -18,9 +19,17 @@ export function WorkRoomScreen() {
   const petName = usePetStore(s => s.name);
   const needBars = usePetStore(s => s.needBars);
   const loadFromLocal = usePetStore(s => s.loadFromLocal);
+  const sqLoadFromLocal = useSideQuestStore(s => s.loadFromLocal);
+  const submissions = useSideQuestStore(s => s.submissions);
   const logZeroBugWeek = useSideQuestStore(s => s.logZeroBugWeek);
+  const cards = useMissionBoardStore(s => s.cards);
+  const mbLoadFromLocal = useMissionBoardStore(s => s.loadFromLocal);
   const [zeroBugOpen, setZeroBugOpen] = useState(false);
   const bugsyAnim = useRef(new Animated.Value(0)).current;
+
+  const doneCount = cards.filter(c => c.status === 'done').length;
+  const wallCount = submissions.length + doneCount;
+  const countByCol = (col: string) => cards.filter(c => c.status === col).length;
 
   const openSimulatedBugHunt = () => {
     setZeroBugOpen(false);
@@ -34,6 +43,8 @@ export function WorkRoomScreen() {
 
   useEffect(() => {
     loadFromLocal();
+    sqLoadFromLocal();
+    mbLoadFromLocal();
     Animated.loop(
       Animated.sequence([
         Animated.timing(bugsyAnim, { toValue: -10, duration: 1000, useNativeDriver: true }),
@@ -108,39 +119,34 @@ export function WorkRoomScreen() {
           <Text style={styles.bugLogText}>📋 Weekly Bug Log — báo cáo bug tuần này</Text>
         </Pressable>
 
-        {/* Mission Board */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Mission Board</Text>
+        {/* Mission Board + Bug Report Wall (Story 5.7) — preview thật, tap để mở */}
+        <Pressable
+          style={styles.section}
+          onPress={() => router.push('/(app)/mission-board')}
+          accessibilityRole="button"
+          accessibilityLabel="Mở Mission Board"
+        >
+          <View style={styles.sectionTitleRow}>
+            <Text style={styles.sectionTitle}>Mission Board</Text>
+            <Text style={styles.sectionArrow}>→</Text>
+          </View>
           <View style={styles.kanbanRow}>
-            {['TODO', 'IN PROGRESS', 'DONE'].map(col => (
-              <View key={col} style={styles.kanbanCol}>
-                <Text style={styles.kanbanHeader}>{col}</Text>
-                {col === 'TODO' && (
+            {(['TODO', 'IN PROGRESS', 'DONE'] as const).map((col) => {
+              const key = col === 'TODO' ? 'todo' : col === 'IN PROGRESS' ? 'in_progress' : 'done';
+              return (
+                <View key={col} style={styles.kanbanCol}>
+                  <Text style={styles.kanbanHeader}>{col}</Text>
                   <View style={styles.kanbanCard}>
-                    <Text style={styles.kanbanCardText}>Bug Detective #1</Text>
+                    <Text style={styles.kanbanCardText}>{`${countByCol(key)} thẻ`}</Text>
                   </View>
-                )}
-                {col === 'IN PROGRESS' && (
-                  <View style={[styles.kanbanCard, styles.kanbanCardActive]}>
-                    <Text style={styles.kanbanCardText}>Onboarding ✅</Text>
-                  </View>
-                )}
-                {col === 'DONE' && <Text style={styles.kanbanEmpty}>—</Text>}
-              </View>
-            ))}
+                </View>
+              );
+            })}
           </View>
-        </View>
-
-        {/* Bug Report Wall teaser */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Bug Report Wall 📌</Text>
-          <View style={styles.wallPreview}>
-            <Text style={styles.wallEmoji}>📝</Text>
-            <Text style={styles.wallText}>
-              Hoàn thành Core Mission để thêm sticky note đầu tiên!
-            </Text>
-          </View>
-        </View>
+          <Text style={styles.wallText}>
+            {`Bug Report Wall 📌 — ${wallCount} sticky note`}
+          </Text>
+        </Pressable>
       </ScrollView>
 
       {/* Zero-Bug Response panel (Story 5.6 AC5 / FR-34) */}
@@ -234,21 +240,10 @@ const styles = StyleSheet.create({
     shadowRadius: 0,
     elevation: 3,
   },
-  kanbanCardActive: { backgroundColor: '#22b5ff' },
-  kanbanCardText: { fontSize: 11, fontWeight: '700', color: '#001a41' },
-  kanbanEmpty: { textAlign: 'center', color: '#ccc', fontSize: 16 },
-  wallPreview: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#001a41',
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  wallEmoji: { fontSize: 32 },
-  wallText: { flex: 1, fontSize: 13, fontWeight: '600', color: '#555' },
+  kanbanCardText: { fontSize: 11, fontWeight: '700', color: '#001a41', textAlign: 'center' },
+  sectionTitleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  sectionArrow: { fontSize: 22, color: '#001a41', fontWeight: '800' },
+  wallText: { fontSize: 13, fontWeight: '600', color: '#555' },
   sideQuestBtn: {
     backgroundColor: '#5b4b8a',
     borderRadius: 16,

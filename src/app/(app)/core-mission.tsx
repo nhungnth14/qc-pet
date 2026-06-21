@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { Confetti } from '@/components/confetti';
+import { useMissionBoardStore } from '@/features/mission-board/mission-board-store';
 import { QuestionRenderer } from '@/features/quiz/components/question-renderer';
 import { SAMPLE_QUESTIONS } from '@/features/quiz/sample-questions';
 import {
@@ -53,6 +54,8 @@ export default function CoreMissionScreen() {
   const addQP = usePetStore(s => s.addQP);
   const setNeedBars = usePetStore(s => s.setNeedBars);
   const userId = useSessionStore(s => s.userId);
+  const startMission = useMissionBoardStore(s => s.startMission);
+  const completeMission = useMissionBoardStore(s => s.completeMission);
 
   const [phase, setPhase] = useState<'lesson' | 'quiz' | 'summary'>('lesson');
   const [currentQ, setCurrentQ] = useState(0);
@@ -114,6 +117,8 @@ export default function CoreMissionScreen() {
       setAnswers(restored);
     }
     setResumeInfo(null);
+    // Story 5.7: Mission card todo→in_progress khi vào quiz (thay event core_mission_started).
+    startMission(LESSON_ID, LESSON.title, LESSON.category);
     setPhase('quiz');
   };
 
@@ -187,6 +192,12 @@ export default function CoreMissionScreen() {
 
     let earnedBc = localBC;
 
+    // setNeedBars TRƯỚC addBC/addQP: addBC/addQP persist cả needBars xuống MMKV → giá trị mới
+    // (100/100/80/80) được lưu, không bị loadFromLocal (Work Room remount) ghi đè bằng giá trị
+    // cũ. setNeedBars CHỈ set store (không persist) nên phải chạy trước. (Cùng root-cause với
+    // fix Story 5.6 — side-quests/[type].tsx.)
+    setNeedBars({ hunger: 100, happiness: 100, health: 80, discipline: 80 });
+
     try {
       if (sessionId && userId) {
         const result = await completeQuizSession(sessionId, userId, finalCorrectCount, totalQ);
@@ -221,7 +232,6 @@ export default function CoreMissionScreen() {
       addQP(localQP);
     }
 
-    setNeedBars({ hunger: 100, happiness: 100, health: 80, discipline: 80 });
     setSummaryScore(finalCorrectCount);
 
     // Fire-and-forget: record mission completion date
@@ -230,6 +240,8 @@ export default function CoreMissionScreen() {
       updateGameState(userId, { lastMissionCompletedDate: today }).catch(() => {});
     }
 
+    // Story 5.7: Mission card in_progress→done (thay event session_completed).
+    completeMission(LESSON_ID);
     setPhase('summary');
   };
 
@@ -287,7 +299,14 @@ export default function CoreMissionScreen() {
           </Text>
         </View>
 
-        <Pressable style={styles.readyBtn} onPress={() => setPhase('quiz')}>
+        <Pressable
+          style={styles.readyBtn}
+          onPress={() => {
+            // Story 5.7: Mission card todo→in_progress (thay event core_mission_started).
+            startMission(LESSON_ID, LESSON.title, LESSON.category);
+            setPhase('quiz');
+          }}
+        >
           <Text style={styles.readyBtnText}>Sẵn sàng! 🎯</Text>
         </Pressable>
       </ScrollView>
