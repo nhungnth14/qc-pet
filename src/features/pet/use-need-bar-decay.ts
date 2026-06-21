@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { AppState } from 'react-native';
 import { DECAY_POLL_INTERVAL_MS } from '@/shared/lib/constants';
-import { useConnectivity } from '@/stores/use-connectivity';
 import { usePetStore } from '@/stores/pet-store';
 import { useSessionStore } from '@/stores/session-store';
+import { useConnectivity } from '@/stores/use-connectivity';
 
 const OFFLINE_RETRY_MS = 5000;
 

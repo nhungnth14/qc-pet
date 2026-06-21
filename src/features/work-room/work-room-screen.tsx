@@ -1,7 +1,6 @@
 import { useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  Animated,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -12,6 +11,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { CurrencyHeader, NeedBarComponent, SlideUpPanel } from '@/components';
 import { useMissionBoardStore } from '@/features/mission-board/mission-board-store';
 import { getNeverDieMessage } from '@/features/pet/bugsy-mood';
+import { BugsyCharacter } from '@/features/pet/components/bugsy-character';
 import { SuggestionBubble } from '@/features/rooms/components/suggestion-bubble';
 import { useRoomSuggestion } from '@/features/rooms/use-room-suggestion';
 import { useSideQuestStore } from '@/features/side-quests/side-quest-store';
@@ -31,7 +31,6 @@ export function WorkRoomScreen() {
   const mbLoadFromLocal = useMissionBoardStore(s => s.loadFromLocal);
   const online = useConnectivity(s => s.online);
   const [zeroBugOpen, setZeroBugOpen] = useState(false);
-  const bugsyAnim = useRef(new Animated.Value(0)).current;
   const { suggestion, suggest, dismiss } = useRoomSuggestion();
 
   // Story 4-3 never-die: bar = 0 → câu cảm xúc thay lời chào (KHÔNG game-over/modal).
@@ -61,15 +60,9 @@ export function WorkRoomScreen() {
     loadFromLocal();
     sqLoadFromLocal();
     mbLoadFromLocal();
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(bugsyAnim, { toValue: -10, duration: 1000, useNativeDriver: true }),
-        Animated.timing(bugsyAnim, { toValue: 0, duration: 1000, useNativeDriver: true }),
-      ]),
-    ).start();
-    // NOTE: effect chạy MỘT lần lúc mount (load state local + start idle animation). KHÔNG
-    // disable react-hooks/exhaustive-deps — react-compiler (error) cấm component có rule bị
-    // disable. Warning missing-deps là advisory, cố ý giữ; xử lý khi polish component.
+    // NOTE: effect chạy MỘT lần lúc mount (load state local). KHÔNG disable react-hooks/exhaustive-deps
+    // — react-compiler (error) cấm component có rule bị disable. Warning missing-deps là advisory.
+    // Bugsy idle animation giờ do BugsyCharacter (Story 3-3) tự xử lý.
   }, []);
 
   return (
@@ -84,9 +77,7 @@ export function WorkRoomScreen() {
         {/* Bugsy — long-press để hỏi gợi ý phòng (Story 3-2) */}
         <GestureDetector gesture={bugsyLongPress}>
           <View style={styles.bugsySection}>
-            <Animated.Text style={[styles.bugsy, { transform: [{ translateY: bugsyAnim }] }]}>
-              🐣
-            </Animated.Text>
+            <BugsyCharacter room="WORK_ROOM" />
             <View style={styles.speechBubble}>
               <Text style={styles.speechText}>
                 {neverDieMessage ?? `Chào ${petName}! Học gì hôm nay? 📚`}
@@ -224,7 +215,6 @@ const styles = StyleSheet.create({
   roomLabel: { fontSize: 16, fontWeight: '800', color: '#001a41' },
   scroll: { padding: 20, gap: 20, paddingBottom: 40 },
   bugsySection: { alignItems: 'center', gap: 12 },
-  bugsy: { fontSize: 80 },
   speechBubble: {
     backgroundColor: '#fff',
     borderRadius: 16,

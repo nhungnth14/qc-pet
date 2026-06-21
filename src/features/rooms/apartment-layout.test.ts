@@ -96,13 +96,26 @@ describe('getRoomVisualState', () => {
 });
 
 describe('getEmergencyRoom', () => {
-  it('trả phòng most-needed khi bar < 30', () => {
+  it('trả phòng bar thấp nhất (≠ Work Room) khi < 50', () => {
     const bars: NeedBars = { ...FULL_BARS, happiness: 15 };
     expect(getEmergencyRoom(bars, () => true)).toBe('LIVING_ROOM');
   });
 
-  it('null khi mọi bar ≥ 30', () => {
-    expect(getEmergencyRoom({ ...FULL_BARS, hunger: 35 }, () => true)).toBeNull();
+  it('loại Work Room: discipline thấp nhất nhưng không trả WORK_ROOM', () => {
+    // discipline 5 (Work Room) thấp nhất nhưng bị loại; hunger 40 → KITCHEN
+    const bars: NeedBars = { hunger: 40, happiness: 90, health: 90, discipline: 5 };
+    expect(getEmergencyRoom(bars, () => true)).toBe('KITCHEN');
+  });
+
+  it('null khi mọi bar (≠ Work Room) ≥ 50', () => {
+    expect(getEmergencyRoom({ ...FULL_BARS, hunger: 55, discipline: 5 }, () => true)).toBeNull();
+  });
+
+  it('bỏ qua phòng locked', () => {
+    // happiness thấp nhất nhưng LIVING_ROOM locked → KITCHEN (hunger 45 < 50)
+    const bars: NeedBars = { ...FULL_BARS, happiness: 10, hunger: 45 };
+    const unlocked = unlockedSet('WORK_ROOM', 'KITCHEN');
+    expect(getEmergencyRoom(bars, unlocked)).toBe('KITCHEN');
   });
 });
 

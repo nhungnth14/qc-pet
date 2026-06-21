@@ -9,19 +9,19 @@ const TUE_NOON = Date.UTC(2026, 0, 6, 5, 0, 0);
 const HOUR_MS = 60 * 60 * 1000;
 
 describe('isWeekend (UTC+7)', () => {
-  it('Thứ 7 → true', () => {
+  it('thứ 7 → true', () => {
     expect(isWeekend(SAT_NOON)).toBe(true);
   });
 
-  it('Chủ Nhật → true', () => {
+  it('chủ nhật → true', () => {
     expect(isWeekend(Date.UTC(2026, 0, 4, 5, 0, 0))).toBe(true);
   });
 
-  it('Thứ 2 → false', () => {
+  it('thứ 2 → false', () => {
     expect(isWeekend(MON_NOON)).toBe(false);
   });
 
-  it('Thứ 6 → false', () => {
+  it('thứ 6 → false', () => {
     expect(isWeekend(FRI_NOON)).toBe(false);
   });
 });

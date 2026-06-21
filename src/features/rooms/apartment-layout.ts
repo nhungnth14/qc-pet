@@ -58,7 +58,8 @@ export const NEED_FEELING: Record<keyof NeedBars, string> = {
 };
 
 export const ATTENTION_THRESHOLD = 50;
-export const EMERGENCY_THRESHOLD = 30;
+// Story 4-4: mọi bar ≥ 50 → không 🔥 (trước đó 3-2 placeholder dùng 30).
+export const EMERGENCY_THRESHOLD = 50;
 
 type IsUnlocked = (room: RoomType) => boolean;
 
@@ -116,16 +117,28 @@ export function getRoomVisualState(
   return 'normal';
 }
 
+// Story 4-4: emergency xét các phòng có need bar TRỪ Work Room (discipline).
+const EMERGENCY_NEEDS: (keyof NeedBars)[] = ['hunger', 'happiness', 'health'];
+
 /**
- * Phòng "One Room Emergency" (placeholder cho Epic 4): most-needed room nếu bar < 30.
- * @returns null nếu không phòng nào dưới ngưỡng emergency.
+ * Phòng "One Room Emergency" (Story 4-4): bar thấp nhất trong các phòng (≠ Work Room) đã unlocked,
+ * nếu dưới `EMERGENCY_THRESHOLD` (50). Chỉ 1 phòng.
+ * @returns null nếu mọi bar ≥ 50.
  */
 export function getEmergencyRoom(
   needBars: NeedBars,
   isUnlocked: IsUnlocked,
 ): RoomType | null {
-  const { room, need } = getMostNeededRoom(needBars, isUnlocked);
-  return needBars[need] < EMERGENCY_THRESHOLD ? room : null;
+  let lowest: { room: RoomType; value: number } | null = null;
+  for (const need of EMERGENCY_NEEDS) {
+    const room = NEED_ROOM_MAP[need];
+    if (!isUnlocked(room))
+      continue;
+    const value = needBars[need];
+    if (lowest === null || value < lowest.value)
+      lowest = { room, value };
+  }
+  return lowest !== null && lowest.value < EMERGENCY_THRESHOLD ? lowest.room : null;
 }
 
 /** Message gợi ý khi long-press Bugsy. */

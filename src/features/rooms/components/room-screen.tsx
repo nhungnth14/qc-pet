@@ -1,6 +1,7 @@
 import type { RoomType } from '../stores/use-room-navigation';
 import { StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { BugsyCharacter } from '@/features/pet/components/bugsy-character';
 import { CareButton } from '@/features/pet/components/care-button';
 import { ROOM_CARE } from '@/features/pet/pet-care';
 import { ROOM_DEFINITIONS } from '../room-types';
@@ -35,7 +36,7 @@ export function RoomScreen({ roomType }: RoomScreenProps) {
       <View style={styles.body}>
         <GestureDetector gesture={bugsyLongPress}>
           <View style={styles.bugsyWrap}>
-            <Text style={styles.bugsy}>🐣</Text>
+            <BugsyCharacter room={roomType} />
           </View>
         </GestureDetector>
         {careAction
@@ -65,7 +66,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
   },
   bugsyWrap: { padding: 12 },
-  bugsy: { fontSize: 96 },
   note: { fontSize: 16, fontWeight: '800', color: '#001a41', textAlign: 'center' },
   hint: { fontSize: 13, fontWeight: '600', color: '#3a4a66', textAlign: 'center' },
 });

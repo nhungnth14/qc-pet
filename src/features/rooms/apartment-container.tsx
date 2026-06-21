@@ -2,6 +2,7 @@ import type { RoomType } from './stores/use-room-navigation';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { GoodMorningMoment } from '@/features/pet/components/good-morning-moment';
 import { WeekendBanner } from '@/features/pet/components/weekend-banner';
 import { useNeedBarDecay } from '@/features/pet/use-need-bar-decay';
 import { WorkRoomScreen } from '@/features/work-room/work-room-screen';
@@ -88,6 +89,7 @@ export function ApartmentContainer() {
       </GestureDetector>
 
       {!apartmentViewOpen && <WeekendBanner />}
+      {!apartmentViewOpen && <GoodMorningMoment />}
 
       {unlockedCount >= 2 && !apartmentViewOpen && !isTransitioning && (
         <Pressable
