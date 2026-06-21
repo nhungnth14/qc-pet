@@ -22,3 +22,6 @@ export const BC_CORE_MISSION_EARN = 10;
 export const MAX_NOTIFICATIONS_PER_DAY = 2;
 export const CLOCK_OFFSET_STORAGE_KEY = 'clock_offset';
 export const WAL_STORAGE_PREFIX = 'wal_';
+
+export const CONTENT_LAST_SEEN_VERSION = 'content:last_seen_version';
+export const CONTENT_LAST_SYNCED_AT = 'content:last_synced_at';
