@@ -1,5 +1,5 @@
 # generated: 2026-06-14
-# last_updated: 2026-06-14
+# last_updated: 2026-06-21
 # project: qc-pet
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-06-14
-last_updated: 2026-06-16  # 0-1..0-6 đều done (review patches applied); Epic 0 hoàn tất
+last_updated: 2026-06-21  # Epic 6 done (6-1/6-2/6-3 reviewed); 19/47 stories done
 project: qc-pet
 project_key: NOKEY
 tracking_system: file-system
@@ -104,18 +104,18 @@ development_status:
   5-2-quiz-session-engine-framework-2-5-1-2-emotional-arc-auto-save-session-resume: done   # quiz-api.ts + session resume
   5-3-rescue-mechanic-story-rule-feedback-panel-3-2-1-summary-card: done    # Story Rule panel + 3-2-1 cheat sheet
   5-4-question-format-engine-part-1-mcq-bug-report-surgery-severity-swipe-spot-the-defect-rewrite-the-fail: done   # code-review 2026-06-17: P1 resume-guard, P2 confetti-stagger, P3 isWarmup data-driven, P4 committedRef double-submit, P5 SpotTheDefect shake; type-check/lint pass (0 errors)
-  5-5-question-format-engine-part-2-priority-severity-duel-boundary-attack-root-cause-chain-risk-radar-complete-the-test-case: backlog
-  5-6-side-quests-bug-hunt-peer-review-repro-steps-simulated-bug-hunt: backlog
+  5-5-question-format-engine-part-2-priority-severity-duel-boundary-attack-root-cause-chain-risk-radar-complete-the-test-case: review   # 2026-06-21 dev: 5 format mới (tap-based) mở rộng engine 5-4; type-check exhaustive + lint 0 + 28/28 quiz logic test; web smoke deferred (pm2 static export cũ)
+  5-6-side-quests-bug-hunt-peer-review-repro-steps-simulated-bug-hunt: in-progress   # story created 2026-06-21: 4 side quest (Bug Hunt/Peer Review/Repro Steps/Simulated) + Zero-Bug flow; reuse reward pipeline 6-2 (BC server-auth + happiness), self-define content, persist local (Wall→5.7)
   5-7-mission-board-kanban-bug-report-wall: backlog
   epic-5-retrospective: optional
 
   # -----------------------------------------------------------------
-  # Epic 6: Dual Currency & Reward Animations (all backlog)
+  # Epic 6: Dual Currency & Reward Animations (3/3 done ✓)
   # -----------------------------------------------------------------
-  epic-6: in-progress
-  6-1-dual-currency-data-model-persistent-header-display: review   # dev-story done 2026-06-16: CurrencyHeader (web verified amber/teal chips) + syncFromSupabase on mount + CHECK bc>=0 migration (chưa apply, cần DB); type-check/lint/17-unit pass
-  6-2-bc-earn-rules-miss-penalty-reward-animation-pipeline: review   # dev-story done 2026-06-16: reward animation pipeline (web verified float+consume) + core-mission emit + miss-penalty pg_cron migration (chưa apply, cần DB); xoá dead bus; type-check/lint/31-unit pass
-  6-3-qp-earn-rules-server-authoritative-immutability: review   # dev-story done 2026-06-16: QP-không-giảm trigger (chưa apply, cần DB) + QP animation (web verified +10/+6 dual float) + emit đa-currency; column-revoke/Rescue-server-validate → security-debt task; type-check/lint/22-unit pass
+  epic-6: done
+  6-1-dual-currency-data-model-persistent-header-display: done      # CurrencyHeader amber/teal + syncFromSupabase; code reviewed 2026-06-17
+  6-2-bc-earn-rules-miss-penalty-reward-animation-pipeline: done    # BC earn + miss-penalty + reward animation pipeline; code reviewed 2026-06-17
+  6-3-qp-earn-rules-server-authoritative-immutability: done         # QP immutability trigger + dual float animation; code reviewed 2026-06-17
   epic-6-retrospective: optional
 
   # -----------------------------------------------------------------

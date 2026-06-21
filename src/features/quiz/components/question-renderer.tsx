@@ -1,7 +1,12 @@
 import type { AnswerResult, Question } from '../question-types';
+import { BoundaryAttackView } from './formats/boundary-attack';
 import { BugReportSurgeryView } from './formats/bug-report-surgery';
+import { CompleteTestCaseView } from './formats/complete-test-case';
 import { McqQuestionView } from './formats/mcq-question';
+import { PrioritySeverityDuelView } from './formats/priority-severity-duel';
 import { RewriteTheFailView } from './formats/rewrite-the-fail';
+import { RiskRadarView } from './formats/risk-radar';
+import { RootCauseChainView } from './formats/root-cause-chain';
 import { SeveritySwipeView } from './formats/severity-swipe';
 import { SpotTheDefectView } from './formats/spot-the-defect';
 
@@ -30,6 +35,20 @@ export function QuestionRenderer({ question, disabled, onAnswered }: Props) {
       );
     case 'rewrite_the_fail':
       return <RewriteTheFailView question={question} disabled={disabled} onAnswered={onAnswered} />;
+    case 'priority_severity_duel':
+      return (
+        <PrioritySeverityDuelView question={question} disabled={disabled} onAnswered={onAnswered} />
+      );
+    case 'boundary_attack':
+      return <BoundaryAttackView question={question} disabled={disabled} onAnswered={onAnswered} />;
+    case 'root_cause_chain':
+      return <RootCauseChainView question={question} disabled={disabled} onAnswered={onAnswered} />;
+    case 'risk_radar':
+      return <RiskRadarView question={question} disabled={disabled} onAnswered={onAnswered} />;
+    case 'complete_test_case':
+      return (
+        <CompleteTestCaseView question={question} disabled={disabled} onAnswered={onAnswered} />
+      );
     default: {
       // Exhaustive guard — nếu thêm format mới mà quên xử lý, TS sẽ báo lỗi tại đây.
       const _exhaustive: never = question;

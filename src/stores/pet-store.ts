@@ -31,8 +31,22 @@ export const usePetStore = create<PetState>((set, get) => ({
   isLoading: false,
 
   setName: name => set({ name }),
-  addBC: amount => set(s => ({ bcBalance: Math.max(0, s.bcBalance + amount) })),
-  addQP: amount => set(s => ({ qpTotal: s.qpTotal + amount })),
+  addBC: (amount) => {
+    set(s => ({ bcBalance: Math.max(0, s.bcBalance + amount) }));
+    const s = get();
+    try {
+      storage.setItem(PET_KEY, { name: s.name, bcBalance: s.bcBalance, qpTotal: s.qpTotal, needBars: s.needBars });
+    }
+    catch {}
+  },
+  addQP: (amount) => {
+    set(s => ({ qpTotal: s.qpTotal + amount }));
+    const s = get();
+    try {
+      storage.setItem(PET_KEY, { name: s.name, bcBalance: s.bcBalance, qpTotal: s.qpTotal, needBars: s.needBars });
+    }
+    catch {}
+  },
   setNeedBars: bars => set(s => ({ needBars: { ...s.needBars, ...bars } })),
 
   loadFromLocal: () => {

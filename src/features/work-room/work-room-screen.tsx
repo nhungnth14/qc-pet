@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Pressable,
@@ -8,15 +8,29 @@ import {
   Text,
   View,
 } from 'react-native';
-import { CurrencyHeader, NeedBarComponent } from '@/components';
+import { CurrencyHeader, NeedBarComponent, SlideUpPanel } from '@/components';
+import { useSideQuestStore } from '@/features/side-quests/side-quest-store';
 import { usePetStore } from '@/stores/pet-store';
 
+// eslint-disable-next-line max-lines-per-function -- screen hub: Bugsy + need bars + 3 CTA + Zero-Bug panel; tách nhỏ làm rối layout.
 export function WorkRoomScreen() {
   const router = useRouter();
   const petName = usePetStore(s => s.name);
   const needBars = usePetStore(s => s.needBars);
   const loadFromLocal = usePetStore(s => s.loadFromLocal);
+  const logZeroBugWeek = useSideQuestStore(s => s.logZeroBugWeek);
+  const [zeroBugOpen, setZeroBugOpen] = useState(false);
   const bugsyAnim = useRef(new Animated.Value(0)).current;
+
+  const openSimulatedBugHunt = () => {
+    setZeroBugOpen(false);
+    router.push('/(app)/side-quests/simulated_bug_hunt');
+  };
+
+  const skipBugWeek = () => {
+    logZeroBugWeek(new Date().toISOString());
+    setZeroBugOpen(false);
+  };
 
   useEffect(() => {
     loadFromLocal();
@@ -69,6 +83,31 @@ export function WorkRoomScreen() {
           <Text style={styles.missionBtnArrow}>→</Text>
         </Pressable>
 
+        {/* Side Quests CTA (Story 5.6) */}
+        <Pressable
+          style={styles.sideQuestBtn}
+          onPress={() => router.push('/(app)/side-quests')}
+          accessibilityRole="button"
+          accessibilityLabel="Mở Side Quests"
+        >
+          <Text style={styles.missionBtnEmoji}>🧩</Text>
+          <View style={styles.missionBtnText}>
+            <Text style={styles.sideQuestTitle}>Side Quests</Text>
+            <Text style={styles.sideQuestSub}>Bug Hunt · Peer Review · Repro · +40% 😊 +5 BC</Text>
+          </View>
+          <Text style={styles.sideQuestArrow}>→</Text>
+        </Pressable>
+
+        {/* Weekly Bug Log — Zero-Bug entry (Story 5.6 AC5 / FR-34) */}
+        <Pressable
+          style={styles.bugLogBtn}
+          onPress={() => setZeroBugOpen(true)}
+          accessibilityRole="button"
+          accessibilityLabel="Weekly Bug Log"
+        >
+          <Text style={styles.bugLogText}>📋 Weekly Bug Log — báo cáo bug tuần này</Text>
+        </Pressable>
+
         {/* Mission Board */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Mission Board</Text>
@@ -103,6 +142,34 @@ export function WorkRoomScreen() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Zero-Bug Response panel (Story 5.6 AC5 / FR-34) */}
+      <SlideUpPanel isOpen={zeroBugOpen} onClose={() => setZeroBugOpen(false)} snapPoints={['42%']}>
+        <View style={styles.zeroBug}>
+          <Text style={styles.zeroBugTitle}>Tuần này bạn có gặp bug nào không?</Text>
+          <Text style={styles.zeroBugSub}>
+            Chưa gặp bug thật cũng không sao — luyện tập với bug giả lập nhé!
+          </Text>
+
+          <Pressable
+            style={styles.zeroBugPrimary}
+            onPress={openSimulatedBugHunt}
+            accessibilityRole="button"
+            accessibilityLabel="Mở Simulated Bug Hunt"
+          >
+            <Text style={styles.zeroBugPrimaryText}>🧪 Mở Simulated Bug Hunt</Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.zeroBugSecondary}
+            onPress={skipBugWeek}
+            accessibilityRole="button"
+            accessibilityLabel="Bỏ qua tuần này"
+          >
+            <Text style={styles.zeroBugSecondaryText}>Bỏ qua tuần này</Text>
+          </Pressable>
+        </View>
+      </SlideUpPanel>
     </View>
   );
 }
@@ -182,4 +249,55 @@ const styles = StyleSheet.create({
   },
   wallEmoji: { fontSize: 32 },
   wallText: { flex: 1, fontSize: 13, fontWeight: '600', color: '#555' },
+  sideQuestBtn: {
+    backgroundColor: '#5b4b8a',
+    borderRadius: 16,
+    borderWidth: 3,
+    borderColor: '#001a41',
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    shadowColor: '#001a41',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 6,
+  },
+  sideQuestTitle: { fontSize: 16, fontWeight: '800', color: '#fff' },
+  sideQuestSub: { fontSize: 11, fontWeight: '600', color: '#d6ccff' },
+  sideQuestArrow: { fontSize: 24, color: '#fff', fontWeight: '800' },
+  bugLogBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#001a41',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  bugLogText: { fontSize: 13, fontWeight: '700', color: '#001a41' },
+  zeroBug: { gap: 12, paddingTop: 8 },
+  zeroBugTitle: { fontSize: 18, fontWeight: '900', color: '#001a41' },
+  zeroBugSub: { fontSize: 14, fontWeight: '600', color: '#3a4a66', lineHeight: 20 },
+  zeroBugPrimary: {
+    minHeight: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#006491',
+    borderRadius: 12,
+    borderWidth: 3,
+    borderColor: '#001a41',
+    padding: 14,
+    marginTop: 4,
+  },
+  zeroBugPrimaryText: { fontSize: 15, fontWeight: '800', color: '#fff' },
+  zeroBugSecondary: {
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 12,
+  },
+  zeroBugSecondaryText: { fontSize: 14, fontWeight: '700', color: '#3a4a66' },
 });

@@ -13,7 +13,12 @@ export type QuestionFormat
     | 'bug_report_surgery'
     | 'severity_swipe'
     | 'spot_the_defect'
-    | 'rewrite_the_fail';
+    | 'rewrite_the_fail'
+    | 'priority_severity_duel'
+    | 'boundary_attack'
+    | 'root_cause_chain'
+    | 'risk_radar'
+    | 'complete_test_case';
 
 /** Kết quả chuẩn hoá mọi format trả về cho quiz player. `answer` = serialize lựa chọn. */
 export type AnswerResult = { isCorrect: boolean; answer: string };
@@ -78,12 +83,57 @@ export type RewriteTheFailQuestion = BaseQuestion & {
   correctOrder: string[]; // block ids theo thứ tự đúng
 };
 
+// ─── Priority×Severity Duel (tap quadrant — Story 5.5) ────────────────────────
+export type DuelAxis = 'low' | 'high';
+export type PrioritySeverityDuelQuestion = BaseQuestion & {
+  format: 'priority_severity_duel';
+  bugDescription: string;
+  correctPriority: DuelAxis;
+  correctSeverity: DuelAxis;
+};
+
+// ─── Boundary Attack (text input) ─────────────────────────────────────────────
+export type BoundaryAttackQuestion = BaseQuestion & {
+  format: 'boundary_attack';
+  scenario: string;
+  expectedValues: string[];
+};
+
+// ─── Root Cause Chain (tap order) ─────────────────────────────────────────────
+export type EventCard = { id: string; text: string };
+export type RootCauseChainQuestion = BaseQuestion & {
+  format: 'root_cause_chain';
+  events: EventCard[];
+  correctOrder: string[]; // event ids đúng thứ tự nhân–quả
+};
+
+// ─── Risk Radar (tap rank, partial credit ≥70%) ───────────────────────────────
+export type RiskItem = { id: string; text: string };
+export type RiskRadarQuestion = BaseQuestion & {
+  format: 'risk_radar';
+  items: RiskItem[];
+  correctRanking: string[]; // item ids, top = risk cao nhất
+};
+
+// ─── Complete the Test Case (text fields + keyword match) ─────────────────────
+export type TestCaseField = { key: string; label: string; keywords: string[] };
+export type CompleteTestCaseQuestion = BaseQuestion & {
+  format: 'complete_test_case';
+  fields: TestCaseField[];
+};
+export type TestCaseFilled = Record<string, string>; // field key → text user nhập
+
 export type Question
   = | McqQuestion
     | SeveritySwipeQuestion
     | SpotTheDefectQuestion
     | BugReportSurgeryQuestion
-    | RewriteTheFailQuestion;
+    | RewriteTheFailQuestion
+    | PrioritySeverityDuelQuestion
+    | BoundaryAttackQuestion
+    | RootCauseChainQuestion
+    | RiskRadarQuestion
+    | CompleteTestCaseQuestion;
 
 // ─── Grade (thuần) ────────────────────────────────────────────────────────────
 
@@ -121,4 +171,60 @@ export function gradeRewriteTheFail(q: RewriteTheFailQuestion, orderedBlockIds: 
     orderedBlockIds.length === q.correctOrder.length
     && orderedBlockIds.every((id, i) => id === q.correctOrder[i])
   );
+}
+
+// ─── Grade Part 2 (Story 5.5) ─────────────────────────────────────────────────
+
+export const norm = (s: string) => s.trim().toLowerCase();
+
+/** Kiểm tra một field có keyword hợp lệ không — dùng chung giữa grade function và UI highlight. */
+export function gradeField(f: TestCaseField, filled: TestCaseFilled): boolean {
+  const input = norm(filled[f.key] ?? '');
+  return input.length > 0 && f.keywords.some(k => input.includes(norm(k)));
+}
+
+/** Đúng khi đặt bug card vào đúng quadrant (Priority + Severity). */
+export function gradePrioritySeverityDuel(
+  q: PrioritySeverityDuelQuestion,
+  chosenPriority: DuelAxis,
+  chosenSeverity: DuelAxis,
+): boolean {
+  return chosenPriority === q.correctPriority && chosenSeverity === q.correctSeverity;
+}
+
+/** Tập value nhập (normalize) phải CHỨA HẾT expected. Trả thêm `missing` cho feedback. */
+export function gradeBoundaryAttack(
+  q: BoundaryAttackQuestion,
+  rawInput: string,
+): { isCorrect: boolean; missing: string[] } {
+  const entered = new Set(rawInput.split(/[\s,;]+/).map(norm).filter(Boolean));
+  const missing = q.expectedValues.filter(v => !entered.has(norm(v)));
+  return { isCorrect: missing.length === 0, missing };
+}
+
+/** Đúng khi thứ tự event === correctOrder. */
+export function gradeRootCauseChain(q: RootCauseChainQuestion, orderedIds: string[]): boolean {
+  return (
+    orderedIds.length === q.correctOrder.length
+    && orderedIds.every((id, i) => id === q.correctOrder[i])
+  );
+}
+
+/** Partial credit: tỉ lệ vị trí đúng ≥ 0.7 → isCorrect. Trả `ratio` cho hiển thị. */
+export function gradeRiskRadar(
+  q: RiskRadarQuestion,
+  rankedIds: string[],
+): { isCorrect: boolean; ratio: number } {
+  if (q.items.length !== q.correctRanking.length)
+    throw new Error(`[gradeRiskRadar] items/correctRanking mismatch (${q.items.length} vs ${q.correctRanking.length})`);
+  if (rankedIds.length !== q.correctRanking.length || q.correctRanking.length === 0)
+    return { isCorrect: false, ratio: 0 };
+  const correct = rankedIds.filter((id, i) => id === q.correctRanking[i]).length;
+  const ratio = correct / q.correctRanking.length;
+  return { isCorrect: ratio >= 0.7, ratio };
+}
+
+/** Mỗi field input phải chứa ≥1 keyword (case-insensitive, MVP — LLM Phase 2). */
+export function gradeCompleteTestCase(q: CompleteTestCaseQuestion, filled: TestCaseFilled): boolean {
+  return q.fields.every(f => gradeField(f, filled));
 }

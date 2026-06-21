@@ -62,4 +62,61 @@ export const SAMPLE_QUESTIONS: Question[] = [
     ],
     correctOrder: ['r-1', 'r-2', 'r-3'],
   },
+  {
+    id: 'q-duel-1',
+    format: 'priority_severity_duel',
+    prompt: 'Chọn Priority và Severity cho bug này',
+    bugDescription:
+      'App mất toàn bộ dữ liệu giỏ hàng khi xoay ngang màn hình ở bước thanh toán — khách hàng đang mua hàng thật.',
+    correctPriority: 'high',
+    correctSeverity: 'high',
+  },
+  {
+    id: 'q-boundary-1',
+    format: 'boundary_attack',
+    prompt: 'Ô tuổi chỉ nhận 18–60. Nhập các giá trị biên cần test:',
+    scenario: 'Ô "Tuổi" hợp lệ khi 18 ≤ tuổi ≤ 60. Tìm các giá trị biên (boundary) nên kiểm thử.',
+    expectedValues: ['17', '18', '60', '61'],
+  },
+  {
+    id: 'q-chain-1',
+    format: 'root_cause_chain',
+    prompt: 'Sắp xếp chuỗi nhân–quả từ nguyên nhân gốc đến hậu quả',
+    events: [
+      { id: 'e-1', text: 'Thiếu kiểm tra null ở API user' },
+      { id: 'e-2', text: 'Request trả về user = null' },
+      { id: 'e-3', text: 'Code gọi user.name làm app crash' },
+      { id: 'e-4', text: 'Người dùng thấy màn hình trắng' },
+    ],
+    correctOrder: ['e-1', 'e-2', 'e-3', 'e-4'],
+  },
+  {
+    id: 'q-radar-1',
+    format: 'risk_radar',
+    prompt: 'Xếp hạng tính năng theo mức rủi ro (cao nhất lên đầu)',
+    items: [
+      { id: 'i-pay', text: 'Cổng thanh toán' },
+      { id: 'i-login', text: 'Đăng nhập / xác thực' },
+      { id: 'i-search', text: 'Tìm kiếm sản phẩm' },
+      { id: 'i-theme', text: 'Đổi giao diện sáng/tối' },
+    ],
+    correctRanking: ['i-pay', 'i-login', 'i-search', 'i-theme'],
+  },
+  {
+    id: 'q-testcase-1',
+    format: 'complete_test_case',
+    prompt: 'Điền nốt test case đăng nhập (chạm để nhập):',
+    fields: [
+      {
+        key: 'precondition',
+        label: 'Điều kiện tiên quyết',
+        keywords: ['đã đăng ký', 'tài khoản', 'account', 'tồn tại'],
+      },
+      {
+        key: 'expected',
+        label: 'Kết quả kỳ vọng',
+        keywords: ['trang chủ', 'đăng nhập thành công', 'vào được', 'home'],
+      },
+    ],
+  },
 ];
