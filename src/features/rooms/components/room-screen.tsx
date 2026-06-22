@@ -5,6 +5,8 @@ import { BugsyCharacter } from '@/features/pet/components/bugsy-character';
 import { CareButton } from '@/features/pet/components/care-button';
 import { SouvenirShelf } from '@/features/pet/components/souvenir-shelf';
 import { ROOM_CARE } from '@/features/pet/pet-care';
+import { BedroomSession } from '@/features/spaced-repetition/components/bedroom-session';
+import { FlashQuiz } from '@/features/spaced-repetition/components/flash-quiz';
 import { SprintDemoCard } from '@/features/sprint/components/sprint-demo-card';
 import { ROOM_DEFINITIONS } from '../room-types';
 import { useRoomSuggestion } from '../use-room-suggestion';
@@ -46,6 +48,8 @@ export function RoomScreen({ roomType }: RoomScreenProps) {
           : <Text style={styles.note}>{`Phòng ${def.label} sẽ có hoạt động riêng sớm!`}</Text>}
         {roomType === 'LIVING_ROOM' && <SouvenirShelf />}
         {roomType === 'LIVING_ROOM' && <SprintDemoCard />}
+        {roomType === 'BEDROOM' && <BedroomSession />}
+        {roomType === 'BATHROOM' && <FlashQuiz />}
         <Text style={styles.hint}>Vuốt trái/phải để đổi phòng · giữ Bugsy để hỏi gợi ý</Text>
       </View>
 

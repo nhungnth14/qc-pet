@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-06-14
-last_updated: 2026-06-22  # 40 done; Epics 0-7 DONE; next: Epic 8 (spaced repetition / flash quiz) hoặc 9/10
+last_updated: 2026-06-22  # 43 done; Epics 0-8 DONE; next: Epic 9 (notifications/smart timing) hoặc 10
 project: qc-pet
 project_key: NOKEY
 tracking_system: file-system
@@ -133,10 +133,10 @@ development_status:
   # -----------------------------------------------------------------
   # Epic 8: Spaced Repetition & Flash Quiz Layer (all backlog)
   # -----------------------------------------------------------------
-  epic-8: backlog
-  8-1-spaced-repetition-algorithm-server-queue: backlog
-  8-2-bedroom-sr-session-tat-den-flow-daily-recap-bubble: backlog
-  8-3-bathroom-flash-quiz-mirror-moment: backlog
+  epic-8: done
+  8-1-spaced-repetition-algorithm-server-queue: done          # 2026-06-22 dev: spaced-repetition (computeNextReview correct=count*3d/wrong=1d, initialReviewAtMs, isEligible, pure) + spaced_repetition_queue table (composite PK user/lesson/question) + sr-api (enqueueLessonReview/getDueReviews/recordReview) + sr-questions resolver (SR-due → content-repo, fallback lesson đầu). type-check/lint 0 + 6 test mới. Defer: MMKV cache 24h, Q1 warm-up integration, enqueue wiring vào core-mission
+  8-2-bedroom-sr-session-tat-den-flow-daily-recap-bubble: done          # 2026-06-22 dev: ReviewQuestionCard (shared stripped Q + instant feedback lime/error) + DailyRecapBubble (thought-bubble auto-dismiss 5s) + BedroomSession (Tắt đèn → dim lights-out + 1-2 SR câu → recap theo streak) + wire BEDROOM RoomScreen. type-check/lint 0. Defer: lesson-name/rule chính xác trong recap, SFX
+  8-3-bathroom-flash-quiz-mirror-moment: done          # 2026-06-22 dev: mirror (getMirrorTier ≥70/30-69/<30 + MIRROR_DISCIPLINE_REWARD=10, pure) + MirrorMoment (Bugsy + reflection lật, 2.5s self-dismiss, no tap/text) + FlashQuiz (stripped streak+X/N, 2-3 SR câu, → Mirror → Discipline+10) + wire BATHROOM. CLOSES Epic 8. type-check/lint 0 + 3 test mới. Defer: SFX
   epic-8-retrospective: optional
 
   # -----------------------------------------------------------------
