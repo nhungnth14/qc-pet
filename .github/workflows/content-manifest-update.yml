@@ -1,0 +1,45 @@
+name: Auto-update Content Manifest
+
+# Tự động rebuild content/manifest.json sau mỗi merge vào main có content changes (Story 1-2).
+# Commit back bằng stefanzweifel/git-auto-commit-action với [skip ci] để không loop.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'content/lessons/**'
+      - 'content/real-bugs/**'
+      - 'content/authors/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: content-manifest-update
+  cancel-in-progress: false
+
+jobs:
+  update-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Cần fetch history để auto-commit action hoạt động
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Rebuild manifest
+        run: node scripts/update-manifest.mjs
+
+      - name: Commit updated manifest
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: auto-update content manifest [skip ci]'
+          file_pattern: content/manifest.json
+          commit_user_name: 'github-actions[bot]'
+          commit_user_email: 'github-actions[bot]@users.noreply.github.com'

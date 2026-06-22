@@ -1,0 +1,268 @@
+// QC Pet — Prisma 7.8.0
+// Prisma quản schema CỐT LÕI (cột tối thiểu) của các bảng app trong `public`:
+// users, pets, game_state, quiz_sessions. ⚠️ CHƯA đầy đủ: bảng `need_bars` + một số
+// cột feature (vd game_state.onboarding_completed/current_lesson_index) hiện chỉ có
+// trên cloud dev DB & do feature stories sở hữu — Story 0-3 baseline cloud bằng
+// `prisma db pull`. (Code review 0-2, D1.)
+// ⚠️ KHÔNG dùng Prisma client trong app React Native hay Edge Functions (Deno).
+//    Prisma chỉ dùng dev-time. Data access runtime: @supabase/supabase-js (PostgREST).
+//
+// RLS Phase A: public.users.id = auth.users.id (theo quy ước, KHÔNG đặt FK cross-schema
+//   tới auth.users để Prisma không phải kéo/migrate schema `auth` của Supabase → tránh
+//   drift). Mọi bảng tham chiếu public.users(id); policy = (auth.uid() = user_id).
+//   Liên kết auth.users → public.users (tạo row, cascade xoá) thuộc app logic / trigger
+//   ở story sau, KHÔNG phải FK Prisma.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// App user. id = Supabase auth.users.id (set khi tạo, không auto-gen).
+model User {
+  id        String   @id @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  pets         Pet[]
+  gameState    GameState?
+  quizSessions QuizSession[]
+  rooms                   Room[]
+  needBars                NeedBars?
+  souvenirs               Souvenir[]
+  transferGateSubmissions TransferGateSubmission[]
+  sprintHoldToken         SprintHoldToken?
+  sprintHoldLogs          SprintHoldLog[]
+  weeklyBugLogs           WeeklyBugLog[]
+  retrospectiveEntries    RetrospectiveEntry[]
+  spacedRepetitionQueue   SpacedRepetitionQueue[]
+  pushTokens              PushToken[]
+
+  @@map("users")
+}
+
+/// Thú cưng Bugsy. Cột tối thiểu — feature stories thêm sau.
+model Pet {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  name      String
+  version   String   @default("v0.1")
+  qpTotal   Int      @default(0) @map("qp_total")
+  bcBalance Int      @default(0) @map("bc_balance") // raw-SQL CHECK bc_balance >= 0 (migration 20260616100000)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("pets")
+}
+
+/// Trạng thái game per-user (1-1). Cột tối thiểu — feature stories thêm sau.
+model GameState {
+  id                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId               String    @unique @map("user_id") @db.Uuid
+  lastSyncedAt         DateTime? @map("last_synced_at") @db.Timestamptz(6)
+  /// Content manifest version đã sync về device (Story 1-3). Dùng cho cross-device restore.
+  contentVersion       String?   @map("content_version")
+  lastContentSyncedAt  DateTime? @map("last_content_synced_at") @db.Timestamptz(6)
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("game_state")
+}
+
+enum QuizSessionStatus {
+  in_progress
+  completed
+  abandoned
+
+  @@map("quiz_session_status")
+}
+
+/// Story 3-1: 6 phòng trong căn hộ Bugsy.
+enum RoomType {
+  WORK_ROOM
+  KITCHEN
+  BEDROOM
+  LIVING_ROOM
+  BATHROOM
+  GARDEN
+
+  @@map("room_type")
+}
+
+/// Per-user room unlock state (Story 3-1). Static metadata (label/color) sống trong ROOM_DEFINITIONS.
+model Room {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId           String    @map("user_id") @db.Uuid
+  roomType         RoomType  @map("room_type")
+  isUnlocked       Boolean   @default(false) @map("is_unlocked")
+  unlockTriggerMet Boolean   @default(false) @map("unlock_trigger_met")
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roomType])
+  @@map("rooms")
+}
+
+/// Need Bars per-user (Story 4-1). 1-1 với user (PK = user_id). Decay tính server-side
+/// (Edge Function process-need-bar-sync) từ last_synced_at; client mirror cho display tick.
+/// Bảng đã tồn tại trên cloud dev DB — migration formalize (idempotent).
+model NeedBars {
+  userId       String   @id @map("user_id") @db.Uuid
+  hunger       Int      @default(80)
+  happiness    Int      @default(80)
+  health       Int      @default(80)
+  discipline   Int      @default(80)
+  lastSyncedAt DateTime @default(now()) @map("last_synced_at") @db.Timestamptz(6)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("need_bars")
+}
+
+/// Souvenir unlock per evolution step (Story 3-5). 1 souvenir / evolution_step / user.
+/// Populate khi evolve thật (Epic 7 — Transfer Gate). Static metadata (emoji/label) ở SOUVENIRS.
+model Souvenir {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  evolutionStep String   @map("evolution_step")
+  souvenirType  String   @map("souvenir_type")
+  unlockedAt    DateTime @default(now()) @map("unlocked_at") @db.Timestamptz(6)
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, evolutionStep])
+  @@map("souvenirs")
+}
+
+/// Transfer Gate evidence (Story 7.1). Bằng chứng công việc thực để unlock evolution. Permanent
+/// (RLS chỉ SELECT + INSERT — không UPDATE/DELETE). Honor system (app không validate nội dung).
+model TransferGateSubmission {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  evolutionStep String   @map("evolution_step")
+  evidenceType  String   @map("evidence_type")
+  content       String
+  submittedAt   DateTime @default(now()) @map("submitted_at") @db.Timestamptz(6)
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("transfer_gate_submissions")
+}
+
+/// Sprint Hold token balance per-user (Story 7.4). Earn qua cron (≥20/28 missions/tháng, max 2).
+/// KHÔNG mua bằng BC/QP. 1-1 với user.
+model SprintHoldToken {
+  userId    String   @id @map("user_id") @db.Uuid
+  balance   Int      @default(0)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sprint_hold_tokens")
+}
+
+/// Log mỗi lần dùng Sprint Hold (Story 7.4). reason bắt buộc; penalty_waived = true (BC miss penalty bỏ qua).
+model SprintHoldLog {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  usedAt        DateTime @default(now()) @map("used_at") @db.Timestamptz(6)
+  reason        String
+  penaltyWaived Boolean  @default(true) @map("penalty_waived")
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sprint_hold_logs")
+}
+
+/// Weekly Bug Log (Story 7.3). Bug thật user ghi lại. severity/priority/description nullable cho
+/// trường hợp no_bugs_this_week. Honor system (không validate). Permanent (RLS select+insert).
+model WeeklyBugLog {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  description String?
+  severity    String?
+  priority    String?
+  outcome     String
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("weekly_bug_logs")
+}
+
+/// Retrospective entry per sprint (Story 7.5). 3 câu hỏi freeform (nullable — answer 1/2/cả 3).
+/// Permanent (RLS select+insert). Skip không lưu (chỉ analytics).
+model RetrospectiveEntry {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  sprintNumber Int      @map("sprint_number")
+  applied      String?
+  stillHard    String?  @map("still_hard")
+  nextToggle   String?  @map("next_toggle")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("retrospective_entries")
+}
+
+/// Spaced Repetition queue (Story 8.1). 1 row / (user, lesson, question). question_id = index trong
+/// lesson (LessonQuestion không có id). Interval MVP simple (computeNextReview).
+model SpacedRepetitionQueue {
+  userId                String   @map("user_id") @db.Uuid
+  lessonId              String   @map("lesson_id")
+  questionId            String   @map("question_id")
+  nextReviewAt          DateTime @map("next_review_at") @db.Timestamptz(6)
+  reviewCount           Int      @default(0) @map("review_count")
+  lastAnsweredCorrectly Boolean? @map("last_answered_correctly")
+
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, lessonId, questionId])
+  @@map("spaced_repetition_queue")
+}
+
+/// Expo Push token per device (Story 9.1). Delivery (EAS/FCM/APNs) + send (Edge Function) → defer.
+model PushToken {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  expoPushToken String   @map("expo_push_token")
+  platform      String
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, expoPushToken])
+  @@map("push_tokens")
+}
+
+/// Phiên làm quiz. Tiếp quản từ supabase/migrations/002_quiz_sessions.sql
+/// (user_id đổi tham chiếu auth.users → public.users để hết cross-schema FK).
+model QuizSession {
+  id                   String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId               String            @map("user_id") @db.Uuid
+  lessonId             String            @map("lesson_id")
+  currentQuestionIndex Int               @default(0) @map("current_question_index")
+  answers              Json              @default("{}")
+  status               QuizSessionStatus @default(in_progress)
+  bcEarned             Int               @default(0) @map("bc_earned")
+  qpEarned             Int               @default(0) @map("qp_earned")
+  startedAt            DateTime          @default(now()) @map("started_at") @db.Timestamptz(6)
+  completedAt          DateTime?         @map("completed_at") @db.Timestamptz(6)
+
+  user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("quiz_sessions")
+}

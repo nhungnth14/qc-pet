@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bugsy QC - Sprint Demo Card</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@600;800;900&family=JetBrains+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+        
+        .pixel-stars {
+            background-image: radial-gradient(white 1px, transparent 0);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+
+        .squishy-shadow {
+            box-shadow: 0px 6px 0px 0px rgba(0, 26, 65, 1);
+        }
+
+        .inner-highlight {
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.4);
+        }
+
+        .bounce-hover:active {
+            transform: scale(0.95) translateY(2px);
+        }
+
+        .shimmer-bg {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        body {
+            background-color: #f9f9ff;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#c9e6ff",
+                        "on-secondary-container": "#773224",
+                        "surface-container-low": "#f1f3ff",
+                        "secondary-fixed-dim": "#ffb4a5",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#cbdaff",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#e0e8ff",
+                        "on-tertiary-fixed-variant": "#4f319c",
+                        "surface-container": "#e9edff",
+                        "tertiary-fixed": "#e8ddff",
+                        "inverse-on-surface": "#edf0ff",
+                        "primary-fixed-dim": "#8aceff",
+                        "tertiary-fixed-dim": "#cebdff",
+                        "on-error-container": "#93000a",
+                        "on-background": "#001a41",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#004464",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#004b6f",
+                        "surface-container-highest": "#d8e2ff",
+                        "background": "#f9f9ff",
+                        "outline": "#6e7882",
+                        "on-tertiary-fixed": "#21005e",
+                        "secondary-container": "#fd9d89",
+                        "secondary": "#944839",
+                        "inverse-primary": "#8aceff",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#006491",
+                        "tertiary": "#674bb5",
+                        "surface-variant": "#d8e2ff",
+                        "on-secondary-fixed-variant": "#773124",
+                        "on-tertiary-container": "#472894",
+                        "on-secondary-fixed": "#3d0701",
+                        "surface-bright": "#f9f9ff",
+                        "surface": "#f9f9ff",
+                        "inverse-surface": "#002e69",
+                        "secondary-fixed": "#ffdad3",
+                        "on-surface": "#001a41",
+                        "on-surface-variant": "#3e4851",
+                        "primary-container": "#22b5ff",
+                        "outline-variant": "#bdc8d2",
+                        "on-primary-fixed": "#001e2f",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#b59cff",
+                        "primary": "#006491"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "xs": "4px",
+                        "lg": "40px",
+                        "base": "8px",
+                        "md": "24px",
+                        "container-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "display": ["Nunito Sans"],
+                        "header-lg": ["Nunito Sans"],
+                        "code-sm": ["JetBrains Mono"],
+                        "body-md": ["Nunito Sans"],
+                        "ui-button": ["Nunito Sans"]
+                    },
+                    "fontSize": {
+                        "display": ["32px", { "lineHeight": "40px", "fontWeight": "900" }],
+                        "header-lg": ["24px", { "lineHeight": "32px", "fontWeight": "800" }],
+                        "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "ui-button": ["16px", { "lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "800" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface">
+<header class="bg-surface border-b-4 border-on-surface shadow-[0px_6px_0px_0px_rgba(0,26,65,1)] flex justify-between items-center w-full px-container-padding py-base sticky top-0 z-50">
+<div class="flex items-center gap-base">
+<div class="w-10 h-10 rounded-full border-2 border-on-surface overflow-hidden bg-primary-fixed">
+<img alt="Bugsy Avatar" class="w-full h-full object-cover" data-alt="A cute, stylized 3D avatar of a yellow chick character wearing purple headphones, with large sparkling eyes and a soft round body. The character has a cheerful expression and is set against a clean white background, reflecting a modern, high-contrast, cuteness-driven design aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7NNxm8nUfT3yY9Vy1lahpzhUXY4Kwn_Jx9N7NIas5jPFN_e2jOwoSJ1P2i6PVT78VnePvem08fm7-t920y4pMEdYVR36AVf75aY0n8nrjc2E4fUmYs3ke1ETMnHZyjEnzYJ_kcEKFsDczeqY3Cx69AbWs6VY1cTCvySa8fBnQFBeCpGuIP4g_X-3adCqyrqQm75L2BbYqlf3OU2k5sU4BESmM64YDkG0ksp1KCk-oqD71GrD3XlZ7kVHvtRnU0bL5Vx0W9OaON05T"/>
+</div>
+<h1 class="font-display text-display text-primary">Bugsy QC</h1>
+</div>
+<div class="text-primary font-header-lg text-header-lg">
+            12 🔥 500 QC 25 BC
+        </div>
+</header>
+<main class="flex flex-col items-center px-container-padding py-lg min-h-screen">
+<div class="w-full max-w-md bg-gradient-to-b from-[#FFD1BA] to-primary-fixed border-[3px] border-on-background rounded-[32px] squishy-shadow relative overflow-hidden p-6 flex flex-col items-center">
+<div class="absolute inset-0 pixel-stars opacity-30 pointer-events-none"></div>
+<div class="relative w-full flex flex-col items-center z-10">
+<div class="bg-white/80 backdrop-blur-sm border-2 border-on-surface px-4 py-2 rounded-full mb-6">
+<p class="font-ui-button text-ui-button text-on-surface uppercase tracking-wider">Tuần 1 — 7–13/06/2026</p>
+</div>
+<div class="w-64 h-64 mb-8 transform hover:scale-110 transition-transform duration-500 drop-shadow-[0_20px_10px_rgba(0,0,0,0.1)]">
+<img alt="Bugsy the fluff ball tester" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa5_tTP_psHB6AiUZYprqVQ9L6rv9CtLwIa35edk7VoOjnr5J4-EExI1hh3kTRX9ZXm42XhTw0fFfsunTxxydSGK0dMMJw6x62zSrjVhVX-lri0gvICPDpxjho7D15u0EWYt_SVsHPiRqhCiGMvxBOj4FNrtEpB4aDfyMh8FRopnjQhJ8dfh2rMrY0_oO7JgjM3guAr4tcl1vSH4BCoOYdUC-NU5dN7LWbsMIpwH9Ua5sTi9DmSC3hgpR85wL5Uitpwu5Fiot0gaIv"/>
+</div>
+<div class="grid grid-cols-2 gap-sm w-full mb-8">
+<div class="bg-surface border-2 border-on-surface p-sm rounded-xl flex items-center gap-xs shadow-[0px_4px_0px_0px_rgba(0,26,65,1)]">
+<span class="material-symbols-outlined text-[#00A8A8]" style="font-variation-settings: 'FILL' 1;">stars</span>
+<div class="flex flex-col">
+<span class="text-[10px] font-display text-outline uppercase">QC Points</span>
+<span class="font-header-lg text-header-lg text-[#00A8A8]">500</span>
+</div>
+</div>
+<div class="bg-surface border-2 border-on-surface p-sm rounded-xl flex items-center gap-xs shadow-[0px_4px_0px_0px_rgba(0,26,65,1)]">
+<span class="material-symbols-outlined text-[#FFB000]" style="font-variation-settings: 'FILL' 1;">monetization_on</span>
+<div class="flex flex-col">
+<span class="text-[10px] font-display text-outline uppercase">Bug Coins</span>
+<span class="font-header-lg text-header-lg text-[#FFB000]">25</span>
+</div>
+</div>
+<div class="bg-surface border-2 border-on-surface p-sm rounded-xl flex items-center gap-xs shadow-[0px_4px_0px_0px_rgba(0,26,65,1)]">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<div class="flex flex-col">
+<span class="text-[10px] font-display text-outline uppercase">Streak</span>
+<span class="font-header-lg text-header-lg text-secondary">12 Days</span>
+</div>
+</div>
+<div class="bg-surface border-2 border-on-surface p-sm rounded-xl flex flex-wrap gap-xs items-center shadow-[0px_4px_0px_0px_rgba(0,26,65,1)]">
+<div class="bg-[#B5FFD0] border-2 border-on-surface text-[10px] font-code-sm px-1 rounded">DEBUG</div>
+<div class="bg-[#D0B5FF] border-2 border-on-surface text-[10px] font-code-sm px-1 rounded">SPEED</div>
+</div>
+</div>
+<div class="w-full relative mb-8">
+<div class="absolute -top-3 -left-2 material-symbols-outlined text-tertiary opacity-40">format_quote</div>
+<div class="bg-tertiary-fixed-dim/40 backdrop-blur-sm border-2 border-tertiary-container p-4 rounded-2xl italic text-center">
+<p class="font-body-md text-on-tertiary-container italic">"Success is not final, failure is not fatal: it is the courage to continue that counts - but finding bugs is way cooler."</p>
+</div>
+</div>
+<div class="w-full flex items-center justify-between border-t-2 border-on-surface/10 pt-6">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 bg-primary-container rounded-xl border-2 border-on-surface flex items-center justify-center shadow-[0px_4px_0px_0px_rgba(0,26,65,1)]">
+<span class="material-symbols-outlined text-on-primary-container">bug_report</span>
+</div>
+<div class="flex flex-col">
+<span class="font-display text-display text-on-surface leading-none">Pet bạn đói.</span>
+<span class="font-body-md text-on-surface-variant">Đi tìm bug đi.</span>
+</div>
+</div>
+<button class="bg-[#22b5ff] hover:bg-[#0096e6] text-white font-ui-button text-ui-button px-6 py-3 rounded-full border-[3px] border-on-surface squishy-shadow inner-highlight bounce-hover transition-all flex items-center gap-2 group">
+<span class="material-symbols-outlined group-hover:rotate-12 transition-transform">share</span>
+                        SHARE
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-md pb-md pt-sm bg-surface-container border-t-4 border-on-surface shadow-[0px_-6px_0px_0px_rgba(0,26,65,1)] md:hidden">
+<a class="text-on-surface-variant p-sm hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">assignment</span>
+</a>
+<a class="text-on-surface-variant p-sm hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">menu</span>
+</a>
+<a class="bg-primary-container text-on-primary-container rounded-lg p-sm border-2 border-on-surface shadow-[0px_4px_0px_0px_rgba(0,26,65,1)] scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">gamepad</span>
+</a>
+<a class="text-on-surface-variant p-sm hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+</a>
+</nav>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const card = document.querySelector('main > div');
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 30;
+                const rotateY = (centerX - x) / 30;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+            });
+        });
+    </script>
+</body></html>

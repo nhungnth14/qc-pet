@@ -1,0 +1,32 @@
+{
+  "name": "Bugsy",
+  "status": {
+    "happy": "Vui vẻ",
+    "hungry": "Đói bụng",
+    "tired": "Mệt mỏi",
+    "sad": "Buồn",
+    "discipline_low": "Cần kỷ luật",
+    "excited": "Phấn khích",
+    "evolution_cinematic": "Đang tiến hóa...",
+    "day7_outdoor": "Đi dạo ngoài trời"
+  },
+  "needs": {
+    "hunger": "Đói",
+    "happiness": "Hạnh phúc",
+    "health": "Sức khỏe",
+    "discipline": "Kỷ luật",
+    "composite": "Tổng hợp"
+  },
+  "rooms": {
+    "work_room": "Phòng làm việc",
+    "kitchen": "Bếp",
+    "bedroom": "Phòng ngủ",
+    "living_room": "Phòng khách",
+    "bathroom": "Phòng tắm",
+    "garden": "Vườn"
+  },
+  "evolution": {
+    "title": "Tiến hóa!",
+    "message": "Bugsy đã tiến hóa lên cấp mới!"
+  }
+}

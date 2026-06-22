@@ -1,0 +1,167 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://qcpet.dev/schemas/lesson.schema.json",
+  "title": "QC Pet Lesson",
+  "description": "Schema cho lesson content file trong content/lessons/. Tất cả fields bắt buộc phải có để pass CI content quality gate.",
+  "type": "object",
+  "required": [
+    "id",
+    "category",
+    "title",
+    "source_tag",
+    "bloom_level",
+    "lesson_content",
+    "questions",
+    "is_published",
+    "version"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique lesson ID, vd 'BD-1', 'TA-2'",
+      "pattern": "^[A-Z]{2}-\\d+$"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["BD", "TA", "MP", "TM", "AT"],
+      "description": "BD=Bug Detective, TA=Test Architect, MP=Mindset & Process, TM=Tool Master, AT=Agile Tester"
+    },
+    "title": {
+      "type": "string",
+      "description": "Tiêu đề bài học",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "source_tag": {
+      "type": "string",
+      "description": "Nguồn ISTQB (vd 'ISTQB-1.2') hoặc 'INDUSTRY_PRACTICE'",
+      "pattern": "^(ISTQB-\\d+(\\.\\d+)*|INDUSTRY_PRACTICE)$"
+    },
+    "bloom_level": {
+      "type": "string",
+      "enum": ["remember", "understand", "apply", "analyze", "evaluate", "create"],
+      "description": "Bloom's Taxonomy level theo content-strategy.md"
+    },
+    "lesson_content": {
+      "type": "object",
+      "description": "Nội dung bài học hiển thị trước quiz (~30 giây đọc)",
+      "required": ["headline", "body_text", "duration_seconds"],
+      "additionalProperties": false,
+      "properties": {
+        "headline": {
+          "type": "string",
+          "description": "Tiêu đề ngắn cho lesson card (Nunito Sans 24/800)",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "body_text": {
+          "type": "string",
+          "description": "Nội dung chính (~80 từ tối đa)",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "duration_seconds": {
+          "type": "integer",
+          "description": "Thời gian đọc dự kiến (tối đa 30s)",
+          "minimum": 5,
+          "maximum": 30
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "description": "Danh sách câu hỏi quiz (tối thiểu 8)",
+      "minItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "format",
+          "question_text",
+          "options",
+          "correct_answer",
+          "distractor_rationale"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "mcq",
+              "bug_report_surgery",
+              "severity_swipe",
+              "spot_the_defect",
+              "rewrite_the_fail",
+              "priority_severity_duel",
+              "boundary_attack",
+              "root_cause_chain",
+              "risk_radar",
+              "complete_test_case"
+            ],
+            "description": "Loại câu hỏi — khớp với QuestionFormat trong question-types.ts"
+          },
+          "question_text": {
+            "type": "string",
+            "description": "Nội dung câu hỏi hiển thị cho người dùng",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "options": {
+            "type": "array",
+            "description": "Danh sách đáp án (tối thiểu 2). Với format MCQ: text strings. Với format khác: xem format_data.",
+            "minItems": 2,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "correct_answer": {
+            "type": "string",
+            "description": "Đáp án đúng — phải là một giá trị trong options[]",
+            "minLength": 1
+          },
+          "distractor_rationale": {
+            "type": "array",
+            "description": "Giải thích tại sao các đáp án sai là sai (cho Bugsy Story-Rule feedback)",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "is_warmup": {
+            "type": "boolean",
+            "description": "true = Q1 warm-up (không trừ streak nếu sai, border xanh nhạt)"
+          },
+          "image_url": {
+            "type": "string",
+            "description": "URL ảnh cho Spot the Defect hoặc EP/BVA diagram (optional)"
+          },
+          "format_data": {
+            "type": "object",
+            "description": "Dữ liệu bổ sung theo từng format (optional). Vd: template fields cho complete_test_case, scenario cho boundary_attack.",
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    "is_published": {
+      "type": "boolean",
+      "description": "true = hiển thị trong app; false = draft, không xuất hiện cho user"
+    },
+    "version": {
+      "type": "string",
+      "description": "Semver version của lesson file (vd '1.0.0')",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "dependency_order": {
+      "type": "integer",
+      "description": "Thứ tự học trong category (1-based). Dùng bởi Story 5-1 lesson selection engine.",
+      "minimum": 1
+    },
+    "cliffhanger": {
+      "type": "string",
+      "description": "Text teaser cuối session để tạo anticipation cho bài tiếp theo (optional)"
+    }
+  }
+}

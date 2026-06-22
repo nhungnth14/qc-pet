@@ -1,0 +1,21 @@
+{
+  "welcome": {
+    "title": "Chào mừng đến với QC Pet!",
+    "subtitle": "Học kiểm thử phần mềm cùng Bugsy",
+    "cta": "Bắt đầu ngay"
+  },
+  "step1": {
+    "title": "Nuôi thú cưng của bạn",
+    "message": "Hoàn thành bài học mỗi ngày để Bugsy luôn vui vẻ và khỏe mạnh"
+  },
+  "step2": {
+    "title": "Kiếm điểm thưởng",
+    "message": "Trả lời đúng câu hỏi để nhận QP và Bug Coins"
+  },
+  "step3": {
+    "title": "Tiến hóa cùng nhau",
+    "message": "Bugsy sẽ tiến hóa khi bạn tích lũy đủ điểm"
+  },
+  "create_account": "Tạo tài khoản",
+  "login": "Đã có tài khoản? Đăng nhập"
+}

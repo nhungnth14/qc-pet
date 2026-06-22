@@ -1,0 +1,17 @@
+{
+  "type": "REAL_BUG_OF_THE_WEEK",
+  "id": "RBOTW-001",
+  "authored_by": "nhung-nguyen",
+  "version": "1.0.0",
+  "is_published": true,
+  "context": "E-commerce checkout — payment confirmation flow (web app, React + Node.js backend)",
+  "bug_description": "Nút 'Xác nhận thanh toán' có màu xám giống trạng thái disabled, nhưng vẫn click được và xử lý payment bình thường. Developer nói đây là 'chỉ là màu CSS, không ảnh hưởng functionality'. PM yêu cầu fix gấp vì campaign Black Friday đang chạy và team support nhận nhiều ticket user hỏi 'tại sao nút bị xám mà vẫn thanh toán được?'. Bug xuất hiện từ sprint trước nhưng không ai report.",
+  "severity": "low",
+  "priority": "high",
+  "platform": "Web React, Chrome 120+",
+  "date_occurred": "2026-05-15",
+  "root_cause": "CSS class `btn-disabled` được apply nhầm vào payment button khi refactor UI component sprint trước. Lỗi visual-only (Error của developer khi copy-paste class), không ảnh hưởng event handler — đây là Defect trong code CSS, chưa là Failure về chức năng thanh toán.",
+  "lesson_learned": "Đây là ví dụ điển hình Severity ≠ Priority (ISTQB FL 5.5.1): Severity LOW (không crash, không mất tiền, chỉ là visual) nhưng Priority HIGH (business impact: campaign đang chạy, user confusion, support tickets tăng). Fresher hay ghi Low/Low và để dev backlog — dẫn đến bị sếp hỏi tại sao không catch sớm hơn.",
+  "istqb_ref": "FL 5.5.1",
+  "outcome": "Fixed trong 2 giờ (remove sai CSS class). Zero financial impact. Lesson: luôn hỏi PM về business context trước khi set Priority — technical assessment và business decision là 2 việc khác nhau."
+}

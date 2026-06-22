@@ -1,0 +1,154 @@
+{
+  "id": "BD-1",
+  "category": "BD",
+  "title": "Bug là gì? Không phải mọi sự khác biệt đều là lỗi",
+  "source_tag": "ISTQB-1.2",
+  "bloom_level": "remember",
+  "version": "1.0.0",
+  "is_published": true,
+  "dependency_order": 1,
+  "lesson_content": {
+    "headline": "Bug là gì? Error ≠ Defect ≠ Failure",
+    "body_text": "ISTQB phân biệt rõ 3 khái niệm: Error (lỗi do con người tạo ra — trong code, design, hoặc test), Defect (lỗi tồn tại trong sản phẩm/tài liệu — hệ quả của Error), và Failure (hành vi sai khi phần mềm chạy — hệ quả của Defect). Fresher hay báo Failure nhưng không trace về Defect gốc — khiến dev không fix đúng chỗ.",
+    "duration_seconds": 25
+  },
+  "questions": [
+    {
+      "format": "mcq",
+      "question_text": "Trong ISTQB, 'error' là gì?",
+      "options": [
+        "Lỗi do con người tạo ra (vd: dev viết sai code)",
+        "Hành vi sai của phần mềm khi đang chạy"
+      ],
+      "correct_answer": "Lỗi do con người tạo ra (vd: dev viết sai code)",
+      "distractor_rationale": [
+        "Hành vi sai khi chạy là 'failure', không phải 'error'. Error là nguyên nhân gốc rễ do con người gây ra."
+      ],
+      "is_warmup": true
+    },
+    {
+      "format": "mcq",
+      "question_text": "Một developer viết nhầm điều kiện `if (age > 18)` thay vì `if (age >= 18)`. Theo ISTQB, đây là loại gì?",
+      "options": [
+        "Error — lỗi do con người tạo ra trong code",
+        "Defect — lỗi tồn tại trong sản phẩm",
+        "Failure — hành vi sai khi chạy",
+        "Cả Error lẫn Defect cùng lúc"
+      ],
+      "correct_answer": "Error — lỗi do con người tạo ra trong code",
+      "distractor_rationale": [
+        "Hành động viết nhầm là Error. Kết quả trong code (dòng lệnh sai) là Defect. Tại thời điểm viết code, chỉ có Error xảy ra.",
+        "Failure chỉ xảy ra khi phần mềm đang chạy và gây ra hành vi sai — chưa đến giai đoạn này.",
+        "Mỗi khái niệm mô tả 1 giai đoạn: con người sai (Error) → code sai (Defect) → chạy sai (Failure)."
+      ]
+    },
+    {
+      "format": "spot_the_defect",
+      "question_text": "Form đăng ký này có vấn đề gì? Xác định phần nào là Defect (lỗi trong sản phẩm).",
+      "options": [
+        "Nút 'Đăng ký' không phản hồi khi click dù đã điền đủ thông tin",
+        "Màu nền form hơi tối so với design mockup",
+        "Label 'Họ tên' bị thiếu dấu hỏi bắt buộc (*)",
+        "Font size của placeholder text là 13px thay vì 14px như design"
+      ],
+      "correct_answer": "Nút 'Đăng ký' không phản hồi khi click dù đã điền đủ thông tin",
+      "distractor_rationale": [
+        "Màu nền khác design có thể là Defect nếu spec rõ ràng, nhưng cần xác nhận với designer — có thể là chủ ý.",
+        "Thiếu dấu * là Defect nếu requirement nói phải có — nhưng severity thấp hơn nút không hoạt động.",
+        "Font size khác 1px thường là Minor Defect, không block người dùng đăng ký."
+      ],
+      "image_url": "https://placeholder.qcpet.dev/bd1-signup-form.png"
+    },
+    {
+      "format": "mcq",
+      "question_text": "Developer nói 'bug đã fix'. Tester test lại và thấy hành vi sai vẫn còn. Đây là:",
+      "options": [
+        "Failure — phần mềm đang chạy sai so với expected behavior",
+        "Error — developer đã gây ra lỗi khi fix",
+        "Defect — có lỗi trong code sau khi fix",
+        "Cả Failure và Defect — cả hai đúng ở đây"
+      ],
+      "correct_answer": "Cả Failure và Defect — cả hai đúng ở đây",
+      "distractor_rationale": [
+        "Failure đúng (hành vi sai khi chạy) nhưng chưa đủ — nguyên nhân là Defect vẫn còn trong code.",
+        "Error là hành động sai của con người — không mô tả đúng tình huống tester đang chứng kiến.",
+        "Defect đúng (lỗi còn trong code) nhưng chưa đủ — tester đang thấy Failure là hệ quả của Defect đó."
+      ]
+    },
+    {
+      "format": "complete_test_case",
+      "question_text": "Điền Expected Result cho test case sau: Tester vào trang login, nhập username 'user@test.com' và password 'Test@123', click nút 'Đăng nhập'.",
+      "options": [
+        "Hệ thống chuyển hướng về trang home và hiện tên user ở header",
+        "Hệ thống hiển thị thông báo 'Đăng nhập thành công'",
+        "Nút 'Đăng nhập' bị disable",
+        "Trang hiện loading spinner trong 3 giây"
+      ],
+      "correct_answer": "Hệ thống chuyển hướng về trang home và hiện tên user ở header",
+      "distractor_rationale": [
+        "Toast thông báo 'thành công' không đủ — user cần thực sự vào được app, không chỉ nhận message.",
+        "Nút disabled là trạng thái trước khi nhập thông tin — không phải expected result sau khi click.",
+        "Loading spinner là trạng thái trung gian — Expected Result mô tả trạng thái CUỐI sau action."
+      ],
+      "format_data": {
+        "precondition": "User đã có tài khoản. Browser đang mở trang login.",
+        "test_data": "Username: user@test.com | Password: Test@123",
+        "steps": [
+          "Nhập username vào field Email",
+          "Nhập password vào field Password",
+          "Click nút 'Đăng nhập'"
+        ],
+        "expected_result_blank": "Hệ thống ___"
+      }
+    },
+    {
+      "format": "mcq",
+      "question_text": "Khi nào một Defect trong code trở thành Failure?",
+      "options": [
+        "Khi đoạn code có Defect được thực thi và tạo ra hành vi sai",
+        "Ngay khi developer commit code có lỗi vào repository",
+        "Khi tester tìm thấy và báo cáo lỗi trong bug tracker",
+        "Khi product owner xác nhận lỗi nghiêm trọng"
+      ],
+      "correct_answer": "Khi đoạn code có Defect được thực thi và tạo ra hành vi sai",
+      "distractor_rationale": [
+        "Commit code chỉ là lúc Defect 'vào' hệ thống — Failure chưa xảy ra vì code chưa chạy với input gây lỗi.",
+        "Tester tìm ra không tạo ra Failure — Failure đã xảy ra trước đó; tester chỉ quan sát và ghi lại.",
+        "Product owner xác nhận là quyết định business về priority — không phải điều kiện để Failure xảy ra."
+      ]
+    },
+    {
+      "format": "mcq",
+      "question_text": "Với vai trò QA, khi bạn thấy nút 'Thanh toán' không phản hồi sau 5 lần click — bạn ghi vào bug report là gì?",
+      "options": [
+        "Mô tả Failure (hành vi quan sát được): 'Nút Thanh toán không phản hồi khi click'",
+        "Kết luận Error: 'Developer đã viết sai event handler'",
+        "Kết luận Defect: 'Có lỗi trong function handlePayment()'",
+        "Ghi cả 3: Error + Defect + Failure vào bug report"
+      ],
+      "correct_answer": "Mô tả Failure (hành vi quan sát được): 'Nút Thanh toán không phản hồi khi click'",
+      "distractor_rationale": [
+        "QA không nên kết luận Error (nguyên nhân dev làm sai) — đó là phán đoán về intent của dev, không có bằng chứng.",
+        "QA không nên chỉ định Defect cụ thể (tên function) nếu chưa xem code — đó là công việc của dev khi debug.",
+        "Bug report ghi những gì QA QUAN SÁT ĐƯỢC, không phán xét nguyên nhân. Dev tìm Defect và Error."
+      ]
+    },
+    {
+      "format": "mcq",
+      "question_text": "Câu nào sau đây mô tả ĐÚNG chuỗi nhân quả trong ISTQB?",
+      "options": [
+        "Con người mắc Error → tạo ra Defect trong sản phẩm → Defect gây ra Failure khi chạy",
+        "Failure xảy ra → tìm Defect → truy ra Error của con người",
+        "Defect → Error → Failure (theo thứ tự phát hiện của tester)",
+        "Error và Defect là từ đồng nghĩa — chỉ khác nhau ở context dùng"
+      ],
+      "correct_answer": "Con người mắc Error → tạo ra Defect trong sản phẩm → Defect gây ra Failure khi chạy",
+      "distractor_rationale": [
+        "Thứ tự PHÁT HIỆN (Failure → Defect → Error) ngược với thứ tự NHÂN QUẢ. Câu hỏi hỏi nhân quả.",
+        "Tester phát hiện theo hướng ngược (từ Failure truy ngược), nhưng đó không phải chuỗi nhân quả gốc.",
+        "Error và Defect KHÁC NHAU: Error là hành động của con người, Defect là kết quả tồn tại trong sản phẩm."
+      ]
+    }
+  ],
+  "cliffhanger": "Bạn đã biết Error → Defect → Failure. Nhưng hôm nay mình gặp bug chỉ xuất hiện vào thứ Sáu. Đúng thứ Sáu. Không phải thứ Năm, không phải thứ Bảy. Tại sao? Bugsy sẽ tiết lộ."
+}

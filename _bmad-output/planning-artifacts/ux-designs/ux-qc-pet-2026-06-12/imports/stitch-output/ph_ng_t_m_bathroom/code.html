@@ -1,0 +1,313 @@
+<!DOCTYPE html><html lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>QC Pet - Phòng Tắm</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#ff9e8a",
+                        "on-tertiary-fixed-variant": "#2e4f00",
+                        "surface": "#fff8f6",
+                        "surface-container-high": "#f5e5e2",
+                        "primary-fixed": "#ffdad3",
+                        "primary": "#944839",
+                        "surface-bright": "#fff8f6",
+                        "secondary-container": "#24b5ff",
+                        "primary-fixed-dim": "#ffb4a5",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#c9e6ff",
+                        "on-tertiary-fixed": "#102000",
+                        "on-background": "#221a18",
+                        "surface-dim": "#e6d7d4",
+                        "outline-variant": "#dac1bc",
+                        "on-secondary-container": "#004464",
+                        "on-primary-fixed-variant": "#773124",
+                        "background": "#fff8f6",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#fdedea",
+                        "inverse-primary": "#ffb4a5",
+                        "on-primary-container": "#783325",
+                        "on-secondary-fixed-variant": "#004b6f",
+                        "on-secondary-fixed": "#001e2f",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#efdfdc",
+                        "secondary": "#006491",
+                        "on-tertiary-container": "#2f5100",
+                        "surface-container-low": "#fff0ee",
+                        "on-surface-variant": "#54433f",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#944839",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#7ecc00",
+                        "on-secondary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-surface": "#221a18",
+                        "secondary-fixed-dim": "#8aceff",
+                        "outline": "#87726e",
+                        "tertiary": "#3f6900",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#3d0701",
+                        "inverse-surface": "#372e2d",
+                        "surface-container-highest": "#efdfdc",
+                        "surface-container": "#faeae7",
+                        "tertiary-fixed": "#a1fa29",
+                        "tertiary-fixed-dim": "#89dc00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "xl": "32px",
+                        "margin-mobile": "20px",
+                        "unit": "8px",
+                        "lg": "24px",
+                        "margin-desktop": "40px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Nunito Sans"],
+                        "headline-lg-mobile": ["Nunito Sans"],
+                        "headline-lg": ["Nunito Sans"],
+                        "label-md": ["Nunito Sans"],
+                        "label-lg": ["Nunito Sans"],
+                        "display-lg": ["Nunito Sans"],
+                        "body-md": ["Nunito Sans"],
+                        "body-lg": ["Nunito Sans"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "800"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "800"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "800"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "800"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "900"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #f1fbf9;
+            overflow-x: hidden;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .hexagon-pattern {
+            background-color: #f1fbf9;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='hexagons' fill='%3Ddac1bc' fill-opacity='0.2' fill-rule='nonzero'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h2v7.5L28 15v16.5l-12.98 7.5v7.5h-2v-7.5L0 31.5V15zM12.98 41.5L1 34.6v-20l11.98-6.91L27 14.6v20l-11.98 6.91V49h-2v-7.5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .sticker-card {
+            border: 3px solid #000000;
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+            transition: transform 0.1s;
+        }
+        
+        .sticker-card:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+        }
+
+        .pill-button {
+            border: 3px solid #000000;
+            box-shadow: 0px 4px 0px 0px rgba(0,0,0,1);
+            transition: all 0.1s ease;
+        }
+
+        .pill-button:active {
+            transform: translateY(2px);
+            box-shadow: 0px 2px 0px 0px rgba(0,0,0,1);
+        }
+
+        .vanity-shadow {
+            filter: drop-shadow(0px 8px 0px rgba(0,0,0,0.1));
+        }
+
+        .mirror-frame {
+            border: 4px solid #5d4037;
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.8);
+        }
+
+        .discipline-streak {
+            background: #fff;
+            border: 3px solid #000;
+            box-shadow: 3px 3px 0px #000;
+        }
+
+        .cel-shaded-highlight {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full bg-surface dark:bg-surface-dim text-primary dark:text-primary-fixed-dim font-headline-md text-headline-md-mobile border-b-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex justify-between items-center px-margin-mobile h-16 z-50">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-full border-2 border-black overflow-hidden bg-primary-fixed">
+<img alt="Bugsy" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLvZI_Me0fW6NtwRuawE0zq8WQHGMV5R-czPQUXz2st0YSiOfQtq-ZFVlkYFNveNaftwA1e-cnIKMPCFt14iT2zx-uDNyAU28GCJKfhX6vY4TkftZF87PJPUUQPffemPOQ2BOmsnLf4c3OYEmd5StY1gnCNiWgcQZKZYwM1n5r-1yxuoRqAyMd9UHw5HGu8tEUomCeeh2L7ovKCIEfyjul_0LqNFWK7UzrlJVVPTYW93BxTS_0zELd9VA1_7">
+</div>
+<span class="font-headline-md text-headline-md-mobile">QC Pet</span>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-highest px-3 py-1 rounded-full border-2 border-black">
+<span class="text-label-lg font-label-lg">12</span>
+<span class="text-lg">🔥</span>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="min-h-screen pt-20 pb-32 hexagon-pattern relative overflow-hidden px-margin-mobile">
+<!-- Discipline Streak Tracker (Floating) -->
+<div class="flex justify-center mb-8">
+<div class="discipline-streak px-4 py-2 rounded-xl flex items-center gap-3 animate-bounce">
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="material-symbols-outlined text-outline-variant">stars</span>
+<span class="material-symbols-outlined text-outline-variant">stars</span>
+</div>
+<div class="border-l-2 border-black pl-3">
+<p class="font-label-md text-label-md leading-none uppercase text-on-surface-variant">Kỷ luật</p>
+<p class="font-headline-md text-headline-md leading-none">3 NGÀY</p>
+</div>
+</div>
+</div>
+<!-- Bathroom Environment -->
+<div class="relative w-full max-w-md mx-auto aspect-[4/5] flex flex-col items-center justify-end">
+<!-- Ornate Mirror on Back Wall -->
+<div class="absolute top-0 w-48 h-64 mirror-frame rounded-full flex flex-col items-center justify-center border-[4px] border-black overflow-hidden z-10">
+<div class="relative w-full h-full opacity-60">
+<!-- Reflection of Bugsy -->
+<img alt="Reflection" class="absolute bottom-4 left-1/2 -translate-x-1/2 w-32 grayscale brightness-125" data-alt="A blurred, slightly desaturated reflection of a cute hamster character in a circular mirror. The reflection is rendered in a soft 2D hand-drawn style, mimicking a mirror surface in a whimsical bathroom. The lighting is soft and ambient with cel-shaded highlights on the mirror's glass surface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALRmYDNn_pWRVNVEWZs0EkR22h5lXuDxCqvGLrq3woR0Pov3Z2Jd8Bfo8DjuMXpgPKoiCqK826v7n_FRz42QhMqgTbib1HYVJCVO8v6sLVSBRnBeCObgMl2aChTcPJG0VD_c_LrsXTVhPosW5fKr5rVxgj6i7SUpha_r-Jnab_KwC4Gl-N8gmQIEqnmJhKqEhwR_x5hi-uJFMTWeeg-bsxFffhtTPVmTiKnkVL9CUMvLYTo_Z8hj-7Y5g4dBrFYzKfQLVheVUM56Zv">
+</div>
+<!-- Cel-shaded Sheen on Mirror -->
+<div class="absolute top-6 left-6 w-12 h-12 cel-shaded-highlight"></div>
+</div>
+<!-- Bugsy Character -->
+<div class="relative z-30 mb-20 transform scale-125">
+<img alt="Bugsy" class="w-48 h-auto" src="https://lh3.googleusercontent.com/aida/AP1WRLvZI_Me0fW6NtwRuawE0zq8WQHGMV5R-czPQUXz2st0YSiOfQtq-ZFVlkYFNveNaftwA1e-cnIKMPCFt14iT2zx-uDNyAU28GCJKfhX6vY4TkftZF87PJPUUQPffemPOQ2BOmsnLf4c3OYEmd5StY1gnCNiWgcQZKZYwM1n5r-1yxuoRqAyMd9UHw5HGu8tEUomCeeh2L7ovKCIEfyjul_0LqNFWK7UzrlJVVPTYW93BxTS_0zELd9VA1_7">
+<!-- Speech Bubble -->
+<div class="absolute -top-16 -right-12 bg-white border-[3px] border-black px-4 py-2 rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] animate-pulse">
+<p class="font-label-lg text-label-lg text-on-surface">Sạch sẽ quá!</p>
+<div class="absolute -bottom-3 left-4 w-4 h-4 bg-white border-r-[3px] border-b-[3px] border-black rotate-45"></div>
+</div>
+</div>
+<!-- White Vanity with Sink -->
+<div class="relative w-full z-20">
+<div class="w-full h-32 bg-white border-[3px] border-black rounded-t-[40px] shadow-[0px_8px_0px_0px_rgba(0,0,0,0.1)] relative">
+<!-- Sink Details -->
+<div class="absolute top-4 left-1/2 -translate-x-1/2 w-40 h-10 bg-surface-container border-[3px] border-black rounded-full"></div>
+<!-- Faucet -->
+<div class="absolute top-[-10px] left-1/2 -translate-x-1/2 w-8 h-12 bg-secondary-fixed border-[3px] border-black rounded-t-lg"></div>
+<!-- Accessories -->
+<div class="absolute top-4 left-8 flex gap-2">
+<div class="w-8 h-12 bg-primary-container border-[3px] border-black rounded-lg"></div> <!-- Shampoo -->
+<div class="w-6 h-10 bg-tertiary-container border-[3px] border-black rounded-md"></div> <!-- Soap -->
+</div>
+<div class="absolute top-4 right-8">
+<div class="w-10 h-10 bg-secondary-container border-[3px] border-black rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm">water_drop</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Floor -->
+<div class="w-full h-16 bg-surface-dim border-t-[3px] border-black -mt-1 z-10"></div>
+</div>
+<!-- Action Card -->
+<div class="mt-8 sticker-card bg-surface-container-lowest p-6 rounded-[24px] max-w-sm mx-auto relative z-40">
+<div class="flex items-start gap-4">
+<div class="bg-primary-fixed p-3 rounded-xl border-[2px] border-black">
+<span class="material-symbols-outlined text-primary text-3xl">lightbulb</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Thử thách buổi sáng</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Làm sạch Bugsy và ôn lại bài học cũ để nhận thêm 5🔥!</p>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="mt-6">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-md text-label-md text-on-surface-variant">Vệ sinh</span>
+<span class="font-label-md text-label-md text-primary">85%</span>
+</div>
+<div class="w-full h-5 bg-surface-container border-[3px] border-black rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container border-r-[3px] border-black relative" style="width: 85%;">
+<div class="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50"></div>
+</div>
+</div>
+</div>
+<button class="mt-6 w-full pill-button bg-primary text-on-primary py-4 rounded-full font-headline-md text-headline-md flex items-center justify-center gap-2 hover:scale-95 transition-transform">
+<span class="">Bắt đầu Flash Quiz</span>
+<span class="material-symbols-outlined">bolt</span>
+</button>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full bg-surface-container dark:bg-surface-container-low text-secondary dark:text-secondary-fixed-dim font-label-md text-label-md border-t-[3px] border-black rounded-t-xl shadow-[0px_-4px_0px_0px_rgba(0,0,0,0.2)] z-50 flex justify-around items-center px-2 pb-6 pt-2">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:bg-secondary-container transition-colors p-2 rounded-xl" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="">Mission</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:bg-secondary-container transition-colors p-2 rounded-xl" href="#">
+<span class="material-symbols-outlined">restaurant</span>
+<span class="">Feed</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-tertiary-container text-on-tertiary-container rounded-full border-[3px] border-black px-4 py-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">videogame_asset</span>
+<span class="">Play</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:bg-secondary-container transition-colors p-2 rounded-xl" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="">Train</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for the sink
+        const sinkArea = document.querySelector('.w-40.h-10.bg-surface-container');
+        sinkArea.addEventListener('click', () => {
+            // Create bubble effects
+            for(let i=0; i<5; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'fixed bg-white border-[1px] border-black rounded-full pointer-events-none z-50';
+                bubble.style.width = Math.random() * 20 + 10 + 'px';
+                bubble.style.height = bubble.style.width;
+                bubble.style.left = (event.clientX - 10) + 'px';
+                bubble.style.top = (event.clientY - 10) + 'px';
+                
+                document.body.appendChild(bubble);
+                
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * 100 + 50;
+                
+                bubble.animate([
+                    { transform: 'translate(0,0) scale(1)', opacity: 1 },
+                    { transform: `translate(${Math.cos(angle) * dist}px, ${-dist}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 1000,
+                    easing: 'ease-out'
+                }).onfinish = () => bubble.remove();
+            }
+        });
+    </script>
+
+
+</body></html>

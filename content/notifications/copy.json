@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "templates": {
+    "hunger_low": "Bụng Bugsy kêu to rồi. Tủ lạnh trống không có gì hết á 😅",
+    "happiness_low": "Bugsy đang ngồi một mình ở Phòng Khách... nhớ {name} lắm 🥺",
+    "health_low": "Bugsy hơi đuối rồi... nghỉ ngơi chút với {name} nha 💪",
+    "discipline_low": "Phòng Tắm chờ mình từ sáng đến giờ rồi đó {name} 🚿",
+    "general_miss": "{name} ơi, Bugsy hôm nay học một mình nha... sẽ đợi đến tối nhé 📚",
+    "weekend": "Cuối tuần mình nghỉ học, nhưng Bugsy nhớ {name} quá! 🌴",
+    "morning": "Chào buổi sáng {name}! Bugsy dậy rồi, hôm nay học gì vui không? ☀️"
+  }
+}

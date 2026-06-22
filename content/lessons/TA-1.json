@@ -1,0 +1,148 @@
+{
+  "id": "TA-1",
+  "category": "TA",
+  "title": "Equivalence Partitioning: Tại sao test 1 giá trị đủ đại diện cả nhóm?",
+  "source_tag": "ISTQB-4.2",
+  "bloom_level": "understand",
+  "version": "1.0.0",
+  "is_published": true,
+  "dependency_order": 1,
+  "lesson_content": {
+    "headline": "Equivalence Partitioning — test ít, cover nhiều",
+    "body_text": "Equivalence Partitioning (EP) chia input thành các nhóm (partition) mà mọi giá trị trong cùng nhóm đều dự kiến có cùng hành vi. Thay vì test 1.000 giá trị, bạn chọn 1 đại diện/nhóm — tiết kiệm thời gian mà vẫn cover đủ. Có 2 loại partition: Valid (hệ thống chấp nhận) và Invalid (hệ thống phải từ chối). Fresher hay quên test invalid partitions và kết luận 'feature hoạt động tốt'.",
+    "duration_seconds": 28
+  },
+  "questions": [
+    {
+      "format": "mcq",
+      "question_text": "Equivalence Partitioning chia inputs thành các nhóm theo nguyên tắc nào?",
+      "options": [
+        "Mọi giá trị trong cùng nhóm đều dự kiến có cùng hành vi",
+        "Mỗi nhóm gồm các giá trị liên tiếp nhau (consecutive values)"
+      ],
+      "correct_answer": "Mọi giá trị trong cùng nhóm đều dự kiến có cùng hành vi",
+      "distractor_rationale": [
+        "EP không yêu cầu giá trị phải liên tiếp. Vd: partition 'email không hợp lệ' gồm 'abc', 'test@', '@test' — không liên tiếp nhưng cùng hành vi expected."
+      ],
+      "is_warmup": true
+    },
+    {
+      "format": "mcq",
+      "question_text": "Field nhập tuổi yêu cầu 18–60. Đâu là cách phân chia EP ĐÚNG?",
+      "options": [
+        "Invalid: <18 | Valid: 18–60 | Invalid: >60",
+        "Valid: 18–40 | Valid: 41–60 | Invalid: ngoài range",
+        "Valid: số chẵn trong 18–60 | Valid: số lẻ trong 18–60",
+        "Invalid: <0 | Invalid: 0–17 | Valid: 18–60 | Invalid: >60"
+      ],
+      "correct_answer": "Invalid: <18 | Valid: 18–60 | Invalid: >60",
+      "distractor_rationale": [
+        "18–40 và 41–60 đều valid — không có lý do tách thành 2 partition vì cùng hành vi expected (chấp nhận).",
+        "Số chẵn/lẻ trong range không tạo ra hành vi khác nhau — đây không phải cơ sở để partition.",
+        "Tách <0 và 0–17 là partition hợp lý về logic nhưng không cần thiết nếu hệ thống xử lý cả hai giống nhau (đều từ chối). 3 partition là chuẩn tối thiểu cho trường hợp này."
+      ]
+    },
+    {
+      "format": "spot_the_defect",
+      "question_text": "Nhìn vào diagram EP cho field 'Điểm học sinh (0–100)'. Partition nào đang thiếu trong test plan?",
+      "options": [
+        "Invalid partition cho giá trị âm (< 0)",
+        "Valid partition cho điểm đạt (50–100)",
+        "Invalid partition cho điểm giữa (25–49)",
+        "Valid partition cho điểm trên 100 (> 100)"
+      ],
+      "correct_answer": "Invalid partition cho giá trị âm (< 0)",
+      "distractor_rationale": [
+        "Điểm đạt (50–100) là valid partition đã có trong test plan — không phải thiếu.",
+        "Điểm 25–49 là valid partition (điểm trượt nhưng hệ thống vẫn chấp nhận) — đây không phải invalid.",
+        "Giá trị > 100 là invalid partition nên có trong test plan, nhưng trong diagram này nó đã được bao gồm."
+      ],
+      "image_url": "https://placeholder.qcpet.dev/ta1-ep-diagram.png"
+    },
+    {
+      "format": "mcq",
+      "question_text": "Form đăng ký yêu cầu mật khẩu dài 8–20 ký tự. Tester chỉ test '12345678' (8 ký tự). EP nói tester còn thiếu gì?",
+      "options": [
+        "Cần test ít nhất 1 giá trị từ invalid partition: mật khẩu < 8 ký tự",
+        "Cần test thêm '1234567890' (10 ký tự) để cover nhiều hơn",
+        "Cần test cả số lẻ và số chẵn ký tự trong range 8–20",
+        "Không thiếu gì — 1 giá trị trong valid partition là đủ theo EP"
+      ],
+      "correct_answer": "Cần test ít nhất 1 giá trị từ invalid partition: mật khẩu < 8 ký tự",
+      "distractor_rationale": [
+        "Test thêm '10 ký tự' là test trong cùng valid partition — không add coverage mới theo EP.",
+        "Số lẻ/chẵn không tạo ra hành vi khác trong context này — không phải cơ sở partition.",
+        "EP yêu cầu mỗi partition ít nhất 1 giá trị — cả valid VÀ invalid. Tester còn thiếu invalid partition (<8 và >20)."
+      ]
+    },
+    {
+      "format": "boundary_attack",
+      "question_text": "Field 'Số lượng sản phẩm' chấp nhận 1–99. Theo EP, liệt kê các giá trị đại diện cho MỌI partition.",
+      "options": [
+        "0 (invalid dưới min), 1 (valid min), 50 (valid mid), 99 (valid max), 100 (invalid trên max)",
+        "1, 50, 99 (chỉ test valid partition là đủ)",
+        "0, 50, 100 (test boundary và middle)",
+        "1, 99 (chỉ cần test 2 đầu range)"
+      ],
+      "correct_answer": "0 (invalid dưới min), 1 (valid min), 50 (valid mid), 99 (valid max), 100 (invalid trên max)",
+      "distractor_rationale": [
+        "Chỉ test valid partition bỏ qua 2 invalid partition (< 1 và > 99) — hệ thống có thể không validate đúng edge case.",
+        "Test boundary (0, 100) là BVA, không phải EP thuần. EP yêu cầu đại diện mỗi partition — 50 là đủ cho valid middle.",
+        "Test 2 đầu range bỏ qua invalid partition — và bỏ qua việc confirm hệ thống chấp nhận middle valid values."
+      ],
+      "format_data": {
+        "scenario": "Field số lượng sản phẩm, chấp nhận 1–99. Nhập các giá trị đại diện cho mọi partition.",
+        "hint": "Nhớ: cả valid VÀ invalid partitions đều cần test"
+      }
+    },
+    {
+      "format": "mcq",
+      "question_text": "Tester test field email với 'user@test.com' và nói 'EP coverage đủ rồi'. Họ đã bỏ sót điều gì?",
+      "options": [
+        "Invalid partition — email không hợp lệ (vd 'userattest.com', '@test.com', 'user@')",
+        "Không bỏ sót gì — 1 valid email đã đủ đại diện partition valid",
+        "Cần test thêm email dài hơn (>50 ký tự) trong valid partition",
+        "Cần test email với các domain khác nhau (gmail, yahoo, company)"
+      ],
+      "correct_answer": "Invalid partition — email không hợp lệ (vd 'userattest.com', '@test.com', 'user@')",
+      "distractor_rationale": [
+        "1 valid email đủ cho valid partition — đúng. Nhưng EP cũng yêu cầu cover invalid partition (email malformed).",
+        "Email > 50 ký tự có thể là partition riêng nếu có length validation — nhưng đây không phải vấn đề chính ở đây.",
+        "Domain khác nhau không tạo partition khác nếu hệ thống xử lý cùng cách — test nhiều domain cùng partition là redundant."
+      ]
+    },
+    {
+      "format": "mcq",
+      "question_text": "Với vai trò QA, bạn nhận spec mới: 'Discount field chấp nhận 0–50%'. Bước đầu tiên khi áp dụng EP là gì?",
+      "options": [
+        "Xác định tất cả partition (valid và invalid) TRƯỚC khi chọn test values",
+        "Chọn ngay giá trị test: 0%, 25%, 50% để cover range",
+        "Hỏi dev xem system validate input ở đâu (client hay server)",
+        "Viết test case cho happy path trước, rồi mới nghĩ đến edge cases"
+      ],
+      "correct_answer": "Xác định tất cả partition (valid và invalid) TRƯỚC khi chọn test values",
+      "distractor_rationale": [
+        "Chọn values ngay mà chưa identify partitions có thể bỏ sót invalid partition (vd: số âm, >50%, text thay số).",
+        "Hỏi về implementation chi tiết không phải bước đầu EP — EP dựa vào spec, không phải implementation.",
+        "Happy path trước là cách tư duy dev, không phải tư duy test design — dễ bỏ qua invalid partitions."
+      ]
+    },
+    {
+      "format": "mcq",
+      "question_text": "Kết luận nào ĐÚNG về EP?",
+      "options": [
+        "EP giúp test ít giá trị hơn mà vẫn cover đủ hành vi hệ thống theo từng nhóm input",
+        "EP đảm bảo test toàn diện 100% — không có bug nào lọt qua nếu áp dụng đúng",
+        "EP chỉ áp dụng cho numeric inputs — không dùng được cho string hay dropdown",
+        "EP thay thế hoàn toàn cho Boundary Value Analysis (BVA)"
+      ],
+      "correct_answer": "EP giúp test ít giá trị hơn mà vẫn cover đủ hành vi hệ thống theo từng nhóm input",
+      "distractor_rationale": [
+        "EP không đảm bảo 100% — boundary values trong mỗi partition có thể có hành vi khác nhau (đó là lý do cần BVA).",
+        "EP áp dụng cho mọi loại input: numeric, string (vd: email format), dropdown (vd: status enums), file types, v.v.",
+        "EP và BVA bổ sung cho nhau — BVA focus vào boundary của partition, EP focus vào đại diện của partition."
+      ]
+    }
+  ],
+  "cliffhanger": "Bạn đã biết EP: chọn 1 đại diện cho mỗi nhóm. Nhưng dev thường sai nhất ở ranh giới giữa các nhóm. Hôm nay mình sẽ dạy kỹ thuật tìm đúng những chỗ đó — Boundary Value Analysis."
+}

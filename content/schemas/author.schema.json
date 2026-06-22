@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://qcpet.dev/schemas/author.schema.json",
+  "title": "QC Pet — Content Author Profile",
+  "description": "Schema cho author profiles trong content/authors/. Filename phải khớp với id field.",
+  "type": "object",
+  "required": ["id", "name", "role"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]+[a-z0-9]$",
+      "description": "Author slug — khớp với filename (vd file 'nhung-nguyen.json' → id 'nhung-nguyen')"
+    },
+    "name": {
+      "type": "string",
+      "description": "Tên hiển thị của author",
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "role": {
+      "type": "string",
+      "description": "Chức danh/vai trò (vd: 'Senior QA Engineer', 'QC Lead', 'Test Architect')",
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "bio": {
+      "type": "string",
+      "description": "Giới thiệu ngắn (optional, max 200 ký tự)",
+      "maxLength": 200
+    },
+    "github_handle": {
+      "type": "string",
+      "description": "GitHub username (optional, không có @)",
+      "pattern": "^[a-zA-Z0-9-]+$"
+    },
+    "expertise": {
+      "type": "array",
+      "description": "Chuyên môn (optional, vd ['Bug Detection', 'Test Design', 'ISTQB'])",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}
