@@ -60,6 +60,17 @@ export const useSessionStore = create<SessionState>(() => ({
   },
 
   signUpWithEmail: async (email, password) => {
+    // Self-heal: updateUser (convert anon → permanent) yêu cầu session đang sống.
+    // Nếu initSession lúc boot fail âm thầm (mạng chập chờn / anon hết hạn), session
+    // có thể trống → updateUser ném "Auth session missing!". Đảm bảo có session trước.
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      const { error: anonError } = await supabase.auth.signInAnonymously();
+      if (anonError)
+        throw anonError;
+    }
     const { data, error } = await supabase.auth.updateUser({ email, password });
     if (error)
       throw error;

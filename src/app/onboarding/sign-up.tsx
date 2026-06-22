@@ -11,6 +11,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { authErrorMessage } from '@/features/onboarding/auth-error-message';
 import { clearProgress, setStep } from '@/features/onboarding/onboarding-progress';
 import { usePetStore } from '@/stores/pet-store';
 import { useSessionStore } from '@/stores/session-store';
@@ -50,8 +51,8 @@ export default function SignUpScreen() {
       finishOnboarding();
       router.replace('/(app)');
     }
-    catch (err: any) {
-      setError(err?.message ?? 'Đăng ký thất bại, thử lại nhé');
+    catch (err) {
+      setError(authErrorMessage(err));
     }
     finally {
       setIsLoading(false);
