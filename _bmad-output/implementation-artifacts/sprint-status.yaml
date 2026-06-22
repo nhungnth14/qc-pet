@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-06-14
-last_updated: 2026-06-22  # 45 done; Epics 0-9 DONE; next: Epic 10 (Sân & Item Shop placeholder) — epic cuối
+last_updated: 2026-06-23  # 47 done; Epics 0-10 ALL DONE — toàn roadmap (46 story) hoàn thành. Pending: review-checklist defers, infra (push/cron/storage), commit
 project: qc-pet
 project_key: NOKEY
 tracking_system: file-system
@@ -150,7 +150,7 @@ development_status:
   # -----------------------------------------------------------------
   # Epic 10: Sân & Item Shop Placeholder (all backlog)
   # -----------------------------------------------------------------
-  epic-10: backlog
-  10-1-san-day-7-cinematic-unlock-open-space-environment: backlog
-  10-2-item-shop-placeholder-browse-only-coming-soon: backlog
+  epic-10: done
+  10-1-san-day-7-cinematic-unlock-open-space-environment: done          # 2026-06-23 dev: use-garden-cinematic (MMKV 1-lần flag) + GardenCinematic (~5s Bugsy outdoor-run overlay, no UI/text/music, self-gating) + grass environment; wire GARDEN RoomScreen. type-check/lint 0. Defer: ambient SFX (birds/breeze), server flag
+  10-2-item-shop-placeholder-browse-only-coming-soon: done          # 2026-06-23 dev: shop-items (SHOP_ITEMS wallpaper/outfit/toy + category labels, pure) + ShopPlaceholder (grid card + "Sắp ra mắt" chip + Buy greyed → Bugsy speech bubble, no cart) wire GARDEN. CLOSES Epic 10 + roadmap. type-check/lint 0 + 4 test. Defer: Phase 2 full shop (cart/transaction)
   epic-10-retrospective: optional

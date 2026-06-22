@@ -1,10 +1,12 @@
 import type { RoomType } from '../stores/use-room-navigation';
 import { StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { GardenCinematic } from '@/features/garden/components/garden-cinematic';
 import { BugsyCharacter } from '@/features/pet/components/bugsy-character';
 import { CareButton } from '@/features/pet/components/care-button';
 import { SouvenirShelf } from '@/features/pet/components/souvenir-shelf';
 import { ROOM_CARE } from '@/features/pet/pet-care';
+import { ShopPlaceholder } from '@/features/shop/components/shop-placeholder';
 import { BedroomSession } from '@/features/spaced-repetition/components/bedroom-session';
 import { FlashQuiz } from '@/features/spaced-repetition/components/flash-quiz';
 import { SprintDemoCard } from '@/features/sprint/components/sprint-demo-card';
@@ -43,16 +45,16 @@ export function RoomScreen({ roomType }: RoomScreenProps) {
             <BugsyCharacter room={roomType} />
           </View>
         </GestureDetector>
-        {careAction
-          ? <CareButton action={careAction} />
-          : <Text style={styles.note}>{`Phòng ${def.label} sẽ có hoạt động riêng sớm!`}</Text>}
+        {careAction && <CareButton action={careAction} />}
         {roomType === 'LIVING_ROOM' && <SouvenirShelf />}
         {roomType === 'LIVING_ROOM' && <SprintDemoCard />}
         {roomType === 'BEDROOM' && <BedroomSession />}
         {roomType === 'BATHROOM' && <FlashQuiz />}
+        {roomType === 'GARDEN' && <ShopPlaceholder />}
         <Text style={styles.hint}>Vuốt trái/phải để đổi phòng · giữ Bugsy để hỏi gợi ý</Text>
       </View>
 
+      {roomType === 'GARDEN' && <GardenCinematic />}
       <SuggestionBubble suggestion={suggestion} onDismiss={dismiss} />
     </View>
   );
@@ -74,6 +76,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
   },
   bugsyWrap: { padding: 12 },
-  note: { fontSize: 16, fontWeight: '800', color: '#001a41', textAlign: 'center' },
   hint: { fontSize: 13, fontWeight: '600', color: '#3a4a66', textAlign: 'center' },
 });

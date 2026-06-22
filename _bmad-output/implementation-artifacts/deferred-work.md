@@ -100,6 +100,10 @@ Tổng hợp các việc được hoãn lại từ code review / dev — để c
 
 ## Deferred from: CI lint debt (phát hiện 2026-06-17 khi PR #2 chạy full lint lần đầu)
 
+## Deferred from: code review of epic-10 (2026-06-23)
+
+- **DEF-10-1-1 — `GardenCinematic` replay khi navigate trong 5s.** `clearTimeout` hủy `markShown` timer khi component unmount (user swipe khỏi GARDEN) → MMKV flag chưa set → remount khi quay lại GARDEN → `shouldShow = true` → cinematic phát lại. Spec "1 lần duy nhất" bị vi phạm. Fix: set MMKV flag "cinematic started" ngay khi effect run (phòng replay), tách khỏi flag "completed". [`src/features/garden/components/garden-cinematic.tsx:19-25`]
+
 ## Deferred from: code review of epic-9 (2026-06-23)
 
 - **DEF-9-1-1 — RLS `push_tokens_policy` thiếu `WITH CHECK`.** Pattern lặp lại từ DEF-3-1-1/DEF-4-1-4/DEF-3-5-1/DEF-8-1-1. Thêm `WITH CHECK (auth.uid() = user_id)` trong migration tiếp theo có đụng bảng `push_tokens`. [`prisma/migrations/20260622150000_push_tokens/migration.sql`]
