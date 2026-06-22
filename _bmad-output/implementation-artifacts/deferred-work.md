@@ -100,6 +100,10 @@ Tổng hợp các việc được hoãn lại từ code review / dev — để c
 
 ## Deferred from: CI lint debt (phát hiện 2026-06-17 khi PR #2 chạy full lint lần đầu)
 
+## Deferred from: code review of epic-9 (2026-06-23)
+
+- **DEF-9-1-1 — RLS `push_tokens_policy` thiếu `WITH CHECK`.** Pattern lặp lại từ DEF-3-1-1/DEF-4-1-4/DEF-3-5-1/DEF-8-1-1. Thêm `WITH CHECK (auth.uid() = user_id)` trong migration tiếp theo có đụng bảng `push_tokens`. [`prisma/migrations/20260622150000_push_tokens/migration.sql`]
+
 ## Deferred from: code review of epic-8 (2026-06-22)
 
 - **DEF-8-1-1 — RLS `sr_queue_policy` thiếu `WITH CHECK`.** Pattern lặp lại từ DEF-3-1-1/DEF-4-1-4/DEF-3-5-1. `FOR ALL` policy không có `WITH CHECK` → PostgreSQL dùng USING làm check cho INSERT/UPDATE (an toàn kỹ thuật nhưng thiếu explicit). Thêm `WITH CHECK (auth.uid() = user_id)` trong migration tiếp theo có đụng bảng `spaced_repetition_queue`. [`prisma/migrations/20260622140000_spaced_repetition_queue/migration.sql:19-20`]

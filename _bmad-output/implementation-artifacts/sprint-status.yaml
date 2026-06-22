@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-06-14
-last_updated: 2026-06-22  # 43 done; Epics 0-8 DONE; next: Epic 9 (notifications/smart timing) hoặc 10
+last_updated: 2026-06-22  # 45 done; Epics 0-9 DONE; next: Epic 10 (Sân & Item Shop placeholder) — epic cuối
 project: qc-pet
 project_key: NOKEY
 tracking_system: file-system
@@ -142,9 +142,9 @@ development_status:
   # -----------------------------------------------------------------
   # Epic 9: Notifications & Smart Timing (all backlog)
   # -----------------------------------------------------------------
-  epic-9: backlog
-  9-1-push-notification-infrastructure-bugsy-voice-copy-templates: backlog
-  9-2-smart-timing-logic-daily-cap-deep-links: backlog
+  epic-9: done
+  9-1-push-notification-infrastructure-bugsy-voice-copy-templates: done          # 2026-06-22 dev: push_tokens table + content/notifications/copy.json (OTA, Bugsy voice {name}) + notification-copy.ts (getNotificationCopy/NEED_NOTIFICATION_KEY/buildAttentionCopy, pure); type-check/lint 0 + 7 test. Defer: expo-notifications token register + push delivery + EAS/FCM/APNs
+  9-2-smart-timing-logic-daily-cap-deep-links: done          # 2026-06-22 dev: smart-timing.ts (planNotification: morning always / evening if !opened / weekend copy / ≥2 rooms aggregate, daily-cap; ROOM_DEEP_LINK + roomFromPath, pure) + tests. CLOSES Epic 9. type-check/lint 0 + 8 test. Defer: Edge Function+pg_cron scheduling/send, tap listener + /rooms/[room] routes, smart-timing learning (Phase 2)
   epic-9-retrospective: optional
 
   # -----------------------------------------------------------------

@@ -40,6 +40,7 @@ model User {
   weeklyBugLogs           WeeklyBugLog[]
   retrospectiveEntries    RetrospectiveEntry[]
   spacedRepetitionQueue   SpacedRepetitionQueue[]
+  pushTokens              PushToken[]
 
   @@map("users")
 }
@@ -231,6 +232,20 @@ model SpacedRepetitionQueue {
 
   @@id([userId, lessonId, questionId])
   @@map("spaced_repetition_queue")
+}
+
+/// Expo Push token per device (Story 9.1). Delivery (EAS/FCM/APNs) + send (Edge Function) → defer.
+model PushToken {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  expoPushToken String   @map("expo_push_token")
+  platform      String
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, expoPushToken])
+  @@map("push_tokens")
 }
 
 /// Phiên làm quiz. Tiếp quản từ supabase/migrations/002_quiz_sessions.sql
